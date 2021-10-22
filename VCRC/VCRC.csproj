@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net5.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <Title>VCRC</Title>
+        <Authors>Vladimir Portyanikhin</Authors>
+        <Copyright>Copyright (c) 2021 Vladimir Portyanikhin</Copyright>
+        <Description>Vapor-compression refrigeration cycles analysis tool</Description>
+        <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
+        <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
+    </PropertyGroup>
+
+</Project>
