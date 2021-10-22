@@ -11,4 +11,8 @@
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
     </PropertyGroup>
 
+    <ItemGroup>
+        <PackageReference Include="SharpProp" Version="3.0.1" />
+    </ItemGroup>
+
 </Project>
