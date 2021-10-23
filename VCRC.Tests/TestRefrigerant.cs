@@ -1,5 +1,6 @@
 ﻿using System;
 using FluentAssertions;
+using FluentValidation;
 using NUnit.Framework;
 using SharpProp;
 
@@ -13,8 +14,8 @@ namespace VCRC.Tests
         public static void TestInitThrows()
         {
             Action action = () => _ = new Refrigerant(FluidsList.Water);
-            action.Should().Throw<ArgumentException>()
-                .WithMessage("The selected fluid is not a refrigerant (its name should start with 'R')!");
+            action.Should().Throw<ValidationException>()
+                .WithMessage("*The selected fluid is not a refrigerant (its name should start with 'R')!*");
         }
 
         [Test(ExpectedResult = 22.064e6)]

@@ -1,6 +1,8 @@
 ﻿using System;
+using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using VCRC.Validators;
 
 namespace VCRC
 {
@@ -13,15 +15,10 @@ namespace VCRC
         ///     VCRC working fluid
         /// </summary>
         /// <param name="name">Selected refrigerant</param>
-        /// <exception cref="ArgumentException">
+        /// <exception cref="ValidationException">
         ///     The selected fluid is not a refrigerant (its name should start with 'R')!
         /// </exception>
-        public Refrigerant(FluidsList name) : base(name)
-        {
-            if (!Name.ToString().StartsWith('R'))
-                throw new ArgumentException(
-                    "The selected fluid is not a refrigerant (its name should start with 'R')!");
-        }
+        public Refrigerant(FluidsList name) : base(name) => new RefrigerantValidator().ValidateAndThrow(this);
         
         /// <summary>
         ///     Absolute pressure at the critical point (by default, kPa)
