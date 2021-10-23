@@ -19,7 +19,7 @@ namespace VCRC
         ///     The selected fluid is not a refrigerant (its name should start with 'R')!
         /// </exception>
         public Refrigerant(FluidsList name) : base(name) => new RefrigerantValidator().ValidateAndThrow(this);
-        
+
         /// <summary>
         ///     Absolute pressure at the critical point (by default, kPa)
         /// </summary>
@@ -40,7 +40,7 @@ namespace VCRC
         /// <exception cref="NullReferenceException">Invalid triple pressure!</exception>
         public new Pressure TriplePressure =>
             base.TriplePressure ?? throw new NullReferenceException("Invalid triple pressure!");
-        
+
         /// <summary>
         ///     Temperature at the triple point (by default, °C)
         /// </summary>
