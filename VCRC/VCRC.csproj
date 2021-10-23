@@ -12,7 +12,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="SharpProp" Version="3.0.1" />
+        <PackageReference Include="SharpProp" Version="3.0.2" />
     </ItemGroup>
 
 </Project>
