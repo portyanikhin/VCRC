@@ -9,7 +9,7 @@ namespace VCRC.Extensions
         /// <summary>
         ///     Gets access to the vapor quality of the two-phase point
         /// </summary>
-        /// <param name="member">The <see cref="TwoPhase"/> member</param>
+        /// <param name="member">The <see cref="TwoPhase" /> member</param>
         /// <returns>Vapor quality of the two-phase point</returns>
         public static Ratio VaporQuality(this TwoPhase member) => member.GetAttribute<VaporQuality>().Value.Percent();
     }
