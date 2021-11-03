@@ -1,4 +1,5 @@
 ﻿using System;
+using CoolProp;
 using FluentValidation;
 using SharpProp;
 using UnitsNet;
@@ -19,6 +20,10 @@ namespace VCRC
         ///     The selected fluid is not a refrigerant (its name should start with 'R')!
         /// </exception>
         public Refrigerant(FluidsList name) : base(name) => new RefrigerantValidator().ValidateAndThrow(this);
+
+        public override Refrigerant
+            WithState(IKeyedInput<Parameters> firstInput, IKeyedInput<Parameters> secondInput) =>
+            (Refrigerant) base.WithState(firstInput, secondInput);
 
         /// <summary>
         ///     Absolute pressure at the critical point (by default, kPa)

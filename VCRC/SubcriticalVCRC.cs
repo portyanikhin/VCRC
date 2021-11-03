@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using VCRC.Extensions;
 using VCRC.Validators;
 
 namespace VCRC
@@ -26,6 +27,8 @@ namespace VCRC
             CondensingTemperature = condensingTemperature;
             Subcooling = subcooling;
             new SubcriticalVCRCValidator(Refrigerant).ValidateAndThrow(this);
+            CondensingPressure = Refrigerant.WithState(Input.Temperature(CondensingTemperature),
+                Input.Quality(CondensingPressureDefinition.VaporQuality())).Pressure;
         }
 
         /// <summary>
@@ -42,5 +45,10 @@ namespace VCRC
         ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point)
         /// </summary>
         public TwoPhase CondensingPressureDefinition { get; init; } = TwoPhase.Bubble;
+        
+        /// <summary>
+        ///     Absolute condensing pressure (by default, kPa)
+        /// </summary>
+        public Pressure CondensingPressure { get; }
     }
 }
