@@ -8,14 +8,14 @@ using VCRC.Validators;
 namespace VCRC
 {
     /// <summary>
-    ///     VCRC working fluid
+    ///     VCRC working fluid.
     /// </summary>
     public class Refrigerant : Fluid
     {
         /// <summary>
-        ///     VCRC working fluid
+        ///     VCRC working fluid.
         /// </summary>
-        /// <param name="name">Selected refrigerant</param>
+        /// <param name="name">Selected refrigerant.</param>
         /// <exception cref="ValidationException">
         ///     The selected fluid is not a refrigerant (its name should start with 'R')!
         /// </exception>
@@ -28,28 +28,28 @@ namespace VCRC
             (Refrigerant) base.WithState(firstInput, secondInput);
 
         /// <summary>
-        ///     Absolute pressure at the critical point (by default, kPa)
+        ///     Absolute pressure at the critical point (by default, kPa).
         /// </summary>
         /// <exception cref="NullReferenceException">Invalid critical pressure!</exception>
         public new Pressure CriticalPressure =>
             base.CriticalPressure ?? throw new NullReferenceException("Invalid critical pressure!");
 
         /// <summary>
-        ///     Temperature at the critical point (by default, °C)
+        ///     Temperature at the critical point (by default, °C).
         /// </summary>
         /// <exception cref="NullReferenceException">Invalid critical temperature!</exception>
         public new Temperature CriticalTemperature =>
             base.CriticalTemperature ?? throw new NullReferenceException("Invalid critical temperature!");
 
         /// <summary>
-        ///     Absolute pressure at the triple point (by default, kPa)
+        ///     Absolute pressure at the triple point (by default, kPa).
         /// </summary>
         /// <exception cref="NullReferenceException">Invalid triple pressure!</exception>
         public new Pressure TriplePressure =>
             base.TriplePressure ?? throw new NullReferenceException("Invalid triple pressure!");
 
         /// <summary>
-        ///     Temperature at the triple point (by default, °C)
+        ///     Temperature at the triple point (by default, °C).
         /// </summary>
         /// <exception cref="NullReferenceException">Invalid triple temperature!</exception>
         public new Temperature TripleTemperature =>

@@ -8,19 +8,19 @@ namespace VCRC
     public class SimpleVCRC : SubcriticalVCRC
     {
         /// <summary>
-        ///     Simple single-stage VCRC
+        ///     Simple single-stage VCRC.
         /// </summary>
-        /// <param name="refrigerantName">Selected refrigerant name</param>
-        /// <param name="evaporatingTemperature">Evaporating temperature</param>
-        /// <param name="condensingTemperature">Condensing temperature</param>
-        /// <param name="superheat">Superheat in the evaporator</param>
-        /// <param name="subcooling">Subcooling in the condenser</param>
-        /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor</param>
+        /// <param name="refrigerantName">Selected refrigerant name.</param>
+        /// <param name="evaporatingTemperature">Evaporating temperature.</param>
+        /// <param name="condensingTemperature">Condensing temperature.</param>
+        /// <param name="superheat">Superheat in the evaporator.</param>
+        /// <param name="subcooling">Subcooling in the condenser.</param>
+        /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor.</param>
         /// <param name="evaporatingPressureDefinition">
-        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point)
+        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point).
         /// </param>
         /// <param name="condensingPressureDefinition">
-        ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point)
+        ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point).
         /// </param>
         public SimpleVCRC(FluidsList refrigerantName, Temperature evaporatingTemperature,
             Temperature condensingTemperature, TemperatureDelta superheat, TemperatureDelta subcooling,
@@ -49,33 +49,33 @@ namespace VCRC
         }
 
         /// <summary>
-        ///     Point 2s – injection from the isentropic compression stage
+        ///     Point 2s – injection from the isentropic compression stage.
         /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public Refrigerant Point2s { get; }
 
         /// <summary>
-        ///     Point 2 – injection from the compression stage / condenser inlet
+        ///     Point 2 – injection from the compression stage / condenser inlet.
         /// </summary>
         public Refrigerant Point2 { get; }
 
         /// <summary>
-        ///     Point 3 – dew-point on the condensing isobar
+        ///     Point 3 – dew-point on the condensing isobar.
         /// </summary>
         public Refrigerant Point3 { get; }
 
         /// <summary>
-        ///     Point 4 – bubble-point on the condensing isobar
+        ///     Point 4 – bubble-point on the condensing isobar.
         /// </summary>
         public Refrigerant Point4 { get; }
 
         /// <summary>
-        ///     Point 5 – condenser outlet / expansion valve inlet
+        ///     Point 5 – condenser outlet / expansion valve inlet.
         /// </summary>
         public Refrigerant Point5 { get; }
 
         /// <summary>
-        ///     Point 6 – expansion valve outlet / evaporator inlet
+        ///     Point 6 – expansion valve outlet / evaporator inlet.
         /// </summary>
         public Refrigerant Point6 { get; }
     }

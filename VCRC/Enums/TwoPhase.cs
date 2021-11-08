@@ -3,22 +3,22 @@
 namespace VCRC
 {
     /// <summary>
-    ///     Two-phase points
+    ///     Two-phase points.
     /// </summary>
     public enum TwoPhase
     {
         /// <summary>
-        ///     Bubble-point
+        ///     Bubble-point.
         /// </summary>
         [VaporQuality(0)] Bubble,
 
         /// <summary>
-        ///     Dew-point
+        ///     Dew-point.
         /// </summary>
         [VaporQuality(100)] Dew,
 
         /// <summary>
-        ///     Middle-point
+        ///     Middle-point.
         /// </summary>
         [VaporQuality(50)] Middle
     }
