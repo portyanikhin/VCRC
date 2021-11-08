@@ -21,6 +21,8 @@ namespace VCRC
         /// </exception>
         public Refrigerant(FluidsList name) : base(name) => new RefrigerantValidator().ValidateAndThrow(this);
 
+        public override Refrigerant Factory() => new(Name);
+        
         public override Refrigerant
             WithState(IKeyedInput<Parameters> firstInput, IKeyedInput<Parameters> secondInput) =>
             (Refrigerant) base.WithState(firstInput, secondInput);

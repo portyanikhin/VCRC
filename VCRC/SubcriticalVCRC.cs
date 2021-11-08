@@ -20,12 +20,21 @@ namespace VCRC
         /// <param name="superheat">Superheat in the evaporator</param>
         /// <param name="subcooling">Subcooling in the condenser</param>
         /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor</param>
+        /// <param name="evaporatingPressureDefinition">
+        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point)
+        /// </param>
+        /// <param name="condensingPressureDefinition">
+        ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point)
+        /// </param>
         protected SubcriticalVCRC(FluidsList refrigerantName, Temperature evaporatingTemperature,
             Temperature condensingTemperature, TemperatureDelta superheat, TemperatureDelta subcooling,
-            Ratio isentropicEfficiency) : base(refrigerantName, evaporatingTemperature, superheat, isentropicEfficiency)
+            Ratio isentropicEfficiency, TwoPhase evaporatingPressureDefinition = TwoPhase.Dew,
+            TwoPhase condensingPressureDefinition = TwoPhase.Bubble) : base(refrigerantName,
+            evaporatingTemperature, superheat, isentropicEfficiency, evaporatingPressureDefinition)
         {
             CondensingTemperature = condensingTemperature;
             Subcooling = subcooling;
+            CondensingPressureDefinition = condensingPressureDefinition;
             new SubcriticalVCRCValidator(Refrigerant).ValidateAndThrow(this);
             CondensingPressure = Refrigerant.WithState(Input.Temperature(CondensingTemperature),
                 Input.Quality(CondensingPressureDefinition.VaporQuality())).Pressure;
@@ -44,7 +53,7 @@ namespace VCRC
         /// <summary>
         ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point)
         /// </summary>
-        public TwoPhase CondensingPressureDefinition { get; init; } = TwoPhase.Bubble;
+        public TwoPhase CondensingPressureDefinition { get; }
         
         /// <summary>
         ///     Absolute condensing pressure (by default, kPa)

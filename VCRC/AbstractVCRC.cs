@@ -19,14 +19,19 @@ namespace VCRC
         /// <param name="evaporatingTemperature">Evaporating temperature</param>
         /// <param name="superheat">Superheat in the evaporator</param>
         /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor</param>
+        /// <param name="evaporatingPressureDefinition">
+        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point)
+        /// </param>
         protected AbstractVCRC(FluidsList refrigerantName, Temperature evaporatingTemperature,
-            TemperatureDelta superheat, Ratio isentropicEfficiency)
+            TemperatureDelta superheat, Ratio isentropicEfficiency,
+            TwoPhase evaporatingPressureDefinition = TwoPhase.Dew)
         {
             RefrigerantName = refrigerantName;
             Refrigerant = new Refrigerant(RefrigerantName);
             EvaporatingTemperature = evaporatingTemperature;
             Superheat = superheat;
             IsentropicEfficiency = isentropicEfficiency;
+            EvaporatingPressureDefinition = evaporatingPressureDefinition;
             new AbstractVCRCValidator(Refrigerant).ValidateAndThrow(this);
             EvaporatingPressure = Refrigerant.WithState(Input.Temperature(EvaporatingTemperature),
                 Input.Quality(EvaporatingPressureDefinition.VaporQuality())).Pressure;
@@ -63,7 +68,7 @@ namespace VCRC
         /// <summary>
         ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point)
         /// </summary>
-        public TwoPhase EvaporatingPressureDefinition { get; init; } = TwoPhase.Dew;
+        public TwoPhase EvaporatingPressureDefinition { get; }
 
         /// <summary>
         ///     Absolute evaporating pressure (by default, kPa)

@@ -16,10 +16,19 @@ namespace VCRC
         /// <param name="superheat">Superheat in the evaporator</param>
         /// <param name="subcooling">Subcooling in the condenser</param>
         /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor</param>
+        /// <param name="evaporatingPressureDefinition">
+        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point)
+        /// </param>
+        /// <param name="condensingPressureDefinition">
+        ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point)
+        /// </param>
         public SimpleVCRC(FluidsList refrigerantName, Temperature evaporatingTemperature,
             Temperature condensingTemperature, TemperatureDelta superheat, TemperatureDelta subcooling,
-            Ratio isentropicEfficiency) : base(refrigerantName, evaporatingTemperature, condensingTemperature,
-            superheat, subcooling, isentropicEfficiency)
+            Ratio isentropicEfficiency, TwoPhase evaporatingPressureDefinition = TwoPhase.Dew,
+            TwoPhase condensingPressureDefinition = TwoPhase.Bubble) :
+            base(refrigerantName, evaporatingTemperature, condensingTemperature,
+                superheat, subcooling, isentropicEfficiency, evaporatingPressureDefinition,
+                condensingPressureDefinition)
         {
             Point2s = Refrigerant.WithState(Input.Pressure(CondensingPressure), Input.Entropy(Point1.Entropy));
             IsentropicSpecificWork = Point2s.Enthalpy - Point1.Enthalpy;
