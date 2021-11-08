@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
@@ -10,13 +11,13 @@ namespace VCRC.Validators
         {
             RuleFor(vcrc => vcrc.CondensingTemperature).GreaterThan(vcrc => vcrc.EvaporatingTemperature)
                 .WithMessage("Condensing temperature should be greater than evaporating temperature!");
-            RuleFor(vcrc => vcrc.CondensingTemperature).GreaterThan(refrigerant.TripleTemperature)
-                .LessThan(refrigerant.CriticalTemperature)
+            RuleFor(vcrc => vcrc.CondensingTemperature)
+                .ExclusiveBetween(refrigerant.TripleTemperature, refrigerant.CriticalTemperature)
                 .WithMessage(
                     "Condensing temperature should be in " +
-                    $"({refrigerant.TripleTemperature.DegreesCelsius};" +
-                    $"{refrigerant.CriticalTemperature.DegreesCelsius}) °C!");
-            RuleFor(vcrc => vcrc.Subcooling).GreaterThanOrEqualTo(TemperatureDelta.Zero).LessThanOrEqualTo(50.Kelvins())
+                    $"({Math.Round(refrigerant.TripleTemperature.DegreesCelsius, 2)};" +
+                    $"{Math.Round(refrigerant.CriticalTemperature.DegreesCelsius, 2)}) °C!");
+            RuleFor(vcrc => vcrc.Subcooling).InclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())
                 .WithMessage("Subcooling in the condenser should be in [0;50] K!");
         }
     }
