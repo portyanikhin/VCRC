@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using VCRC.Components;
 using VCRC.Extensions;
-using VCRC.Validators;
+using VCRC.Fluids;
 
 namespace VCRC
 {
@@ -15,65 +15,38 @@ namespace VCRC
         /// <summary>
         ///     VCRC base class.
         /// </summary>
-        /// <param name="refrigerantName">Selected refrigerant name.</param>
-        /// <param name="evaporatingTemperature">Evaporating temperature.</param>
-        /// <param name="superheat">Superheat in the evaporator.</param>
-        /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor.</param>
-        /// <param name="evaporatingPressureDefinition">
-        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point).
-        /// </param>
-        protected AbstractVCRC(FluidsList refrigerantName, Temperature evaporatingTemperature,
-            TemperatureDelta superheat, Ratio isentropicEfficiency,
-            TwoPhase evaporatingPressureDefinition = TwoPhase.Dew)
+        /// <param name="compressor">Compressor.</param>
+        /// <param name="evaporator">Evaporator.</param>
+        protected AbstractVCRC(Evaporator evaporator, Compressor compressor)
         {
-            RefrigerantName = refrigerantName;
+            Evaporator = evaporator;
+            Compressor = compressor;
+            RefrigerantName = Evaporator.RefrigerantName;
             Refrigerant = new Refrigerant(RefrigerantName);
-            EvaporatingTemperature = evaporatingTemperature;
-            Superheat = superheat;
-            IsentropicEfficiency = isentropicEfficiency;
-            EvaporatingPressureDefinition = evaporatingPressureDefinition;
-            new AbstractVCRCValidator(Refrigerant).ValidateAndThrow(this);
-            EvaporatingPressure = Refrigerant.WithState(Input.Temperature(EvaporatingTemperature),
-                Input.Quality(EvaporatingPressureDefinition.VaporQuality())).Pressure;
-            Point0 = Refrigerant.WithState(Input.Pressure(EvaporatingPressure),
+            Point0 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
                 Input.Quality(TwoPhase.Dew.VaporQuality()));
-            Point1 = Superheat == TemperatureDelta.Zero
+            Point1 = Evaporator.Superheat == TemperatureDelta.Zero
                 ? Point0.Clone()
-                : Refrigerant.WithState(Input.Pressure(EvaporatingPressure),
-                    Input.Temperature(Point0.Temperature + Superheat));
+                : Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+                    Input.Temperature(Point0.Temperature + Evaporator.Superheat));
         }
+
+        protected Refrigerant Refrigerant { get; }
 
         /// <summary>
         ///     Selected refrigerant name.
         /// </summary>
         public FluidsList RefrigerantName { get; }
 
-        protected Refrigerant Refrigerant { get; }
+        /// <summary>
+        ///     Evaporator as VCRC component.
+        /// </summary>
+        public Evaporator Evaporator { get; }
 
         /// <summary>
-        ///     Evaporating temperature (by default, °C).
+        ///     Compressor as VCRC component.
         /// </summary>
-        public Temperature EvaporatingTemperature { get; }
-
-        /// <summary>
-        ///     Superheat in the evaporator (by default, K).
-        /// </summary>
-        public TemperatureDelta Superheat { get; }
-
-        /// <summary>
-        ///     Isentropic efficiency of the compressor (by default, %).
-        /// </summary>
-        public Ratio IsentropicEfficiency { get; }
-
-        /// <summary>
-        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point).
-        /// </summary>
-        public TwoPhase EvaporatingPressureDefinition { get; }
-
-        /// <summary>
-        ///     Absolute evaporating pressure (by default, kPa).
-        /// </summary>
-        public Pressure EvaporatingPressure { get; }
+        public Compressor Compressor { get; }
 
         /// <summary>
         ///     Point 0 – dew-point on the evaporating isobar.
@@ -84,7 +57,7 @@ namespace VCRC
         ///     Point 1 – evaporator outlet.
         /// </summary>
         public Refrigerant Point1 { get; }
-        
+
         /// <summary>
         ///     Specific work of isentropic compression (by default, kJ/kg).
         /// </summary>
@@ -99,7 +72,7 @@ namespace VCRC
         ///     Specific cooling capacity of the cycle (by default, kJ/kg).
         /// </summary>
         public SpecificEnergy SpecificCoolingCapacity { get; protected init; }
-        
+
         /// <summary>
         ///     Specific heating capacity of the cycle (by default, kJ/kg).
         /// </summary>

@@ -1,4 +1,5 @@
 ﻿using FluentValidation;
+using VCRC.Fluids;
 
 namespace VCRC.Validators
 {

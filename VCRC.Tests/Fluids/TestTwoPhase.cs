@@ -1,7 +1,8 @@
 ﻿using NUnit.Framework;
 using VCRC.Extensions;
+using VCRC.Fluids;
 
-namespace VCRC.Tests
+namespace VCRC.Tests.Fluids
 {
     public static class TestTwoPhase
     {

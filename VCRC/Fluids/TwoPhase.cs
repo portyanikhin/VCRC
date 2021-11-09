@@ -1,6 +1,6 @@
-﻿using VCRC.Attributes;
+﻿using VCRC.Fluids.Attributes;
 
-namespace VCRC
+namespace VCRC.Fluids
 {
     /// <summary>
     ///     Two-phase points.

@@ -1,49 +1,40 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using SharpProp;
 using UnitsNet;
+using VCRC.Components;
 using VCRC.Extensions;
+using VCRC.Fluids;
 
 namespace VCRC
 {
+    /// <summary>
+    ///     Simple single-stage VCRC.
+    /// </summary>
     public class SimpleVCRC : SubcriticalVCRC
     {
         /// <summary>
         ///     Simple single-stage VCRC.
         /// </summary>
-        /// <param name="refrigerantName">Selected refrigerant name.</param>
-        /// <param name="evaporatingTemperature">Evaporating temperature.</param>
-        /// <param name="condensingTemperature">Condensing temperature.</param>
-        /// <param name="superheat">Superheat in the evaporator.</param>
-        /// <param name="subcooling">Subcooling in the condenser.</param>
-        /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor.</param>
-        /// <param name="evaporatingPressureDefinition">
-        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point).
-        /// </param>
-        /// <param name="condensingPressureDefinition">
-        ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point).
-        /// </param>
-        public SimpleVCRC(FluidsList refrigerantName, Temperature evaporatingTemperature,
-            Temperature condensingTemperature, TemperatureDelta superheat, TemperatureDelta subcooling,
-            Ratio isentropicEfficiency, TwoPhase evaporatingPressureDefinition = TwoPhase.Dew,
-            TwoPhase condensingPressureDefinition = TwoPhase.Bubble) :
-            base(refrigerantName, evaporatingTemperature, condensingTemperature,
-                superheat, subcooling, isentropicEfficiency, evaporatingPressureDefinition,
-                condensingPressureDefinition)
+        /// <param name="compressor">Compressor.</param>
+        /// <param name="evaporator">Evaporator.</param>
+        /// <param name="condenser">Condenser.</param>
+        public SimpleVCRC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
+            base(evaporator, compressor, condenser)
         {
-            Point2s = Refrigerant.WithState(Input.Pressure(CondensingPressure), Input.Entropy(Point1.Entropy));
+            Point2s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure), Input.Entropy(Point1.Entropy));
             IsentropicSpecificWork = Point2s.Enthalpy - Point1.Enthalpy;
-            SpecificWork = IsentropicSpecificWork / IsentropicEfficiency.DecimalFractions;
-            Point2 = Refrigerant.WithState(Input.Pressure(CondensingPressure),
+            SpecificWork = IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
+            Point2 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
                 Input.Enthalpy(Point1.Enthalpy + SpecificWork));
-            Point3 = Refrigerant.WithState(Input.Pressure(CondensingPressure),
+            Point3 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
                 Input.Quality(TwoPhase.Dew.VaporQuality()));
-            Point4 = Refrigerant.WithState(Input.Pressure(CondensingPressure),
+            Point4 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
                 Input.Quality(TwoPhase.Bubble.VaporQuality()));
-            Point5 = Subcooling == TemperatureDelta.Zero
+            Point5 = Condenser.Subcooling == TemperatureDelta.Zero
                 ? Point4.Clone()
-                : Refrigerant.WithState(Input.Pressure(CondensingPressure),
-                    Input.Temperature(Point4.Temperature - Subcooling));
-            Point6 = Refrigerant.WithState(Input.Pressure(EvaporatingPressure), Input.Enthalpy(Point5.Enthalpy));
+                : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+                    Input.Temperature(Point4.Temperature - Condenser.Subcooling));
+            Point6 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure), Input.Enthalpy(Point5.Enthalpy));
             SpecificCoolingCapacity = Point1.Enthalpy - Point6.Enthalpy;
             SpecificHeatingCapacity = Point2.Enthalpy - Point5.Enthalpy;
         }
