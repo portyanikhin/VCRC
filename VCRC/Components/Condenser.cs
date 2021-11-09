@@ -22,7 +22,7 @@ namespace VCRC.Components
         ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point).
         /// </param>
         public Condenser(FluidsList refrigerantName, Temperature temperature, TemperatureDelta subcooling,
-            TwoPhase pressureDefinition = TwoPhase.Dew)
+            TwoPhase pressureDefinition = TwoPhase.Bubble)
         {
             RefrigerantName = refrigerantName;
             Refrigerant = new Refrigerant(RefrigerantName);
