@@ -15,8 +15,8 @@ namespace VCRC
         /// <summary>
         ///     Simple single-stage VCRC.
         /// </summary>
-        /// <param name="compressor">Compressor.</param>
         /// <param name="evaporator">Evaporator.</param>
+        /// <param name="compressor">Compressor.</param>
         /// <param name="condenser">Condenser.</param>
         public SimpleVCRC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
             base(evaporator, compressor, condenser)
