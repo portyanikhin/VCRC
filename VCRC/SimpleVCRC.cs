@@ -40,13 +40,13 @@ namespace VCRC
         }
 
         /// <summary>
-        ///     Point 2s – injection from the isentropic compression stage.
+        ///     Point 2s – isentropic compression stage discharge.
         /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public Refrigerant Point2s { get; }
 
         /// <summary>
-        ///     Point 2 – injection from the compression stage / condenser inlet.
+        ///     Point 2 – compression stage discharge / condenser inlet.
         /// </summary>
         public Refrigerant Point2 { get; }
 
