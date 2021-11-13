@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using UnitsNet;
 using VCRC.Validators;
 
@@ -7,7 +8,7 @@ namespace VCRC.Components
     /// <summary>
     ///     Recuperator as VCRC component.
     /// </summary>
-    public class Recuperator
+    public class Recuperator : IEquatable<Recuperator>
     {
         /// <summary>
         ///     Recuperator as VCRC component.
@@ -23,5 +24,20 @@ namespace VCRC.Components
         ///     Superheat in the recuperator.
         /// </summary>
         public TemperatureDelta Superheat { get; }
+
+        public bool Equals(Recuperator? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return GetHashCode() == other.GetHashCode();
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Recuperator);
+
+        public override int GetHashCode() => Superheat.GetHashCode();
+
+        public static bool operator ==(Recuperator? left, Recuperator? right) => Equals(left, right);
+
+        public static bool operator !=(Recuperator? left, Recuperator? right) => !Equals(left, right);
     }
 }

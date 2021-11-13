@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using SharpProp;
 using UnitsNet;
 using VCRC.Extensions;
@@ -10,7 +11,7 @@ namespace VCRC.Components
     /// <summary>
     ///     Condenser as VCRC component.
     /// </summary>
-    public class Condenser
+    public class Condenser : IEquatable<Condenser>
     {
         /// <summary>
         ///     Condenser as VCRC component.
@@ -57,8 +58,24 @@ namespace VCRC.Components
         public TwoPhase PressureDefinition { get; }
 
         /// <summary>
-        ///     Condensing pressure.
+        ///     Absolute condensing pressure.
         /// </summary>
         public Pressure Pressure { get; }
+
+        public bool Equals(Condenser? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return GetHashCode() == other.GetHashCode();
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Condenser);
+
+        public override int GetHashCode() => 
+            HashCode.Combine((int) RefrigerantName, Temperature, Subcooling, (int) PressureDefinition, Pressure);
+
+        public static bool operator ==(Condenser? left, Condenser? right) => Equals(left, right);
+
+        public static bool operator !=(Condenser? left, Condenser? right) => !Equals(left, right);
     }
 }

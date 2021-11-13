@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using SharpProp;
 using UnitsNet;
 using VCRC.Extensions;
@@ -10,7 +11,7 @@ namespace VCRC.Components
     /// <summary>
     ///     Evaporator as VCRC component.
     /// </summary>
-    public class Evaporator
+    public class Evaporator : IEquatable<Evaporator>
     {
         /// <summary>
         ///     Evaporator as VCRC component.
@@ -57,8 +58,24 @@ namespace VCRC.Components
         public TwoPhase PressureDefinition { get; }
 
         /// <summary>
-        ///     Evaporating pressure.
+        ///     Absolute evaporating pressure.
         /// </summary>
         public Pressure Pressure { get; }
+
+        public bool Equals(Evaporator? other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return GetHashCode() == other.GetHashCode();
+        }
+
+        public override bool Equals(object? obj) => Equals(obj as Evaporator);
+
+        public override int GetHashCode() => 
+            HashCode.Combine((int) RefrigerantName, Temperature, Superheat, (int) PressureDefinition, Pressure);
+
+        public static bool operator ==(Evaporator? left, Evaporator? right) => Equals(left, right);
+
+        public static bool operator !=(Evaporator? left, Evaporator? right) => !Equals(left, right);
     }
 }
