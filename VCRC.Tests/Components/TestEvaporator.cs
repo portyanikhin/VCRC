@@ -47,5 +47,23 @@ namespace VCRC.Tests.Components
             evaporator.Pressure.Should().Be(refrigerant.WithState(Input.Temperature(EvaporatingTemperature),
                 Input.Quality(TwoPhase.Bubble.VaporQuality())).Pressure);
         }
+        
+        [Test]
+        public static void TestEquals()
+        {
+            var evaporator = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
+            var sameEvaporator = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
+            var otherEvaporator = new Evaporator(RefrigerantName, EvaporatingTemperature,
+                Superheat - TemperatureDelta.FromKelvins(3));
+            evaporator.Should().Be(evaporator);
+            evaporator.Should().BeSameAs(evaporator);
+            evaporator.Should().Be(sameEvaporator);
+            evaporator.Should().NotBeSameAs(sameEvaporator);
+            evaporator.Should().NotBe(otherEvaporator);
+            evaporator.Should().NotBeNull();
+            evaporator.Equals(new object()).Should().BeFalse();
+            (evaporator == sameEvaporator).Should().Be(evaporator.Equals(sameEvaporator));
+            (evaporator != otherEvaporator).Should().Be(!evaporator.Equals(otherEvaporator));
+        }
     }
 }

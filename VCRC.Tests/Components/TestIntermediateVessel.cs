@@ -29,19 +29,19 @@ namespace VCRC.Tests.Components
         public static void TestEquals()
         {
             var intermediateVessel = new IntermediateVessel(Evaporator, Condenser);
-            var intermediateVesselWithSamePressure = new IntermediateVessel(intermediateVessel.Pressure);
-            var intermediateVesselWithOtherPressure =
-                new IntermediateVessel(intermediateVessel.Pressure + 1.Atmospheres());
-            intermediateVessel.Should().Be(intermediateVesselWithSamePressure);
+            var sameIntermediateVessel = new IntermediateVessel(intermediateVessel.Pressure);
+            var otherIntermediateVessel = new IntermediateVessel(intermediateVessel.Pressure + 1.Atmospheres());
+            intermediateVessel.Should().Be(intermediateVessel);
             intermediateVessel.Should().BeSameAs(intermediateVessel);
-            intermediateVessel.Should().NotBeSameAs(intermediateVesselWithSamePressure);
-            intermediateVessel.Should().NotBe(intermediateVesselWithOtherPressure);
+            intermediateVessel.Should().Be(sameIntermediateVessel);
+            intermediateVessel.Should().NotBeSameAs(sameIntermediateVessel);
+            intermediateVessel.Should().NotBe(otherIntermediateVessel);
             intermediateVessel.Should().NotBeNull();
             intermediateVessel.Equals(new object()).Should().BeFalse();
-            (intermediateVessel == intermediateVesselWithSamePressure).Should()
-                .Be(intermediateVessel.Equals(intermediateVesselWithSamePressure));
-            (intermediateVessel != intermediateVesselWithOtherPressure).Should()
-                .Be(!intermediateVessel.Equals(intermediateVesselWithOtherPressure));
+            (intermediateVessel == sameIntermediateVessel).Should()
+                .Be(intermediateVessel.Equals(sameIntermediateVessel));
+            (intermediateVessel != otherIntermediateVessel).Should()
+                .Be(!intermediateVessel.Equals(otherIntermediateVessel));
         }
     }
 }

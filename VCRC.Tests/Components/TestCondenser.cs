@@ -47,5 +47,23 @@ namespace VCRC.Tests.Components
             condenser.Pressure.Should().Be(refrigerant.WithState(Input.Temperature(CondensingTemperature),
                 Input.Quality(TwoPhase.Dew.VaporQuality())).Pressure);
         }
+        
+        [Test]
+        public static void TestEquals()
+        {
+            var condenser = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
+            var sameCondenser = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
+            var otherCondenser = new Condenser(RefrigerantName, CondensingTemperature,
+                Subcooling + TemperatureDelta.FromKelvins(2));
+            condenser.Should().Be(condenser);
+            condenser.Should().BeSameAs(condenser);
+            condenser.Should().Be(sameCondenser);
+            condenser.Should().NotBeSameAs(sameCondenser);
+            condenser.Should().NotBe(otherCondenser);
+            condenser.Should().NotBeNull();
+            condenser.Equals(new object()).Should().BeFalse();
+            (condenser == sameCondenser).Should().Be(condenser.Equals(sameCondenser));
+            (condenser != otherCondenser).Should().Be(!condenser.Equals(otherCondenser));
+        }
     }
 }
