@@ -47,7 +47,7 @@ namespace VCRC.Tests.Components
             condenser.Pressure.Should().Be(refrigerant.WithState(Input.Temperature(CondensingTemperature),
                 Input.Quality(TwoPhase.Dew.VaporQuality())).Pressure);
         }
-        
+
         [Test]
         public static void TestEquals()
         {

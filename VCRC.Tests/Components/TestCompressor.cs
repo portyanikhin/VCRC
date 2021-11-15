@@ -17,7 +17,7 @@ namespace VCRC.Tests.Components
             action.Should().Throw<ValidationException>()
                 .WithMessage("*Isentropic efficiency of the compressor should be in (0;100) %!*");
         }
-        
+
         [Test]
         public static void TestEquals()
         {

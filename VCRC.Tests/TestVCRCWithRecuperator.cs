@@ -38,7 +38,7 @@ namespace VCRC.Tests
             action.Should().Throw<ValidationException>()
                 .WithMessage("*Wrong temperature difference at recuperator 'hot' side!*");
         }
-        
+
         [Test]
         public void TestWrongTemperatureDifferenceAtRecuperatorColdSide()
         {
@@ -75,12 +75,12 @@ namespace VCRC.Tests
                 new Condenser(Cycle.RefrigerantName, Cycle.Condenser.Temperature, TemperatureDelta.Zero));
             cycleWithZeroSubcooling.Point5.Should().Be(cycleWithZeroSubcooling.Point6);
         }
-        
+
         [Test]
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void TestCompareEERWithSimpleVCRC() => Cycle.EER.Should()
             .BeGreaterThan(new SimpleVCRC(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser).EER);
-        
+
         [Test]
         public void TestPoint0()
         {
@@ -123,7 +123,7 @@ namespace VCRC.Tests
             Cycle.Point4.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point4.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         }
-        
+
         [Test]
         public void TestPoint5()
         {

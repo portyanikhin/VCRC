@@ -113,14 +113,14 @@ namespace VCRC.Tests
             Cycle.Point5.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point5.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         }
-        
+
         [Test]
         public void TestPoint6()
         {
             Cycle.Point6.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point6.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
         }
-        
+
         [Test]
         public void TestPoint7()
         {
@@ -141,14 +141,14 @@ namespace VCRC.Tests
             Cycle.Point9.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
             Cycle.Point9.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         }
-        
+
         [Test]
         public void TestPoint10()
         {
             Cycle.Point10.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
             Cycle.Point10.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
         }
-        
+
         [Test]
         public void TestPoint11()
         {

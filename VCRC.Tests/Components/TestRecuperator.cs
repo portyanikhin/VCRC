@@ -17,7 +17,7 @@ namespace VCRC.Tests.Components
             action.Should().Throw<ValidationException>()
                 .WithMessage("*Superheat in the recuperator should be in [0;50] K!*");
         }
-        
+
         [Test]
         public static void TestEquals()
         {

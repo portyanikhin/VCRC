@@ -47,7 +47,7 @@ namespace VCRC.Tests.Components
             evaporator.Pressure.Should().Be(refrigerant.WithState(Input.Temperature(EvaporatingTemperature),
                 Input.Quality(TwoPhase.Bubble.VaporQuality())).Pressure);
         }
-        
+
         [Test]
         public static void TestEquals()
         {

@@ -15,7 +15,7 @@ namespace VCRC
         /// <param name="compressor">Compressor.</param>
         /// <param name="evaporator">Evaporator.</param>
         /// <param name="condenser">Condenser.</param>
-        protected TwoStageSubcriticalVCRC(Evaporator evaporator, Compressor compressor, Condenser condenser) : 
+        protected TwoStageSubcriticalVCRC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
             base(evaporator, compressor, condenser)
         {
         }

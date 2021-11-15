@@ -28,7 +28,7 @@ namespace VCRC.Components
                 .ToUnit(PressureUnit.Kilopascal);
 
         /// <summary>
-        ///      Absolute intermediate pressure.
+        ///     Absolute intermediate pressure.
         /// </summary>
         public Pressure Pressure { get; }
 

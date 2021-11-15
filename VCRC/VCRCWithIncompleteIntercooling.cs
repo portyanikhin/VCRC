@@ -42,9 +42,9 @@ namespace VCRC
             Point8 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
                 Input.Enthalpy(Point7.Enthalpy));
             new VCRCWithIncompleteIntercoolingValidator().ValidateAndThrow(this);
-            Point9 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure), 
+            Point9 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
                 Input.Quality(TwoPhase.Dew.VaporQuality()));
-            Point10 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure), 
+            Point10 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
                 Input.Quality(TwoPhase.Bubble.VaporQuality()));
             Point11 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure), Input.Enthalpy(Point10.Enthalpy));
             SecondStageSpecificMassFlow =
@@ -70,7 +70,7 @@ namespace VCRC
         ///     Intermediate vessel as VCRC component.
         /// </summary>
         public IntermediateVessel IntermediateVessel { get; }
-        
+
         /// <summary>
         ///     Point 2s – first isentropic compression stage discharge.
         /// </summary>
@@ -92,7 +92,7 @@ namespace VCRC
         /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public Refrigerant Point4s { get; }
-        
+
         /// <summary>
         ///     Point 4 – second compression stage discharge / condenser inlet.
         /// </summary>

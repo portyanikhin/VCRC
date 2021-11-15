@@ -71,7 +71,7 @@ namespace VCRC.Components
 
         public override bool Equals(object? obj) => Equals(obj as Evaporator);
 
-        public override int GetHashCode() => 
+        public override int GetHashCode() =>
             HashCode.Combine((int) RefrigerantName, Temperature, Superheat, (int) PressureDefinition, Pressure);
 
         public static bool operator ==(Evaporator? left, Evaporator? right) => Equals(left, right);
