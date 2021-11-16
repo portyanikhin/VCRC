@@ -15,12 +15,6 @@ namespace VCRC.Tests
 {
     public class TestVCRCWithEconomizer
     {
-        public enum Bound
-        {
-            Lower,
-            Higher
-        }
-        
         private VCRCWithEconomizer Cycle { get; set; } = null!;
         
         [SetUp]

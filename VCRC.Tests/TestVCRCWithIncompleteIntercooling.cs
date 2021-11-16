@@ -16,12 +16,6 @@ namespace VCRC.Tests
 {
     public class TestVCRCWithIncompleteIntercooling
     {
-        public enum Bound
-        {
-            Lower,
-            Higher
-        }
-
         private VCRCWithIncompleteIntercooling Cycle { get; set; } = null!;
 
         [SetUp]
