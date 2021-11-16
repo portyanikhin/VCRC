@@ -13,15 +13,32 @@ namespace VCRC.Components
         /// <summary>
         ///     Economizer as VCRC component.
         /// </summary>
+        /// <param name="pressure">Absolute intermediate pressure.</param>
         /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
         /// <param name="superheat">Superheat in the economizer.</param>
-        public Economizer(TemperatureDelta temperatureDifference, TemperatureDelta superheat) : 
-            base(temperatureDifference)
+        public Economizer(Pressure pressure, TemperatureDelta temperatureDifference, TemperatureDelta superheat) : 
+            base(pressure, temperatureDifference)
         {
             Superheat = superheat;
             new EconomizerValidator().ValidateAndThrow(this);
         }
-        
+
+        /// <summary>
+        ///     Economizer as VCRC component.
+        ///     Note: The intermediate pressure is calculated as the square root of the product
+        ///     of evaporating pressure and condensing pressure.
+        /// </summary>
+        /// <param name="evaporator">Evaporator.</param>
+        /// <param name="condenser">Condenser.</param>
+        /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
+        /// <param name="superheat">Superheat in the economizer.</param>
+        public Economizer(Evaporator evaporator, Condenser condenser, TemperatureDelta temperatureDifference,
+            TemperatureDelta superheat) : base(evaporator, condenser, temperatureDifference)
+        {
+            Superheat = superheat;
+            new EconomizerValidator().ValidateAndThrow(this);
+        }
+
         /// <summary>
         ///     Superheat in the economizer.
         /// </summary>
