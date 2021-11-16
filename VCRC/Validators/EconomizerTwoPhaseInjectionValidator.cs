@@ -10,8 +10,8 @@ namespace VCRC.Validators
         public EconomizerTwoPhaseInjectionValidator()
         {
             RuleFor(economizer => economizer.TemperatureDifference)
-                .InclusiveBetween(TemperatureDelta.Zero, 20.Kelvins())
-                .WithMessage("Temperature difference at the economizer 'cold' side should be in [0;20] K!");
+                .InclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())
+                .WithMessage("Temperature difference at the economizer 'cold' side should be in [0;50] K!");
         }
     }
 }

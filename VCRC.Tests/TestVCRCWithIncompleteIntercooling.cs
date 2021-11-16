@@ -27,15 +27,15 @@ namespace VCRC.Tests
         [SetUp]
         public void SetUp()
         {
-            const FluidsList refrigerantName = FluidsList.R407C;
+            const FluidsList refrigerantName = FluidsList.R32;
             var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
             var compressor = new Compressor(80.Percent());
             var condenser = new Condenser(refrigerantName, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
             Cycle = new VCRCWithIncompleteIntercooling(evaporator, compressor, condenser);
         }
 
-        [TestCase(Bound.Lower, "Intermediate should be > evaporating pressure!")]
-        [TestCase(Bound.Higher, "Intermediate should be < condensing pressure!")]
+        [TestCase(Bound.Lower, "Intermediate pressure should be > evaporating pressure!")]
+        [TestCase(Bound.Higher, "Intermediate pressure should be < condensing pressure!")]
         public void TestWrongIntermediatePressure(Bound bound, string message)
         {
             Action action = () =>

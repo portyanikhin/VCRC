@@ -19,14 +19,14 @@ namespace VCRC.Tests.Components
             new(FluidsList.R32, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
         
         [TestCase(-1)]
-        [TestCase(21)]
+        [TestCase(51)]
         public static void TestWrongTemperatureDifference(double temperatureDifference)
         {
             Action action = () =>
                 _ = new EconomizerTwoPhaseInjection(Evaporator, Condenser,
                     TemperatureDelta.FromKelvins(temperatureDifference));
             action.Should().Throw<ValidationException>()
-                .WithMessage("*Temperature difference at the economizer 'cold' side should be in [0;20] K!*");
+                .WithMessage("*Temperature difference at the economizer 'cold' side should be in [0;50] K!*");
         }
         
         [Test]
