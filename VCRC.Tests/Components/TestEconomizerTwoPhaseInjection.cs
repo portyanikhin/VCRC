@@ -24,15 +24,9 @@ namespace VCRC.Tests.Components
             var economizer = new EconomizerTwoPhaseInjection(5.Kelvins());
             var sameEconomizer = new EconomizerTwoPhaseInjection(5.Kelvins());
             var otherEconomizer = new EconomizerTwoPhaseInjection(10.Kelvins());
-            economizer.Should().Be(economizer);
-            economizer.Should().BeSameAs(economizer);
-            economizer.Should().Be(sameEconomizer);
-            economizer.Should().NotBeSameAs(sameEconomizer);
-            economizer.Should().NotBe(otherEconomizer);
-            economizer.Should().NotBeNull();
-            economizer.Equals(new object()).Should().BeFalse();
-            (economizer == sameEconomizer).Should().Be(economizer.Equals(sameEconomizer));
-            (economizer != otherEconomizer).Should().Be(!economizer.Equals(otherEconomizer));
+            _ = new TestEquals<EconomizerTwoPhaseInjection>(economizer, sameEconomizer, otherEconomizer);
+            (economizer == sameEconomizer).Should().BeTrue();
+            (economizer != otherEconomizer).Should().BeTrue();
         }
     }
 }

@@ -24,15 +24,9 @@ namespace VCRC.Tests.Components
             var compressor = new Compressor(80.Percent());
             var sameCompressor = new Compressor(80.Percent());
             var otherCompressor = new Compressor(70.Percent());
-            compressor.Should().Be(compressor);
-            compressor.Should().BeSameAs(compressor);
-            compressor.Should().Be(sameCompressor);
-            compressor.Should().NotBeSameAs(sameCompressor);
-            compressor.Should().NotBe(otherCompressor);
-            compressor.Should().NotBeNull();
-            compressor.Equals(new object()).Should().BeFalse();
-            (compressor == sameCompressor).Should().Be(compressor.Equals(sameCompressor));
-            (compressor != otherCompressor).Should().Be(!compressor.Equals(otherCompressor));
+            _ = new TestEquals<Compressor>(compressor, sameCompressor, otherCompressor);
+            (compressor == sameCompressor).Should().BeTrue();
+            (compressor != otherCompressor).Should().BeTrue();
         }
     }
 }

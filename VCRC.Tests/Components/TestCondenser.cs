@@ -55,15 +55,9 @@ namespace VCRC.Tests.Components
             var sameCondenser = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
             var otherCondenser = new Condenser(RefrigerantName, CondensingTemperature,
                 Subcooling + TemperatureDelta.FromKelvins(2));
-            condenser.Should().Be(condenser);
-            condenser.Should().BeSameAs(condenser);
-            condenser.Should().Be(sameCondenser);
-            condenser.Should().NotBeSameAs(sameCondenser);
-            condenser.Should().NotBe(otherCondenser);
-            condenser.Should().NotBeNull();
-            condenser.Equals(new object()).Should().BeFalse();
-            (condenser == sameCondenser).Should().Be(condenser.Equals(sameCondenser));
-            (condenser != otherCondenser).Should().Be(!condenser.Equals(otherCondenser));
+            _ = new TestEquals<Condenser>(condenser, sameCondenser, otherCondenser);
+            (condenser == sameCondenser).Should().BeTrue();
+            (condenser != otherCondenser).Should().BeTrue();
         }
     }
 }

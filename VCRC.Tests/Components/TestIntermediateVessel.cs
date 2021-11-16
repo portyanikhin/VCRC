@@ -31,17 +31,9 @@ namespace VCRC.Tests.Components
             var intermediateVessel = new IntermediateVessel(Evaporator, Condenser);
             var sameIntermediateVessel = new IntermediateVessel(intermediateVessel.Pressure);
             var otherIntermediateVessel = new IntermediateVessel(intermediateVessel.Pressure + 1.Atmospheres());
-            intermediateVessel.Should().Be(intermediateVessel);
-            intermediateVessel.Should().BeSameAs(intermediateVessel);
-            intermediateVessel.Should().Be(sameIntermediateVessel);
-            intermediateVessel.Should().NotBeSameAs(sameIntermediateVessel);
-            intermediateVessel.Should().NotBe(otherIntermediateVessel);
-            intermediateVessel.Should().NotBeNull();
-            intermediateVessel.Equals(new object()).Should().BeFalse();
-            (intermediateVessel == sameIntermediateVessel).Should()
-                .Be(intermediateVessel.Equals(sameIntermediateVessel));
-            (intermediateVessel != otherIntermediateVessel).Should()
-                .Be(!intermediateVessel.Equals(otherIntermediateVessel));
+            _ = new TestEquals<IntermediateVessel>(intermediateVessel, sameIntermediateVessel, otherIntermediateVessel);
+            (intermediateVessel == sameIntermediateVessel).Should().BeTrue();
+            (intermediateVessel != otherIntermediateVessel).Should().BeTrue();
         }
     }
 }
