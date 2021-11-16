@@ -20,7 +20,7 @@ namespace VCRC.Tests
         [SetUp]
         public void SetUp()
         {
-            const FluidsList refrigerantName = FluidsList.R32;
+            const FluidsList refrigerantName = FluidsList.R407C;
             var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
             var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
             var compressor = new Compressor(80.Percent());

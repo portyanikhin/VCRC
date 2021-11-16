@@ -5,7 +5,6 @@ using FluentValidation;
 using NUnit.Framework;
 using SharpProp;
 using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC.Components;
@@ -14,16 +13,16 @@ using VCRC.Fluids;
 
 namespace VCRC.Tests
 {
-    public class TestVCRCWithIncompleteIntercooling
+    public class TestVCRCWithEconomizer
     {
         public enum Bound
         {
             Lower,
             Higher
         }
-
-        private VCRCWithIncompleteIntercooling Cycle { get; set; } = null!;
-
+        
+        private VCRCWithEconomizer Cycle { get; set; } = null!;
+        
         [SetUp]
         public void SetUp()
         {
@@ -31,44 +30,61 @@ namespace VCRC.Tests
             var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
             var compressor = new Compressor(80.Percent());
             var condenser = new Condenser(refrigerantName, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-            Cycle = new VCRCWithIncompleteIntercooling(evaporator, compressor, condenser);
+            var economizer = new Economizer(evaporator, condenser, TemperatureDelta.FromKelvins(5),
+                TemperatureDelta.FromKelvins(5));
+            Cycle = new VCRCWithEconomizer(evaporator, compressor, condenser, economizer);
         }
-
+        
         [TestCase(Bound.Lower, "Intermediate pressure should be > evaporating pressure!")]
         [TestCase(Bound.Higher, "Intermediate pressure should be < condensing pressure!")]
         public void TestWrongIntermediatePressure(Bound bound, string message)
         {
             Action action = () =>
-                _ = new VCRCWithIncompleteIntercooling(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                    new IntermediateVessel(bound is Bound.Lower
-                        ? Cycle.Evaporator.Pressure
-                        : Cycle.Condenser.Pressure));
+                _ = new VCRCWithEconomizer(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
+                    new Economizer(bound is Bound.Lower
+                            ? Cycle.Evaporator.Pressure
+                            : Cycle.Condenser.Pressure, 
+                        Cycle.Economizer.TemperatureDifference,
+                        Cycle.Economizer.Superheat));
             action.Should().Throw<ValidationException>().WithMessage($"*{message}*");
         }
 
         [Test]
-        public void TestWrongPhaseAtIntermediateVesselInlet()
+        public void TestWrongEconomizerSuperheat()
         {
             Action action = () =>
-                _ = new VCRCWithIncompleteIntercooling(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                    new IntermediateVessel(Cycle.Condenser.Pressure - 1.Pascals()));
+                _ = new VCRCWithEconomizer(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
+                    new Economizer(Cycle.Economizer.Pressure, Cycle.Economizer.TemperatureDifference,
+                        TemperatureDelta.FromKelvins(50)));
             action.Should().Throw<ValidationException>()
-                .WithMessage("*There should be a two-phase refrigerant at the intermediate vessel inlet!*");
+                .WithMessage("*Wrong temperature difference at economizer 'hot' side!*");
         }
-
+        
+        [Test]
+        public void TestWrongEconomizerTemperatureDifference()
+        {
+            Action action = () =>
+                _ = new VCRCWithEconomizer(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
+                    new Economizer(Cycle.Economizer.Pressure, TemperatureDelta.FromKelvins(50),
+                        Cycle.Economizer.Superheat));
+            action.Should().Throw<ValidationException>()
+                .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
+        }
+        
         [Test]
         public void TestSpecificMassFlows()
         {
             Cycle.FirstStageSpecificMassFlow.Should().Be(100.Percent());
             Cycle.SecondStageSpecificMassFlow.Should()
-                .Be(Cycle.FirstStageSpecificMassFlow / (1 - Cycle.Point8.Quality!.Value.DecimalFractions));
+                .Be(Cycle.FirstStageSpecificMassFlow * (1 + (Cycle.Point7.Enthalpy - Cycle.Point10.Enthalpy) /
+                    (Cycle.Point9.Enthalpy - Cycle.Point8.Enthalpy)));
         }
 
         [Test]
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void TestPoint2s()
         {
-            Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+            Cycle.Point2s.Pressure.Should().Be(Cycle.Economizer.Pressure);
             Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
             Cycle.Point2s.Phase.Should().Be(Phases.Gas);
         }
@@ -76,7 +92,7 @@ namespace VCRC.Tests
         [Test]
         public void TestPoint2()
         {
-            Cycle.Point2.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+            Cycle.Point2.Pressure.Should().Be(Cycle.Economizer.Pressure);
             Cycle.Point2.Enthalpy.Should().Be(Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
                 Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
             Cycle.Point2.Phase.Should().Be(Phases.Gas);
@@ -85,7 +101,7 @@ namespace VCRC.Tests
         [Test]
         public void TestPoint3()
         {
-            Cycle.Point3.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+            Cycle.Point3.Pressure.Should().Be(Cycle.Economizer.Pressure);
             Cycle.Point3.Enthalpy.Should().Be(
                 (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
                  (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow).DecimalFractions *
@@ -139,7 +155,7 @@ namespace VCRC.Tests
         [Test]
         public void TestPoint8()
         {
-            Cycle.Point8.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+            Cycle.Point8.Pressure.Should().Be(Cycle.Economizer.Pressure);
             Cycle.Point8.Enthalpy.Should().Be(Cycle.Point7.Enthalpy);
             Cycle.Point8.Phase.Should().Be(Phases.TwoPhase);
         }
@@ -147,17 +163,19 @@ namespace VCRC.Tests
         [Test]
         public void TestPoint9()
         {
-            Cycle.Point9.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
-            Cycle.Point9.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
-            Cycle.Point9.Phase.Should().Be(Phases.TwoPhase);
+            Cycle.Point9.Pressure.Should().Be(Cycle.Economizer.Pressure);
+            Cycle.Point9.Temperature.Should()
+                .Be(Cycle.Point9.WithState(Input.Pressure(Cycle.Economizer.Pressure),
+                    Input.Quality(TwoPhase.Dew.VaporQuality())).Temperature + Cycle.Economizer.Superheat);
+            Cycle.Point9.Phase.Should().Be(Phases.Gas);
         }
 
         [Test]
         public void TestPoint10()
         {
-            Cycle.Point10.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
-            Cycle.Point10.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
-            Cycle.Point10.Phase.Should().Be(Phases.TwoPhase);
+            Cycle.Point10.Pressure.Should().Be(Cycle.Condenser.Pressure);
+            Cycle.Point10.Temperature.Should().Be(Cycle.Point8.Temperature + Cycle.Economizer.TemperatureDifference);
+            Cycle.Point10.Phase.Should().Be(Phases.Liquid);
         }
 
         [Test]
