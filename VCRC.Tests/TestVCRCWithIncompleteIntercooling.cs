@@ -70,6 +70,7 @@ namespace VCRC.Tests
         {
             Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
             Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
+            Cycle.Point2s.Phase.Should().Be(Phases.Gas);
         }
 
         [Test]
@@ -78,6 +79,7 @@ namespace VCRC.Tests
             Cycle.Point2.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
             Cycle.Point2.Enthalpy.Should().Be(Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
                 Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+            Cycle.Point2.Phase.Should().Be(Phases.Gas);
         }
 
         [Test]
@@ -88,6 +90,7 @@ namespace VCRC.Tests
                 (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
                  (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow).DecimalFractions *
                  Cycle.Point9.Enthalpy) / Cycle.SecondStageSpecificMassFlow.DecimalFractions);
+            Cycle.Point3.Phase.Should().Be(Phases.Gas);
         }
 
         [Test]
@@ -96,6 +99,7 @@ namespace VCRC.Tests
         {
             Cycle.Point4s.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point4s.Entropy.Should().Be(Cycle.Point3.Entropy);
+            Cycle.Point4s.Phase.Should().Be(Phases.Gas);
         }
 
         [Test]
@@ -105,6 +109,7 @@ namespace VCRC.Tests
             Cycle.Point4.Enthalpy.Should().Be(Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
                 Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
             Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
+            Cycle.Point4.Phase.Should().Be(Phases.Gas);
         }
 
         [Test]
@@ -112,6 +117,7 @@ namespace VCRC.Tests
         {
             Cycle.Point5.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point5.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
+            Cycle.Point5.Phase.Should().Be(Phases.TwoPhase);
         }
 
         [Test]
@@ -119,6 +125,7 @@ namespace VCRC.Tests
         {
             Cycle.Point6.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point6.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
+            Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
         }
 
         [Test]
@@ -126,6 +133,7 @@ namespace VCRC.Tests
         {
             Cycle.Point7.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point7.Temperature.Should().Be(Cycle.Point6.Temperature - Cycle.Condenser.Subcooling);
+            Cycle.Point7.Phase.Should().Be(Phases.Liquid);
         }
 
         [Test]
@@ -133,6 +141,7 @@ namespace VCRC.Tests
         {
             Cycle.Point8.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
             Cycle.Point8.Enthalpy.Should().Be(Cycle.Point7.Enthalpy);
+            Cycle.Point8.Phase.Should().Be(Phases.TwoPhase);
         }
 
         [Test]
@@ -140,6 +149,7 @@ namespace VCRC.Tests
         {
             Cycle.Point9.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
             Cycle.Point9.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
+            Cycle.Point9.Phase.Should().Be(Phases.TwoPhase);
         }
 
         [Test]
@@ -147,6 +157,7 @@ namespace VCRC.Tests
         {
             Cycle.Point10.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
             Cycle.Point10.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
+            Cycle.Point10.Phase.Should().Be(Phases.TwoPhase);
         }
 
         [Test]
@@ -154,6 +165,7 @@ namespace VCRC.Tests
         {
             Cycle.Point11.Pressure.Should().Be(Cycle.Evaporator.Pressure);
             Cycle.Point11.Enthalpy.Should().Be(Cycle.Point10.Enthalpy);
+            Cycle.Point11.Phase.Should().Be(Phases.TwoPhase);
         }
     }
 }
