@@ -8,7 +8,7 @@ namespace VCRC.Components
     /// <summary>
     ///     Economizer as VCRC component.
     /// </summary>
-    public class Economizer : EconomizerTwoPhaseInjection, IEquatable<Economizer>
+    public class Economizer : EconomizerTPI, IEquatable<Economizer>
     {
         /// <summary>
         ///     Economizer as VCRC component.

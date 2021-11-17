@@ -10,7 +10,7 @@ using VCRC.Components;
 
 namespace VCRC.Tests.Components
 {
-    public static class TestEconomizerTwoPhaseInjection
+    public static class TestEconomizerTPI
     {
         private static readonly Evaporator Evaporator =
             new(FluidsList.R32, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
@@ -23,7 +23,7 @@ namespace VCRC.Tests.Components
         public static void TestWrongTemperatureDifference(double temperatureDifference)
         {
             Action action = () =>
-                _ = new EconomizerTwoPhaseInjection(Evaporator, Condenser,
+                _ = new EconomizerTPI(Evaporator, Condenser,
                     TemperatureDelta.FromKelvins(temperatureDifference));
             action.Should().Throw<ValidationException>()
                 .WithMessage("*Temperature difference at the economizer 'cold' side should be in [0;50] K!*");
@@ -32,7 +32,7 @@ namespace VCRC.Tests.Components
         [Test]
         public static void TestIntermediatePressure()
         {
-            var economizer = new EconomizerTwoPhaseInjection(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
+            var economizer = new EconomizerTPI(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
             economizer.Pressure.Pascals.Should()
                 .Be(Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
         }
@@ -40,13 +40,13 @@ namespace VCRC.Tests.Components
         [Test]
         public static void TestEquals()
         {
-            var economizer = new EconomizerTwoPhaseInjection(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
+            var economizer = new EconomizerTPI(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
             var sameEconomizer =
-                new EconomizerTwoPhaseInjection(economizer.Pressure, TemperatureDelta.FromKelvins(5));
+                new EconomizerTPI(economizer.Pressure, TemperatureDelta.FromKelvins(5));
             var otherEconomizer =
-                new EconomizerTwoPhaseInjection(economizer.Pressure + 1.Atmospheres(),
+                new EconomizerTPI(economizer.Pressure + 1.Atmospheres(),
                     TemperatureDelta.FromKelvins(10));
-            _ = new TestEquals<EconomizerTwoPhaseInjection>(economizer, sameEconomizer, otherEconomizer);
+            _ = new TestEquals<EconomizerTPI>(economizer, sameEconomizer, otherEconomizer);
             (economizer == sameEconomizer).Should().BeTrue();
             (economizer != otherEconomizer).Should().BeTrue();
         }

@@ -5,9 +5,9 @@ using VCRC.Components;
 
 namespace VCRC.Validators
 {
-    public class EconomizerTwoPhaseInjectionValidator : AbstractValidator<EconomizerTwoPhaseInjection>
+    public class EconomizerTPIValidator : AbstractValidator<EconomizerTPI>
     {
-        public EconomizerTwoPhaseInjectionValidator()
+        public EconomizerTPIValidator()
         {
             RuleFor(economizer => economizer.TemperatureDifference)
                 .InclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())
