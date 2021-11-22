@@ -6,18 +6,18 @@ using UnitsNet.Units;
 namespace VCRC.Components
 {
     /// <summary>
-    ///     Intermediate vessel as VCRC component.
+    ///     Intermediate vessel as a VCRC component.
     /// </summary>
     public class IntermediateVessel : IEquatable<IntermediateVessel>
     {
         /// <summary>
-        ///     Intermediate vessel as VCRC component.
+        ///     Intermediate vessel as a VCRC component.
         /// </summary>
         /// <param name="pressure">Absolute intermediate pressure.</param>
         public IntermediateVessel(Pressure pressure) => Pressure = pressure;
 
         /// <summary>
-        ///     Intermediate vessel as VCRC component.
+        ///     Intermediate vessel as a VCRC component.
         ///     Note: The intermediate pressure is calculated as the square root of the product
         ///     of evaporating pressure and condensing pressure.
         /// </summary>

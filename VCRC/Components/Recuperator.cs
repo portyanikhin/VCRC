@@ -6,12 +6,12 @@ using VCRC.Validators;
 namespace VCRC.Components
 {
     /// <summary>
-    ///     Recuperator as VCRC component.
+    ///     Recuperator as a VCRC component.
     /// </summary>
     public class Recuperator : IEquatable<Recuperator>
     {
         /// <summary>
-        ///     Recuperator as VCRC component.
+        ///     Recuperator as a VCRC component.
         /// </summary>
         /// <param name="superheat">Superheat in the recuperator.</param>
         public Recuperator(TemperatureDelta superheat)

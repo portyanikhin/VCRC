@@ -39,12 +39,12 @@ namespace VCRC
         public FluidsList RefrigerantName { get; }
 
         /// <summary>
-        ///     Evaporator as VCRC component.
+        ///     Evaporator as a VCRC component.
         /// </summary>
         public Evaporator Evaporator { get; }
 
         /// <summary>
-        ///     Compressor as VCRC component.
+        ///     Compressor as a VCRC component.
         /// </summary>
         public Compressor Compressor { get; }
 

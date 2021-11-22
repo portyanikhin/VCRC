@@ -6,12 +6,12 @@ using VCRC.Validators;
 namespace VCRC.Components
 {
     /// <summary>
-    ///     Economizer as VCRC component.
+    ///     Economizer as a VCRC component.
     /// </summary>
     public class Economizer : EconomizerTPI, IEquatable<Economizer>
     {
         /// <summary>
-        ///     Economizer as VCRC component.
+        ///     Economizer as a VCRC component.
         /// </summary>
         /// <param name="pressure">Absolute intermediate pressure.</param>
         /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>

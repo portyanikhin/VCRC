@@ -67,7 +67,7 @@ namespace VCRC
         }
 
         /// <summary>
-        ///     Intermediate vessel as VCRC component.
+        ///     Intermediate vessel as a VCRC component.
         /// </summary>
         public IntermediateVessel IntermediateVessel { get; }
 

@@ -70,7 +70,7 @@ namespace VCRC
         }
 
         /// <summary>
-        ///     Economizer as VCRC component.
+        ///     Economizer as a VCRC component.
         /// </summary>
         public Economizer Economizer { get; }
         

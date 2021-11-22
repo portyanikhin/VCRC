@@ -23,7 +23,7 @@ namespace VCRC
         }
 
         /// <summary>
-        ///     Condenser as VCRC component.
+        ///     Condenser as a VCRC component.
         /// </summary>
         public Condenser Condenser { get; }
     }

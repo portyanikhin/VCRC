@@ -9,12 +9,12 @@ using VCRC.Validators;
 namespace VCRC.Components
 {
     /// <summary>
-    ///     Condenser as VCRC component.
+    ///     Condenser as a VCRC component.
     /// </summary>
     public class Condenser : IEquatable<Condenser>
     {
         /// <summary>
-        ///     Condenser as VCRC component.
+        ///     Condenser as a VCRC component.
         /// </summary>
         /// <param name="refrigerantName">Selected refrigerant name.</param>
         /// <param name="temperature">Condensing temperature.</param>

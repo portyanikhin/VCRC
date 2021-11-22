@@ -8,12 +8,12 @@ using VCRC.Validators;
 namespace VCRC.Components
 {
     /// <summary>
-    ///     Economizer as component of VCRC with two-phase injection to the compressor.
+    ///     Economizer as a component of VCRC with two-phase injection to the compressor.
     /// </summary>
     public class EconomizerTPI : IEquatable<EconomizerTPI>
     {
         /// <summary>
-        ///     Economizer as component of VCRC with two-phase injection to the compressor.
+        ///     Economizer as a component of VCRC with two-phase injection to the compressor.
         /// </summary>
         /// <param name="pressure">Absolute intermediate pressure.</param>
         /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
@@ -25,7 +25,7 @@ namespace VCRC.Components
         }
         
         /// <summary>
-        ///     Economizer as component of VCRC with two-phase injection.
+        ///     Economizer as a component of VCRC with two-phase injection.
         ///     Note: The intermediate pressure is calculated as the square root of the product
         ///     of evaporating pressure and condensing pressure.
         /// </summary>

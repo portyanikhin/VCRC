@@ -9,12 +9,12 @@ using VCRC.Validators;
 namespace VCRC.Components
 {
     /// <summary>
-    ///     Evaporator as VCRC component.
+    ///     Evaporator as a VCRC component.
     /// </summary>
     public class Evaporator : IEquatable<Evaporator>
     {
         /// <summary>
-        ///     Evaporator as VCRC component.
+        ///     Evaporator as a VCRC component.
         /// </summary>
         /// <param name="refrigerantName">Selected refrigerant name.</param>
         /// <param name="temperature">Evaporating temperature.</param>

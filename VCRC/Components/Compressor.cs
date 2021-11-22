@@ -6,12 +6,12 @@ using VCRC.Validators;
 namespace VCRC.Components
 {
     /// <summary>
-    ///     Compressor as VCRC component.
+    ///     Compressor as a VCRC component.
     /// </summary>
     public class Compressor : IEquatable<Compressor>
     {
         /// <summary>
-        ///     Compressor as VCRC component.
+        ///     Compressor as a VCRC component.
         /// </summary>
         /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor.</param>
         public Compressor(Ratio isentropicEfficiency)

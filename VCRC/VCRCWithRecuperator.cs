@@ -51,7 +51,7 @@ namespace VCRC
         }
 
         /// <summary>
-        ///     Recuperator as VCRC component.
+        ///     Recuperator as a VCRC component.
         /// </summary>
         public Recuperator Recuperator { get; }
 
