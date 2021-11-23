@@ -14,6 +14,9 @@ namespace VCRC.Components
         ///     Compressor as a VCRC component.
         /// </summary>
         /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor.</param>
+        /// <exception cref="ValidationException">
+        ///     Isentropic efficiency of the compressor should be in (0;100) %!
+        /// </exception>
         public Compressor(Ratio isentropicEfficiency)
         {
             IsentropicEfficiency = isentropicEfficiency;

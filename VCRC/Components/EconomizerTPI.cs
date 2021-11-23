@@ -17,6 +17,9 @@ namespace VCRC.Components
         /// </summary>
         /// <param name="pressure">Absolute intermediate pressure.</param>
         /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
+        /// <exception cref="ValidationException">
+        ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
+        /// </exception>
         public EconomizerTPI(Pressure pressure, TemperatureDelta temperatureDifference)
         {
             Pressure = pressure;
@@ -32,6 +35,9 @@ namespace VCRC.Components
         /// <param name="evaporator">Evaporator.</param>
         /// <param name="condenser">Condenser.</param>
         /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
+        /// <exception cref="ValidationException">
+        ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
+        /// </exception>
         public EconomizerTPI(Evaporator evaporator, Condenser condenser,
             TemperatureDelta temperatureDifference) : this(Math
             .Sqrt(evaporator.Pressure.Pascals * condenser.Pressure.Pascals).Pascals()

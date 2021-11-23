@@ -22,6 +22,19 @@ namespace VCRC
         /// <param name="compressor">Compressor.</param>
         /// <param name="condenser">Condenser.</param>
         /// <param name="intermediateVessel">Intermediate vessel.</param>
+        /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+        /// <exception cref="ValidationException">
+        ///     Condensing temperature should be greater than evaporating temperature!
+        /// </exception>
+        /// <exception cref="ValidationException">
+        ///     Intermediate pressure should be greater than evaporating pressure!
+        /// </exception>
+        /// <exception cref="ValidationException">
+        ///     Intermediate pressure should be less than condensing pressure!
+        /// </exception>
+        /// <exception cref="ValidationException">
+        ///     There should be a two-phase refrigerant at the intermediate vessel inlet!
+        /// </exception>
         public VCRCWithIncompleteIntercooling(Evaporator evaporator, Compressor compressor, Condenser condenser,
             IntermediateVessel? intermediateVessel = null) : base(evaporator, compressor, condenser)
         {

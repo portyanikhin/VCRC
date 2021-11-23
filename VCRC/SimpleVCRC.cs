@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
+using FluentValidation;
 using SharpProp;
 using UnitsNet;
 using VCRC.Components;
@@ -18,6 +19,10 @@ namespace VCRC
         /// <param name="evaporator">Evaporator.</param>
         /// <param name="compressor">Compressor.</param>
         /// <param name="condenser">Condenser.</param>
+        /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+        /// <exception cref="ValidationException">
+        ///     Condensing temperature should be greater than evaporating temperature!
+        /// </exception>
         public SimpleVCRC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
             base(evaporator, compressor, condenser)
         {

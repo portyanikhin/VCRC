@@ -29,8 +29,8 @@ namespace VCRC.Tests
             Cycle = new VCRCWithEconomizer(evaporator, compressor, condenser, economizer);
         }
         
-        [TestCase(Bound.Lower, "Intermediate pressure should be > evaporating pressure!")]
-        [TestCase(Bound.Higher, "Intermediate pressure should be < condensing pressure!")]
+        [TestCase(Bound.Lower, "Intermediate pressure should be greater than evaporating pressure!")]
+        [TestCase(Bound.Higher, "Intermediate pressure should be less than condensing pressure!")]
         public void TestWrongIntermediatePressure(Bound bound, string message)
         {
             Action action = () =>

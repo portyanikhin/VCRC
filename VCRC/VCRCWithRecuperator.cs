@@ -21,6 +21,12 @@ namespace VCRC
         /// <param name="recuperator">Recuperator.</param>
         /// <param name="compressor">Compressor.</param>
         /// <param name="condenser">Condenser.</param>
+        /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+        /// <exception cref="ValidationException">
+        ///     Condensing temperature should be greater than evaporating temperature!
+        /// </exception>
+        /// <exception cref="ValidationException">Wrong temperature difference at recuperator 'hot' side!</exception>
+        /// <exception cref="ValidationException">Wrong temperature difference at recuperator 'cold' side!</exception>
         public VCRCWithRecuperator(Evaporator evaporator, Recuperator recuperator, Compressor compressor,
             Condenser condenser) : base(evaporator, compressor, condenser)
         {

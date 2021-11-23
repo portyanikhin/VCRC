@@ -22,6 +22,10 @@ namespace VCRC.Components
         /// <param name="pressureDefinition">
         ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point).
         /// </param>
+        /// <exception cref="ValidationException">
+        ///     Condensing temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
+        /// </exception>
+        /// <exception cref="ValidationException">Subcooling in the condenser should be in [0;50] K!</exception>
         public Condenser(FluidsList refrigerantName, Temperature temperature, TemperatureDelta subcooling,
             TwoPhase pressureDefinition = TwoPhase.Bubble)
         {

@@ -14,6 +14,7 @@ namespace VCRC.Components
         ///     Recuperator as a VCRC component.
         /// </summary>
         /// <param name="superheat">Superheat in the recuperator.</param>
+        /// <exception cref="ValidationException">Superheat in the recuperator should be in [0;50] K!</exception>
         public Recuperator(TemperatureDelta superheat)
         {
             Superheat = superheat;

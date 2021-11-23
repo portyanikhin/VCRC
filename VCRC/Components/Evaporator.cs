@@ -22,6 +22,10 @@ namespace VCRC.Components
         /// <param name="pressureDefinition">
         ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point).
         /// </param>
+        /// <exception cref="ValidationException">
+        ///     Evaporating temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
+        /// </exception>
+        /// <exception cref="ValidationException">Superheat in the evaporator should be in [0;50] K!</exception>
         public Evaporator(FluidsList refrigerantName, Temperature temperature, TemperatureDelta superheat,
             TwoPhase pressureDefinition = TwoPhase.Dew)
         {

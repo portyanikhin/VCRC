@@ -89,10 +89,5 @@ namespace VCRC
         /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public double COP => SpecificHeatingCapacity / SpecificWork;
-
-        // /// <summary>
-        // ///     Degree of thermodynamic perfection of the cycle (by default, %).
-        // /// </summary>
-        // public Ratio ThermodynamicPerfection { get; protected init; }
     }
 }
