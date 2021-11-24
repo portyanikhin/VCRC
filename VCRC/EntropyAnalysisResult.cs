@@ -28,8 +28,13 @@ namespace VCRC
     ///     Minimum required specific work to compensate for entropy production in the recuperator
     ///     (its percentage of the total specific work) (by default, %).
     /// </param>
+    /// <param name="MixingEnergyLossRatio">
+    ///     Minimum required specific work to compensate for entropy production during the mixing of flows
+    ///     (its percentage of the total specific work) (by default, %).
+    /// </param>
     /// <param name="AnalysisRelativeError">Entropy analysis relative error (by default, %).</param>
     public record EntropyAnalysisResult(Ratio ThermodynamicPerfection, Ratio MinSpecificWorkRatio,
         Ratio CompressorEnergyLossRatio, Ratio CondenserEnergyLossRatio, Ratio ExpansionValvesEnergyLossRatio,
-        Ratio EvaporatorEnergyLossRatio, Ratio RecuperatorEnergyLossRatio, Ratio AnalysisRelativeError);
+        Ratio EvaporatorEnergyLossRatio, Ratio RecuperatorEnergyLossRatio, Ratio MixingEnergyLossRatio,
+        Ratio AnalysisRelativeError);
 }

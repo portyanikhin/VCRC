@@ -20,7 +20,7 @@ namespace VCRC.Tests
         [SetUp]
         public void SetUp()
         {
-            const FluidsList refrigerantName = FluidsList.R407C;
+            const FluidsList refrigerantName = FluidsList.R32;
             var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
             var compressor = new Compressor(80.Percent());
             var condenser = new Condenser(refrigerantName, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
@@ -93,7 +93,7 @@ namespace VCRC.Tests
         {
             Cycle.Point2s.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
-            Cycle.Point2s.Phase.Should().Be(Phases.Gas);
+            Cycle.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace VCRC.Tests
         {
             Cycle.Point2.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point2.Enthalpy.Should().Be(Cycle.Point1.Enthalpy + Cycle.SpecificWork);
-            Cycle.Point2.Phase.Should().Be(Phases.Gas);
+            Cycle.Point2.Phase.Should().Be(Phases.SupercriticalGas);
         }
 
         [Test]
@@ -150,8 +150,8 @@ namespace VCRC.Tests
         public void TestCOP() => Cycle.COP.Should().Be(Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
 
         [TestCase(20, 20, "Indoor and outdoor temperatures should not be equal!")]
-        [TestCase(13, 35, "Wrong temperature difference in the evaporator! Increase 'cold' source temperature.")]
-        [TestCase(18, 47, "Wrong temperature difference in the condenser! Decrease 'hot' source temperature.")]
+        [TestCase(5, 35, "Wrong temperature difference in the evaporator! Increase 'cold' source temperature.")]
+        [TestCase(20, 50, "Wrong temperature difference in the condenser! Decrease 'hot' source temperature.")]
         public void TestEntropyAnalysisWrongTemperatures(double indoor, double outdoor, string message)
         {
             IEntropyAnalysable vcrc = Cycle;
@@ -164,13 +164,14 @@ namespace VCRC.Tests
         {
             var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
             const double tolerance = 1e-10;
-            result.ThermodynamicPerfection.Percent.Should().BeApproximately(19.37172248331848, tolerance);
+            result.ThermodynamicPerfection.Percent.Should().BeApproximately(21.600152157280235, tolerance);
             result.CompressorEnergyLossRatio.Percent.Should().Be(20);
-            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(23.878145068356034, tolerance);
-            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(16.62395242443183, tolerance);
-            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(20.12618002389366, tolerance);
+            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(26.551093605669124, tolerance);
+            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(13.789884357670854, tolerance);
+            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(18.058869879379788, tolerance);
             result.RecuperatorEnergyLossRatio.Percent.Should().Be(0);
-            result.AnalysisRelativeError.Percent.Should().BeApproximately(0, tolerance);
+            result.MixingEnergyLossRatio.Percent.Should().Be(0);
+            result.AnalysisRelativeError.Percent.Should().BeApproximately(5.576481066223869e-14, tolerance);
         }
     }
 }

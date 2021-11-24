@@ -113,7 +113,7 @@ namespace VCRC
                                       IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
             return new EntropyAnalysisResult(thermodynamicEfficiency, minSpecificWorkRatio, compressorEnergyLossRatio,
                 condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero,
-                analysisRelativeError);
+                Ratio.Zero, analysisRelativeError);
         }
     }
 }

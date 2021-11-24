@@ -20,7 +20,7 @@ namespace VCRC.Tests
         [SetUp]
         public void SetUp()
         {
-            const FluidsList refrigerantName = FluidsList.R407C;
+            const FluidsList refrigerantName = FluidsList.R32;
             var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
             var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
             var compressor = new Compressor(80.Percent());
@@ -77,11 +77,6 @@ namespace VCRC.Tests
         }
 
         [Test]
-        [SuppressMessage("ReSharper", "InconsistentNaming")]
-        public void TestCompareEERWithSimpleVCRC() => Cycle.EER.Should()
-            .BeGreaterThan(new SimpleVCRC(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser).EER);
-
-        [Test]
         public void TestPoint0()
         {
             Cycle.Point0.Pressure.Should().Be(Cycle.Evaporator.Pressure);
@@ -111,7 +106,7 @@ namespace VCRC.Tests
         {
             Cycle.Point3s.Pressure.Should().Be(Cycle.Condenser.Pressure);
             Cycle.Point3s.Entropy.Should().Be(Cycle.Point2.Entropy);
-            Cycle.Point3s.Phase.Should().Be(Phases.Gas);
+            Cycle.Point3s.Phase.Should().Be(Phases.SupercriticalGas);
         }
 
         [Test]
@@ -168,13 +163,14 @@ namespace VCRC.Tests
         {
             var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
             const double tolerance = 1e-10;
-            result.ThermodynamicPerfection.Percent.Should().BeApproximately(19.43403097091125, tolerance);
+            result.ThermodynamicPerfection.Percent.Should().BeApproximately(21.45824801978035, tolerance);
             result.CompressorEnergyLossRatio.Percent.Should().Be(20);
-            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(24.753130936807782, tolerance);
-            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(14.55793946732476, tolerance);
-            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(20.20634389878006, tolerance);
-            result.RecuperatorEnergyLossRatio.Percent.Should().BeApproximately(1.0485547261761545, tolerance);
-            result.AnalysisRelativeError.Percent.Should().BeApproximately(1.3579385351878003e-13, tolerance);
+            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(27.58536859968224, tolerance);
+            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(12.110197168311025, tolerance);
+            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(17.946008453548735, tolerance);
+            result.RecuperatorEnergyLossRatio.Percent.Should().BeApproximately(0.9001777586776314, tolerance);
+            result.MixingEnergyLossRatio.Percent.Should().Be(0);
+            result.AnalysisRelativeError.Percent.Should().BeApproximately(1.3514576635545213e-14, tolerance);
         }
     }
 }
