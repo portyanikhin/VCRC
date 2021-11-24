@@ -88,8 +88,8 @@ namespace VCRC
                 Point2s.Enthalpy - Point3.Enthalpy -
                 (hotSource.Kelvins * (Point2s.Entropy - Point3.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
             var condenserCondensingRegionEnergyLoss =
-                hotSource.Kelvins * (1.0 / hotSource.Kelvins - 1.0 / Condenser.Temperature.Kelvins) *
-                (Point3.Enthalpy - Point4.Enthalpy);
+                Point3.Enthalpy - Point4.Enthalpy -
+                (hotSource.Kelvins * (Point3.Entropy - Point4.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
             var condenserSubcoolingRegionEnergyLoss =
                 Point4.Enthalpy - Point5.Enthalpy -
                 (hotSource.Kelvins * (Point4.Entropy - Point5.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
@@ -99,8 +99,9 @@ namespace VCRC
             var expansionValvesEnergyLoss =
                 (hotSource.Kelvins * (Point6.Entropy - Point5.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
             var evaporatorEvaporatingRegionEnergyLoss = 
-                hotSource.Kelvins * (1.0 / Evaporator.Temperature.Kelvins - 1.0 / coldSource.Kelvins) *
-                (Point0.Enthalpy - Point6.Enthalpy);
+                (hotSource.Kelvins * ((Point0.Entropy - Point6.Entropy).JoulesPerKilogramKelvin -
+                                      (Point0.Enthalpy - Point6.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
+                .JoulesPerKilogram();
             var evaporatorSuperheatRegionEnergyLoss =
                 (hotSource.Kelvins * ((Point1.Entropy - Point0.Entropy).JoulesPerKilogramKelvin -
                                       (Point1.Enthalpy - Point0.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
