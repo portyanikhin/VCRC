@@ -111,33 +111,18 @@ namespace VCRC
             var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
             var thermodynamicEfficiency = Ratio
                 .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
-            var condenserSuperheatRegionEnergyLoss =
-                Point3s.Enthalpy - Point4.Enthalpy -
-                (hotSource.Kelvins * (Point3s.Entropy - Point4.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
-            var condenserCondensingRegionEnergyLoss =
-                Point4.Enthalpy - Point5.Enthalpy -
-                (hotSource.Kelvins * (Point4.Entropy - Point5.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
-            var condenserSubcoolingRegionEnergyLoss =
-                Point5.Enthalpy - Point6.Enthalpy -
-                (hotSource.Kelvins * (Point5.Entropy - Point6.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
             var condenserEnergyLoss =
-                condenserSuperheatRegionEnergyLoss + condenserCondensingRegionEnergyLoss + 
-                condenserSubcoolingRegionEnergyLoss;
+                Point3s.Enthalpy - Point6.Enthalpy -
+                (hotSource.Kelvins * (Point3s.Entropy - Point6.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
             var recuperatorEnergyLoss =
                 (hotSource.Kelvins * ((Point2.Entropy - Point1.Entropy) - (Point6.Entropy - Point7.Entropy))
                     .JoulesPerKilogramKelvin).JoulesPerKilogram();
             var expansionValvesEnergyLoss =
                 (hotSource.Kelvins * (Point8.Entropy - Point7.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
-            var evaporatorEvaporatingRegionEnergyLoss = 
-                (hotSource.Kelvins * ((Point0.Entropy - Point8.Entropy).JoulesPerKilogramKelvin -
-                                      (Point0.Enthalpy - Point8.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
-                .JoulesPerKilogram();
-            var evaporatorSuperheatRegionEnergyLoss =
-                (hotSource.Kelvins * ((Point1.Entropy - Point0.Entropy).JoulesPerKilogramKelvin -
-                                      (Point1.Enthalpy - Point0.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
-                .JoulesPerKilogram();
             var evaporatorEnergyLoss =
-                evaporatorEvaporatingRegionEnergyLoss + evaporatorSuperheatRegionEnergyLoss;
+                (hotSource.Kelvins * ((Point1.Entropy - Point8.Entropy).JoulesPerKilogramKelvin -
+                                      (Point1.Enthalpy - Point8.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
+                .JoulesPerKilogram();
             var calculatedIsentropicSpecificWork =
                 minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
                 recuperatorEnergyLoss;
