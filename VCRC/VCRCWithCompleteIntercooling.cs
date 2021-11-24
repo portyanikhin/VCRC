@@ -77,28 +77,28 @@ namespace VCRC
             SpecificHeatingCapacity =
                 SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point7.Enthalpy);
         }
-        
+
         /// <summary>
         ///     Intermediate vessel as a VCRC component.
         /// </summary>
         public IntermediateVessel IntermediateVessel { get; }
-        
+
         /// <summary>
         ///     Point 2s – first isentropic compression stage discharge.
         /// </summary>
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public Refrigerant Point2s { get; }
-        
+
         /// <summary>
         ///     Point 2 – first compression stage discharge.
         /// </summary>
         public Refrigerant Point2 { get; }
-        
+
         /// <summary>
         ///     Point 3 – intermediate vessel vapor outlet / second compression stage suction.
         /// </summary>
         public Refrigerant Point3 { get; }
-        
+
         /// <summary>
         ///     Point 4s – second isentropic compression stage discharge.
         /// </summary>
@@ -124,12 +124,12 @@ namespace VCRC
         ///     Point 7 – condenser outlet / first expansion valve inlet.
         /// </summary>
         public Refrigerant Point7 { get; }
-        
+
         /// <summary>
         ///     Point 8 – first expansion valve outlet / intermediate vessel inlet.
         /// </summary>
         public Refrigerant Point8 { get; }
-        
+
         /// <summary>
         ///     Point 9 – intermediate vessel liquid outlet / second expansion valve inlet.
         /// </summary>

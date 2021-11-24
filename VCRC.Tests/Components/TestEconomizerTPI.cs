@@ -17,7 +17,7 @@ namespace VCRC.Tests.Components
 
         private static readonly Condenser Condenser =
             new(FluidsList.R32, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-        
+
         [TestCase(-1)]
         [TestCase(51)]
         public static void TestWrongTemperatureDifference(double temperatureDifference)
@@ -28,7 +28,7 @@ namespace VCRC.Tests.Components
             action.Should().Throw<ValidationException>()
                 .WithMessage("*Temperature difference at the economizer 'cold' side should be in [0;50] K!*");
         }
-        
+
         [Test]
         public static void TestIntermediatePressure()
         {
@@ -36,7 +36,7 @@ namespace VCRC.Tests.Components
             economizer.Pressure.Pascals.Should()
                 .Be(Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
         }
-        
+
         [Test]
         public static void TestEquals()
         {

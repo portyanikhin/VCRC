@@ -52,7 +52,7 @@ namespace VCRC
                     Input.Temperature(Point6.Temperature - Condenser.Subcooling));
             Point8 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
                 Input.Enthalpy(Point7.Enthalpy));
-            var dewPointAtIntermediatePressure = 
+            var dewPointAtIntermediatePressure =
                 Refrigerant.WithState(Input.Pressure(Economizer.Pressure), Input.Quality(TwoPhase.Dew.VaporQuality()));
             Point9 = Economizer.Superheat == TemperatureDelta.Zero
                 ? dewPointAtIntermediatePressure
@@ -63,7 +63,8 @@ namespace VCRC
             new VCRCWithEconomizerValidator().ValidateAndThrow(this);
             Point11 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure), Input.Enthalpy(Point10.Enthalpy));
             SecondStageSpecificMassFlow = FirstStageSpecificMassFlow *
-                (1 + (Point7.Enthalpy - Point10.Enthalpy) / (Point9.Enthalpy - Point8.Enthalpy));
+                                          (1 + (Point7.Enthalpy - Point10.Enthalpy) /
+                                              (Point9.Enthalpy - Point8.Enthalpy));
             Point3 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
                 Input.Enthalpy((FirstStageSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
                                 (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
@@ -85,7 +86,7 @@ namespace VCRC
         ///     Economizer as a VCRC component.
         /// </summary>
         public Economizer Economizer { get; }
-        
+
         /// <summary>
         ///     Point 2s – first isentropic compression stage discharge.
         /// </summary>
@@ -129,13 +130,13 @@ namespace VCRC
         ///     inlet of the main stream into the economizer ("hot" inlet).
         /// </summary>
         public Refrigerant Point7 { get; }
-        
+
         /// <summary>
         ///     Point 8 – outlet from the expansion valve of the injection circuit /
         ///     inlet of the injected stream into the economizer ("cold" inlet).
         /// </summary>
         public Refrigerant Point8 { get; }
-        
+
         /// <summary>
         ///     Point 9 – outlet of the injected stream from the economizer ("cold" outlet) /
         ///     injection of cooled vapor into the compressor.

@@ -76,7 +76,7 @@ namespace VCRC
         ///     Point 6 – expansion valve outlet / evaporator inlet.
         /// </summary>
         public Refrigerant Point6 { get; }
-        
+
         public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
         {
             var (coldSource, hotSource) =
@@ -93,9 +93,9 @@ namespace VCRC
                 (hotSource.Kelvins * ((Point1.Entropy - Point6.Entropy).JoulesPerKilogramKelvin -
                                       (Point1.Enthalpy - Point6.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
                 .JoulesPerKilogram();
-            var calculatedIsentropicSpecificWork = 
+            var calculatedIsentropicSpecificWork =
                 minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss;
-            var compressorEnergyLoss = 
+            var compressorEnergyLoss =
                 calculatedIsentropicSpecificWork * (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
             var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;
             var minSpecificWorkRatio = Ratio
@@ -112,7 +112,7 @@ namespace VCRC
                 .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
                                       IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
             return new EntropyAnalysisResult(thermodynamicEfficiency, minSpecificWorkRatio, compressorEnergyLossRatio,
-                condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero, 
+                condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero,
                 analysisRelativeError);
         }
     }

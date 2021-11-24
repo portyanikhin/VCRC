@@ -20,7 +20,7 @@ namespace VCRC.Components
         ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
         /// </exception>
         /// <exception cref="ValidationException">Superheat in the economizer should be in [0;50] K!</exception>
-        public Economizer(Pressure pressure, TemperatureDelta temperatureDifference, TemperatureDelta superheat) : 
+        public Economizer(Pressure pressure, TemperatureDelta temperatureDifference, TemperatureDelta superheat) :
             base(pressure, temperatureDifference)
         {
             Superheat = superheat;

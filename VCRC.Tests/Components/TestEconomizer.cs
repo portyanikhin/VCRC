@@ -16,7 +16,7 @@ namespace VCRC.Tests.Components
 
         private static readonly Condenser Condenser =
             new(FluidsList.R32, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-        
+
         [TestCase(-1)]
         [TestCase(51)]
         public static void TestWrongSuperheat(double superheat)
@@ -31,11 +31,11 @@ namespace VCRC.Tests.Components
         [Test]
         public static void TestEquals()
         {
-            var economizer = 
+            var economizer =
                 new Economizer(Evaporator, Condenser, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(8));
-            var sameEconomizer = 
+            var sameEconomizer =
                 new Economizer(economizer.Pressure, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(8));
-            var otherEconomizer = 
+            var otherEconomizer =
                 new Economizer(economizer.Pressure, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
             _ = new TestEquals<Economizer>(economizer, sameEconomizer, otherEconomizer);
             (economizer == sameEconomizer).Should().BeTrue();

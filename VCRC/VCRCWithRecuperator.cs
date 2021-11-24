@@ -115,7 +115,7 @@ namespace VCRC
                 Point3s.Enthalpy - Point6.Enthalpy -
                 (hotSource.Kelvins * (Point3s.Entropy - Point6.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
             var recuperatorEnergyLoss =
-                (hotSource.Kelvins * ((Point2.Entropy - Point1.Entropy) - (Point6.Entropy - Point7.Entropy))
+                (hotSource.Kelvins * (Point2.Entropy - Point1.Entropy - (Point6.Entropy - Point7.Entropy))
                     .JoulesPerKilogramKelvin).JoulesPerKilogram();
             var expansionValvesEnergyLoss =
                 (hotSource.Kelvins * (Point8.Entropy - Point7.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
@@ -126,7 +126,7 @@ namespace VCRC
             var calculatedIsentropicSpecificWork =
                 minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
                 recuperatorEnergyLoss;
-            var compressorEnergyLoss = 
+            var compressorEnergyLoss =
                 calculatedIsentropicSpecificWork * (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
             var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;
             var minSpecificWorkRatio = Ratio
@@ -145,7 +145,7 @@ namespace VCRC
                 .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
                                       IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
             return new EntropyAnalysisResult(thermodynamicEfficiency, minSpecificWorkRatio, compressorEnergyLossRatio,
-                condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, 
+                condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio,
                 recuperatorEnergyLossRatio, analysisRelativeError);
         }
     }

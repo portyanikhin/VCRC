@@ -16,7 +16,7 @@ namespace VCRC.Tests
     public class TestVCRCWithEconomizer
     {
         private VCRCWithEconomizer Cycle { get; set; } = null!;
-        
+
         [SetUp]
         public void SetUp()
         {
@@ -28,7 +28,7 @@ namespace VCRC.Tests
                 TemperatureDelta.FromKelvins(5));
             Cycle = new VCRCWithEconomizer(evaporator, compressor, condenser, economizer);
         }
-        
+
         [TestCase(Bound.Lower, "Intermediate pressure should be greater than evaporating pressure!")]
         [TestCase(Bound.Higher, "Intermediate pressure should be less than condensing pressure!")]
         public void TestWrongIntermediatePressure(Bound bound, string message)
@@ -37,7 +37,7 @@ namespace VCRC.Tests
                 _ = new VCRCWithEconomizer(Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
                     new Economizer(bound is Bound.Lower
                             ? Cycle.Evaporator.Pressure
-                            : Cycle.Condenser.Pressure, 
+                            : Cycle.Condenser.Pressure,
                         Cycle.Economizer.TemperatureDifference,
                         Cycle.Economizer.Superheat));
             action.Should().Throw<ValidationException>().WithMessage($"*{message}*");
@@ -53,7 +53,7 @@ namespace VCRC.Tests
             action.Should().Throw<ValidationException>()
                 .WithMessage("*Wrong temperature difference at economizer 'hot' side!*");
         }
-        
+
         [Test]
         public void TestWrongEconomizerTemperatureDifference()
         {
@@ -64,7 +64,7 @@ namespace VCRC.Tests
             action.Should().Throw<ValidationException>()
                 .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
         }
-        
+
         [Test]
         public void TestSpecificMassFlows()
         {

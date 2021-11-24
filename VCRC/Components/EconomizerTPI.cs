@@ -26,7 +26,7 @@ namespace VCRC.Components
             TemperatureDifference = temperatureDifference;
             new EconomizerTPIValidator().ValidateAndThrow(this);
         }
-        
+
         /// <summary>
         ///     Economizer as a component of VCRC with two-phase injection.
         ///     Note: The intermediate pressure is calculated as the square root of the product

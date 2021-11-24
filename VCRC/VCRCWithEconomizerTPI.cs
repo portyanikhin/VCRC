@@ -86,12 +86,12 @@ namespace VCRC
             SpecificHeatingCapacity =
                 SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point7.Enthalpy);
         }
-        
+
         /// <summary>
         ///     Economizer as a VCRC component.
         /// </summary>
         public EconomizerTPI Economizer { get; }
-        
+
         /// <summary>
         ///     Point 2s – first isentropic compression stage discharge.
         /// </summary>
@@ -135,13 +135,13 @@ namespace VCRC
         ///     inlet of the main stream into the economizer ("hot" inlet).
         /// </summary>
         public Refrigerant Point7 { get; }
-        
+
         /// <summary>
         ///     Point 8 – outlet from the expansion valve of the injection circuit /
         ///     inlet of the injected stream into the economizer ("cold" inlet).
         /// </summary>
         public Refrigerant Point8 { get; }
-        
+
         /// <summary>
         ///     Point 9 – outlet of the injected stream from the economizer ("cold" outlet) /
         ///     injection of two-phase refrigerant into the compressor.

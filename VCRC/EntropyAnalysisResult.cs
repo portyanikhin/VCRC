@@ -30,6 +30,6 @@ namespace VCRC
     /// </param>
     /// <param name="AnalysisRelativeError">Entropy analysis relative error (by default, %).</param>
     public record EntropyAnalysisResult(Ratio ThermodynamicPerfection, Ratio MinSpecificWorkRatio,
-        Ratio CompressorEnergyLossRatio, Ratio CondenserEnergyLossRatio, Ratio ExpansionValvesEnergyLossRatio, 
+        Ratio CompressorEnergyLossRatio, Ratio CondenserEnergyLossRatio, Ratio ExpansionValvesEnergyLossRatio,
         Ratio EvaporatorEnergyLossRatio, Ratio RecuperatorEnergyLossRatio, Ratio AnalysisRelativeError);
 }
