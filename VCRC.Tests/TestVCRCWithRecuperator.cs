@@ -167,13 +167,13 @@ namespace VCRC.Tests
         public void TestEntropyAnalysis()
         {
             var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
-            result.ThermodynamicPerfection.Percent.Should().Be(19.43403097091125);
-            result.CompressorEnergyLossRatio.Percent.Should().Be(20);
-            result.CondenserEnergyLossRatio.Percent.Should().Be(24.753130936807782);
-            result.ExpansionValvesEnergyLossRatio.Percent.Should().Be(14.55793946732476);
-            result.EvaporatorEnergyLossRatio.Percent.Should().Be(20.20634389878006);
-            result.RecuperatorEnergyLossRatio.Percent.Should().Be(1.0485547261761545);
-            result.AnalysisRelativeError.Percent.Should().Be(1.3579385351878003e-13);
+            result.ThermodynamicPerfection.Should().Be(19.43403097091125.Percent());
+            result.CompressorEnergyLossRatio.Should().Be(20.Percent());
+            result.CondenserEnergyLossRatio.Should().Be(24.753130936807782.Percent());
+            result.ExpansionValvesEnergyLossRatio.Should().Be(14.55793946732476.Percent());
+            result.EvaporatorEnergyLossRatio.Should().Be(20.20634389878006.Percent());
+            result.RecuperatorEnergyLossRatio.Should().Be(1.0485547261761545.Percent());
+            result.AnalysisRelativeError.Should().Be(1.3579385351878003e-13.Percent());
         }
     }
 }
