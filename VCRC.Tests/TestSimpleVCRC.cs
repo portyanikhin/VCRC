@@ -168,6 +168,7 @@ namespace VCRC.Tests
             result.CondenserEnergyLossRatio.Should().Be(23.87814506835601.Percent());
             result.ExpansionValvesEnergyLossRatio.Should().Be(16.623952424431838.Percent());
             result.EvaporatorEnergyLossRatio.Should().Be(20.12618002389366.Percent());
+            result.RecuperatorEnergyLossRatio.Should().Be(Ratio.Zero);
             result.AnalysisRelativeError.Should().Be(7.984075402616695e-14.Percent());
         }
     }
