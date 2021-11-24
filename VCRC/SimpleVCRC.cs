@@ -2,6 +2,8 @@
 using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
+using UnitsNet.Units;
 using VCRC.Components;
 using VCRC.Extensions;
 using VCRC.Fluids;
@@ -11,7 +13,7 @@ namespace VCRC
     /// <summary>
     ///     Simple single-stage VCRC.
     /// </summary>
-    public class SimpleVCRC : SubcriticalVCRC
+    public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
     {
         /// <summary>
         ///     Simple single-stage VCRC.
@@ -74,5 +76,58 @@ namespace VCRC
         ///     Point 6 – expansion valve outlet / evaporator inlet.
         /// </summary>
         public Refrigerant Point6 { get; }
+        
+        public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
+        {
+            var (coldSource, hotSource) =
+                IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point5.Temperature);
+            var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
+            var thermodynamicEfficiency = Ratio
+                .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
+            var condenserSuperheatRegionEnergyLoss =
+                Point2s.Enthalpy - Point3.Enthalpy -
+                (hotSource.Kelvins * (Point2s.Entropy - Point3.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
+            var condenserCondensingRegionEnergyLoss =
+                hotSource.Kelvins * (1.0 / hotSource.Kelvins - 1.0 / Condenser.Temperature.Kelvins) *
+                (Point3.Enthalpy - Point4.Enthalpy);
+            var condenserSubcoolingRegionEnergyLoss =
+                Point4.Enthalpy - Point5.Enthalpy -
+                (hotSource.Kelvins * (Point4.Entropy - Point5.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
+            var condenserEnergyLoss =
+                condenserSuperheatRegionEnergyLoss + condenserCondensingRegionEnergyLoss + 
+                condenserSubcoolingRegionEnergyLoss;
+            var expansionValvesEnergyLoss =
+                (hotSource.Kelvins * (Point6.Entropy - Point5.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
+            var evaporatorEvaporatingRegionEnergyLoss = 
+                hotSource.Kelvins * (1.0 / Evaporator.Temperature.Kelvins - 1.0 / coldSource.Kelvins) *
+                (Point0.Enthalpy - Point6.Enthalpy);
+            var evaporatorSuperheatRegionEnergyLoss =
+                (hotSource.Kelvins * ((Point1.Entropy - Point0.Entropy).JoulesPerKilogramKelvin -
+                                      (Point1.Enthalpy - Point0.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
+                .JoulesPerKilogram();
+            var evaporatorEnergyLoss =
+                evaporatorEvaporatingRegionEnergyLoss + evaporatorSuperheatRegionEnergyLoss;
+            var calculatedIsentropicSpecificWork = 
+                minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss;
+            var compressorEnergyLoss = 
+                calculatedIsentropicSpecificWork * (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
+            var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;
+            var minSpecificWorkRatio = Ratio
+                .FromDecimalFractions(minSpecificWork / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+            var condenserEnergyLossRatio = Ratio
+                .FromDecimalFractions(condenserEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+            var expansionValvesEnergyLossRatio = Ratio
+                .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+            var evaporatorEnergyLossRatio = Ratio
+                .FromDecimalFractions(evaporatorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+            var compressorEnergyLossRatio = Ratio
+                .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+            var analysisRelativeError = Ratio
+                .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
+                                      IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
+            return new EntropyAnalysisResult(thermodynamicEfficiency, minSpecificWorkRatio, compressorEnergyLossRatio,
+                condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio,
+                analysisRelativeError);
+        }
     }
 }
