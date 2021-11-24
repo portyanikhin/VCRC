@@ -148,5 +148,27 @@ namespace VCRC.Tests
         [Test]
         [SuppressMessage("ReSharper", "InconsistentNaming")]
         public void TestCOP() => Cycle.COP.Should().Be(Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
+
+        [TestCase(20, 20, "Indoor and outdoor temperatures should not be equal!")]
+        [TestCase(13, 35, "Wrong temperature difference in the evaporator! Increase 'cold' source temperature.")]
+        [TestCase(18, 47, "Wrong temperature difference in the condenser! Decrease 'hot' source temperature.")]
+        public void TestEntropyAnalysisWrongTemperatures(double indoor, double outdoor, string message)
+        {
+            IEntropyAnalysable vcrc = Cycle;
+            Action action = () => vcrc.EntropyAnalysis(indoor.DegreesCelsius(), outdoor.DegreesCelsius());
+            action.Should().Throw<ArgumentException>().WithMessage(message);
+        }
+
+        [Test]
+        public void TestEntropyAnalysis()
+        {
+            var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
+            result.ThermodynamicPerfection.Should().Be(19.37172248331848.Percent());
+            result.CompressorEnergyLossRatio.Should().Be(20.Percent());
+            result.CondenserEnergyLossRatio.Should().Be(23.87814506835601.Percent());
+            result.ExpansionValvesEnergyLossRatio.Should().Be(16.623952424431838.Percent());
+            result.EvaporatorEnergyLossRatio.Should().Be(20.12618002389366.Percent());
+            result.AnalysisRelativeError.Should().Be(7.984075402616695e-14.Percent());
+        }
     }
 }
