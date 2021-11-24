@@ -167,13 +167,14 @@ namespace VCRC.Tests
         public void TestEntropyAnalysis()
         {
             var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
-            result.ThermodynamicPerfection.Should().Be(19.43403097091125.Percent());
-            result.CompressorEnergyLossRatio.Should().Be(20.Percent());
-            result.CondenserEnergyLossRatio.Should().Be(24.753130936807782.Percent());
-            result.ExpansionValvesEnergyLossRatio.Should().Be(14.55793946732476.Percent());
-            result.EvaporatorEnergyLossRatio.Should().Be(20.20634389878006.Percent());
-            result.RecuperatorEnergyLossRatio.Should().Be(1.0485547261761545.Percent());
-            result.AnalysisRelativeError.Should().Be(1.3579385351878003e-13.Percent());
+            const double tolerance = 1e-10;
+            result.ThermodynamicPerfection.Percent.Should().BeApproximately(19.43403097091125, tolerance);
+            result.CompressorEnergyLossRatio.Percent.Should().Be(20);
+            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(24.753130936807782, tolerance);
+            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(14.55793946732476, tolerance);
+            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(20.20634389878006, tolerance);
+            result.RecuperatorEnergyLossRatio.Percent.Should().BeApproximately(1.0485547261761545, tolerance);
+            result.AnalysisRelativeError.Percent.Should().BeApproximately(1.3579385351878003e-13, tolerance);
         }
     }
 }
