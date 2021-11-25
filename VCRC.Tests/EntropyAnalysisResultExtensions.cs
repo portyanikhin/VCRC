@@ -11,6 +11,7 @@ namespace VCRC.Tests
                result.ExpansionValvesEnergyLossRatio +
                result.EvaporatorEnergyLossRatio +
                result.RecuperatorEnergyLossRatio +
+               result.EconomizerEnergyLossRatio +
                result.MixingEnergyLossRatio;
     }
 }

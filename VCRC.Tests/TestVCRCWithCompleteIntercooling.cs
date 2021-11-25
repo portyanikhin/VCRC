@@ -164,6 +164,7 @@ namespace VCRC.Tests
             result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(9.58555508992268, tolerance);
             result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(19.84896115474834, tolerance);
             result.RecuperatorEnergyLossRatio.Percent.Should().Be(0);
+            result.EconomizerEnergyLossRatio.Percent.Should().Be(0);
             result.MixingEnergyLossRatio.Percent.Should().BeApproximately(2.659320731346461, tolerance);
             result.AnalysisRelativeError.Percent.Should().BeApproximately(0.6115549807830497, tolerance);
             result.Sum().Percent.Should().BeApproximately(100, tolerance);
