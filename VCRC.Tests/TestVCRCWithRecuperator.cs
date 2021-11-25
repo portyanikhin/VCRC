@@ -164,7 +164,7 @@ namespace VCRC.Tests
             var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
             const double tolerance = 1e-10;
             result.ThermodynamicPerfection.Percent.Should().BeApproximately(21.45824801978035, tolerance);
-            result.CompressorEnergyLossRatio.Percent.Should().Be(20);
+            result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
             result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(27.58536859968224, tolerance);
             result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(12.110197168311025, tolerance);
             result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(17.946008453548735, tolerance);
