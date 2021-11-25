@@ -150,7 +150,7 @@ namespace VCRC
         public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
         {
             var (coldSource, hotSource) =
-                IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point5.Temperature);
+                IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point7.Temperature);
             var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
             var thermodynamicEfficiency = Ratio
                 .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
@@ -169,12 +169,12 @@ namespace VCRC
                                                           .DecimalFractions * Point9.Entropy)).JoulesPerKilogramKelvin)
                 .JoulesPerKilogram();
             var evaporatorEnergyLoss =
-                (hotSource.Kelvins * (FirstStageSpecificMassFlow.DecimalFractions *
-                                      (Point1.Entropy - Point11.Entropy).JoulesPerKilogramKelvin -
-                                      (Point1.Enthalpy - Point11.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
-                .JoulesPerKilogram();
+                (FirstStageSpecificMassFlow.DecimalFractions * hotSource.Kelvins *
+                 ((Point1.Entropy - Point11.Entropy).JoulesPerKilogramKelvin -
+                  (Point1.Enthalpy - Point11.Enthalpy).JoulesPerKilogram / coldSource.Kelvins)).JoulesPerKilogram();
             var calculatedIsentropicSpecificWork =
-                minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss;
+                minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
+                mixingEnergyLoss;
             var compressorEnergyLoss =
                 calculatedIsentropicSpecificWork * (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
             var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;

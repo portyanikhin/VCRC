@@ -169,12 +169,12 @@ namespace VCRC.Tests
             const double tolerance = 1e-10;
             result.ThermodynamicPerfection.Percent.Should().BeApproximately(23.25684783482117, tolerance);
             result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
-            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(28.65913318372626, tolerance);
-            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(8.624655602131682, tolerance);
-            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(19.472764387004897, tolerance);
+            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(28.505574901004188, tolerance);
+            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(8.578443900792276, tolerance);
+            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(19.36842751680193, tolerance);
             result.RecuperatorEnergyLossRatio.Percent.Should().Be(0);
-            result.MixingEnergyLossRatio.Percent.Should().BeApproximately(0.4309564939640019, tolerance);
-            result.AnalysisRelativeError.Percent.Should().BeApproximately(0.05765499318431198, tolerance);
+            result.MixingEnergyLossRatio.Percent.Should().BeApproximately(0.42864738926370294, tolerance);
+            result.AnalysisRelativeError.Percent.Should().BeApproximately(0.5966611955608466, tolerance);
         }
     }
 }
