@@ -158,7 +158,7 @@ namespace VCRC
 
         public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
         {
-             var (coldSource, hotSource) =
+            var (coldSource, hotSource) =
                 IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point7.Temperature);
             var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
             var thermodynamicEfficiency = Ratio
@@ -189,7 +189,7 @@ namespace VCRC
                                                           .DecimalFractions * Point9.Entropy)).JoulesPerKilogramKelvin)
                 .JoulesPerKilogram();
             var calculatedIsentropicSpecificWork =
-                minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss + 
+                minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
                 economizerEnergyLoss + mixingEnergyLoss;
             var compressorEnergyLoss =
                 calculatedIsentropicSpecificWork * (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);

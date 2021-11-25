@@ -152,7 +152,7 @@ namespace VCRC.Tests
             Cycle.Point10.Enthalpy.Should().Be(Cycle.Point9.Enthalpy);
             Cycle.Point10.Phase.Should().Be(Phases.TwoPhase);
         }
-        
+
         [Test]
         public void TestEntropyAnalysis()
         {
