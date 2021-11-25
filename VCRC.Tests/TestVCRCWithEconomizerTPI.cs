@@ -168,5 +168,22 @@ namespace VCRC.Tests
             Cycle.Point11.Enthalpy.Should().Be(Cycle.Point10.Enthalpy);
             Cycle.Point11.Phase.Should().Be(Phases.TwoPhase);
         }
+
+        [Test]
+        public void TestEntropyAnalysis()
+        {
+            var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
+            const double tolerance = 1e-10;
+            result.ThermodynamicPerfection.Percent.Should().BeApproximately(23.441185685821615, tolerance);
+            result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
+            result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(23.88799133086776, tolerance);
+            result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(8.407988297423403, tolerance);
+            result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(19.50967120382623, tolerance);
+            result.RecuperatorEnergyLossRatio.Percent.Should().Be(0);
+            result.EconomizerEnergyLossRatio.Percent.Should().BeApproximately(2.1947355143709237, tolerance);
+            result.MixingEnergyLossRatio.Percent.Should().BeApproximately(2.7032669402766745, tolerance);
+            result.AnalysisRelativeError.Percent.Should().BeApproximately(0.6217239740182666, tolerance);
+            result.Sum().Percent.Should().BeApproximately(100, tolerance);
+        }
     }
 }
