@@ -1,15 +1,17 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <IsPackable>false</IsPackable>
-        <Title>VCRC.Tests</Title>
         <Authors>Vladimir Portyanikhin</Authors>
-        <Copyright>Copyright (c) 2021 Vladimir Portyanikhin</Copyright>
+        <Copyright>Copyright (c) Vladimir Portyanikhin 2021</Copyright>
         <Description>Unit tests for the VCRC</Description>
+        <IsPackable>false</IsPackable>
+        <Nullable>enable</Nullable>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
+        <PackageVersion>1.0.0</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
+        <TargetFramework>net5.0</TargetFramework>
+        <Title>VCRC.Tests</Title>
     </PropertyGroup>
 
     <ItemGroup>

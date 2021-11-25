@@ -1,15 +1,29 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <TargetFramework>net5.0</TargetFramework>
-        <Nullable>enable</Nullable>
-        <Title>VCRC</Title>
         <Authors>Vladimir Portyanikhin</Authors>
-        <Copyright>Copyright (c) 2021 Vladimir Portyanikhin</Copyright>
+        <Copyright>Copyright (c) Vladimir Portyanikhin 2021</Copyright>
         <Description>Vapor-compression refrigeration cycles analysis tool</Description>
+        <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <NoWarn>$(NoWarn);1591</NoWarn>
+        <Nullable>enable</Nullable>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReleaseNotes>First release.</PackageReleaseNotes>
+        <PackageTags>vapor compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
+        <PackageVersion>1.0.0</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
+        <Summary>Vapor-compression refrigeration cycles analysis tool</Summary>
+        <TargetFramework>net5.0</TargetFramework>
+        <Title>VCRC</Title>
     </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+    </ItemGroup>
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="10.3.4"/>
