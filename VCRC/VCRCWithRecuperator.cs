@@ -114,15 +114,15 @@ namespace VCRC
             var condenserEnergyLoss =
                 Point3s.Enthalpy - Point6.Enthalpy -
                 (hotSource.Kelvins * (Point3s.Entropy - Point6.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
-            var recuperatorEnergyLoss =
-                (hotSource.Kelvins * (Point2.Entropy - Point1.Entropy - (Point6.Entropy - Point7.Entropy))
-                    .JoulesPerKilogramKelvin).JoulesPerKilogram();
             var expansionValvesEnergyLoss =
                 (hotSource.Kelvins * (Point8.Entropy - Point7.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
             var evaporatorEnergyLoss =
                 (hotSource.Kelvins * ((Point1.Entropy - Point8.Entropy).JoulesPerKilogramKelvin -
                                       (Point1.Enthalpy - Point8.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
                 .JoulesPerKilogram();
+            var recuperatorEnergyLoss =
+                (hotSource.Kelvins * (Point2.Entropy - Point1.Entropy - (Point6.Entropy - Point7.Entropy))
+                    .JoulesPerKilogramKelvin).JoulesPerKilogram();
             var calculatedIsentropicSpecificWork =
                 minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
                 recuperatorEnergyLoss;
@@ -131,14 +131,14 @@ namespace VCRC
             var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;
             var minSpecificWorkRatio = Ratio
                 .FromDecimalFractions(minSpecificWork / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+            var compressorEnergyLossRatio = Ratio
+                .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var condenserEnergyLossRatio = Ratio
                 .FromDecimalFractions(condenserEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var expansionValvesEnergyLossRatio = Ratio
                 .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var evaporatorEnergyLossRatio = Ratio
                 .FromDecimalFractions(evaporatorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
-            var compressorEnergyLossRatio = Ratio
-                .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var recuperatorEnergyLossRatio = Ratio
                 .FromDecimalFractions(recuperatorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var analysisRelativeError = Ratio

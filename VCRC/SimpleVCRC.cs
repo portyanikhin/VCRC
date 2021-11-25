@@ -100,14 +100,14 @@ namespace VCRC
             var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;
             var minSpecificWorkRatio = Ratio
                 .FromDecimalFractions(minSpecificWork / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+            var compressorEnergyLossRatio = Ratio
+                .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var condenserEnergyLossRatio = Ratio
                 .FromDecimalFractions(condenserEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var expansionValvesEnergyLossRatio = Ratio
                 .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var evaporatorEnergyLossRatio = Ratio
                 .FromDecimalFractions(evaporatorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
-            var compressorEnergyLossRatio = Ratio
-                .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
             var analysisRelativeError = Ratio
                 .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
                                       IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
