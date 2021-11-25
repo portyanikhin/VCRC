@@ -175,6 +175,7 @@ namespace VCRC.Tests
             result.RecuperatorEnergyLossRatio.Percent.Should().Be(0);
             result.MixingEnergyLossRatio.Percent.Should().BeApproximately(0.42864738926370294, tolerance);
             result.AnalysisRelativeError.Percent.Should().BeApproximately(0.5966611955608466, tolerance);
+            result.Sum().Percent.Should().BeApproximately(100, tolerance);
         }
     }
 }
