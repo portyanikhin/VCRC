@@ -9,8 +9,6 @@
 
 Cross-platform vapor-compression refrigeration cycles analysis tool.
 
-* * *
-
 ## Overview
 - [Unit safety](#unit-safety)
 - [VCRC components](#vcrc-components)
@@ -30,16 +28,12 @@ Cross-platform vapor-compression refrigeration cycles analysis tool.
   - [Two-stage VCRC with economizer and two-phase injection to the compressor](#two-stage-vcrc-with-economizer-and-two-phase-injection-to-the-compressor)
 - [Entropy analysis](#entropy-analysis)
 
-* * *
-
 ## Unit safety
 
 All calculations are **_unit safe_** (thanks to [UnitsNet](https://github.com/angularsen/UnitsNet)).
 This allows you to avoid errors associated with incorrect dimensions of quantities,
 and will help you save a lot of time on their search and elimination.
 In addition, you will be able to convert all values to many other dimensions without the slightest difficulty.
-
-* * *
 
 ## VCRC components
 
@@ -185,8 +179,6 @@ var economizer =
 ### EconomizerTPI
 
 This is a complete analog of the [Economizer](#economizer), but without superheat.
-
-* * *
 
 ## Subcritical VCRCs
 
@@ -358,8 +350,6 @@ var cycle = new VCRCWithEconomizerTPI(evaporator, compressor, condenser, economi
 Console.WriteLine(cycle.EER); // 2.4347473905936
 Console.WriteLine(cycle.COP); // 3.4347473905935995
 ```
-
-* * *
 
 ## Entropy analysis
 
