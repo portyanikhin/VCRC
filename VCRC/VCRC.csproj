@@ -3,7 +3,7 @@
     <PropertyGroup>
         <Authors>Vladimir Portyanikhin</Authors>
         <Copyright>Copyright (c) Vladimir Portyanikhin 2021</Copyright>
-        <Description>Vapor-compression refrigeration cycles analysis tool</Description>
+        <Description>Cross-platform vapor-compression refrigeration cycles analysis tool</Description>
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
@@ -15,10 +15,10 @@
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
         <PackageReleaseNotes>First release.</PackageReleaseNotes>
-        <PackageTags>vapor compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
+        <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
         <PackageVersion>1.0.0</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
-        <Summary>Vapor-compression refrigeration cycles analysis tool</Summary>
+        <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFramework>net5.0</TargetFramework>
         <Title>VCRC</Title>
     </PropertyGroup>
