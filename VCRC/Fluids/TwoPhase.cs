@@ -15,11 +15,6 @@ namespace VCRC.Fluids
         /// <summary>
         ///     Dew-point.
         /// </summary>
-        [VaporQuality(100)] Dew,
-
-        /// <summary>
-        ///     Middle-point.
-        /// </summary>
-        [VaporQuality(50)] Middle
+        [VaporQuality(100)] Dew
     }
 }

@@ -19,9 +19,7 @@ namespace VCRC.Components
         /// <param name="refrigerantName">Selected refrigerant name.</param>
         /// <param name="temperature">Evaporating temperature.</param>
         /// <param name="superheat">Superheat in the evaporator.</param>
-        /// <param name="pressureDefinition">
-        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point).
-        /// </param>
+        /// <param name="pressureDefinition">Definition of the evaporating pressure (bubble-point or dew-point).</param>
         /// <exception cref="ValidationException">
         ///     Evaporating temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
         /// </exception>
@@ -57,7 +55,7 @@ namespace VCRC.Components
         public TemperatureDelta Superheat { get; }
 
         /// <summary>
-        ///     Definition of the evaporating pressure (bubble-point, dew-point or middle-point).
+        ///     Definition of the evaporating pressure (bubble-point or dew-point).
         /// </summary>
         public TwoPhase PressureDefinition { get; }
 

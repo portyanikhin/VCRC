@@ -19,9 +19,7 @@ namespace VCRC.Components
         /// <param name="refrigerantName">Selected refrigerant name.</param>
         /// <param name="temperature">Condensing temperature.</param>
         /// <param name="subcooling">Subcooling in the condenser.</param>
-        /// <param name="pressureDefinition">
-        ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point).
-        /// </param>
+        /// <param name="pressureDefinition">Definition of the condensing pressure (bubble-point or dew-point).</param>
         /// <exception cref="ValidationException">
         ///     Condensing temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
         /// </exception>
@@ -57,7 +55,7 @@ namespace VCRC.Components
         public TemperatureDelta Subcooling { get; }
 
         /// <summary>
-        ///     Definition of the condensing pressure (bubble-point, dew-point or middle-point).
+        ///     Definition of the condensing pressure (bubble-point or dew-point).
         /// </summary>
         public TwoPhase PressureDefinition { get; }
 
