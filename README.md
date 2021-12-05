@@ -190,6 +190,8 @@ This is a complete analog of the [Economizer](#economizer), but without superhea
 
 ### Simple single-stage VCRC
 
+![Simple VCRC scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC.png)
+
 To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
 the coefficient of performance (aka heating coefficient, aka COP):
 
