@@ -198,8 +198,21 @@ This is a complete analog of the [Economizer](#economizer), but without superhea
 
 ![Simple VCRC T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC%20T-s%20chart.png)
 
-To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
-the coefficient of performance (aka heating coefficient, aka COP):
+**_List of points:_**
+
+- `Point0` - dew-point on the evaporating isobar.
+- `Point1` - evaporator outlet / compression stage suction.
+- `Point2s` - isentropic compression stage discharge.
+- `Point2` - compression stage discharge / condenser inlet.
+- `Point3` - dew-point on the condensing isobar.
+- `Point4` - bubble-point on the condensing isobar.
+- `Point5` - condenser outlet / expansion valve inlet.
+- `Point6` - expansion valve outlet / evaporator inlet.
+
+**_Example:_**
+
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
+the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperature:
 
 ```c#
 using System;
@@ -218,8 +231,9 @@ var compressor = new Compressor((80).Percent());
 var condenser =
     new Condenser(FluidsList.R32, (40).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 var cycle = new SimpleVCRC(evaporator, compressor, condenser);
-Console.WriteLine(cycle.EER); // 2.1851212290292206
-Console.WriteLine(cycle.COP); // 3.1851212290292206
+Console.WriteLine(cycle.EER);                // 2.1851212290292206
+Console.WriteLine(cycle.COP);                // 3.1851212290292206
+Console.WriteLine(cycle.Point2.Temperature); // 123.71 °C
 ```
 
 ### Single-stage VCRC with recuperator
@@ -232,9 +246,23 @@ Console.WriteLine(cycle.COP); // 3.1851212290292206
 
 ![VCRC with recuperator T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator%20T-s%20chart.png)
 
+**_List of points:_**
 
-To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
-the coefficient of performance (aka heating coefficient, aka COP):
+- `Point0` - dew-point on the evaporating isobar.
+- `Point1` - evaporator outlet / recuperator "cold" inlet.
+- `Point2` - recuperator "cold" outlet / compression stage suction.
+- `Point3s` - isentropic compression stage discharge.
+- `Point3` - compression stage discharge / condenser inlet.
+- `Point4` - dew-point on the condensing isobar.
+- `Point5` - bubble-point on the condensing isobar.
+- `Point6` - condenser outlet / recuperator "hot" inlet.
+- `Point7` - recuperator "hot" outlet / expansion valve inlet.
+- `Point8` - expansion valve outlet / evaporator inlet.
+
+**_Example:_**
+
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
+the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperature:
 
 ```c#
 using System;
@@ -254,8 +282,9 @@ var condenser =
     new Condenser(FluidsList.R32, (40).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithRecuperator(evaporator, recuperator, compressor, condenser);
-Console.WriteLine(cycle.EER); // 2.170667134010685
-Console.WriteLine(cycle.COP); // 3.1706671340106847
+Console.WriteLine(cycle.EER);                // 2.170667134010685
+Console.WriteLine(cycle.COP);                // 3.1706671340106847
+Console.WriteLine(cycle.Point3.Temperature); // 130.49 °C
 ```
 
 ### Two-stage VCRC with incomplete intercooling
@@ -268,12 +297,33 @@ Console.WriteLine(cycle.COP); // 3.1706671340106847
 
 ![VCRC with incomplete intercooling T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling%20T-s%20chart.png)
 
+**_List of points:_**
+
+- `Point0` - dew-point on the evaporating isobar.
+- `Point1` - evaporator outlet / first compression stage suction.
+- `Point2s` - first isentropic compression stage discharge.
+- `Point2` - first compression stage discharge.
+- `Point3` - second compression stage suction.
+- `Point4s` - second isentropic compression stage discharge.
+- `Point4` - second compression stage discharge / condenser inlet.
+- `Point5` - dew-point on the condensing isobar.
+- `Point6` - bubble-point on the condensing isobar.
+- `Point7` - condenser outlet / first expansion valve inlet.
+- `Point8` - first expansion valve outlet / intermediate vessel inlet.
+- `Point9` - intermediate vessel vapor outlet / injection of cooled vapor into the compressor.
+- `Point10` - intermediate vessel liquid outlet / second expansion valve inlet.
+- `Point11` - second expansion valve outlet / evaporator inlet.
+
+**_NB:_**
+
 _Intermediate vessel with fixed pressure is optional.
 By default, the intermediate pressure is calculated as the square root of the product
 of the evaporating pressure and the condensing pressure._
 
-To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
-the coefficient of performance (aka heating coefficient, aka COP):
+**_Example:_**
+
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
+the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperature:
 
 ```c#
 using System;
@@ -292,8 +342,9 @@ var compressor = new Compressor((80).Percent());
 var condenser =
     new Condenser(FluidsList.R32, (40).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 var cycle = new VCRCWithIncompleteIntercooling(evaporator, compressor, condenser);
-Console.WriteLine(cycle.EER); // 2.4122045253883138
-Console.WriteLine(cycle.COP); // 3.412204525388314
+Console.WriteLine(cycle.EER);                // 2.4122045253883138
+Console.WriteLine(cycle.COP);                // 3.412204525388314
+Console.WriteLine(cycle.Point4.Temperature); // 115.35 °C
 ```
 
 ### Two-stage VCRC with complete intercooling
@@ -306,12 +357,32 @@ Console.WriteLine(cycle.COP); // 3.412204525388314
 
 ![VCRC with complete intercooling T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling%20T-s%20chart.png)
 
+**_List of points:_**
+
+- `Point0` - dew-point on the evaporating isobar.
+- `Point1` - evaporator outlet / first compression stage suction.
+- `Point2s` - first isentropic compression stage discharge.
+- `Point2` - first compression stage discharge.
+- `Point3` - intermediate vessel vapor outlet / second compression stage suction.
+- `Point4s` - second isentropic compression stage discharge.
+- `Point4` - second compression stage discharge / condenser inlet.
+- `Point5` - dew-point on the condensing isobar.
+- `Point6` - bubble-point on the condensing isobar.
+- `Point7` - condenser outlet / first expansion valve inlet.
+- `Point8` - first expansion valve outlet / intermediate vessel inlet.
+- `Point9` - intermediate vessel liquid outlet / second expansion valve inlet.
+- `Point10` - second expansion valve outlet / evaporator inlet.
+
+**_NB:_**
+
 _Intermediate vessel with fixed pressure is optional. 
 By default, the intermediate pressure is calculated as the square root of the product 
 of the evaporating pressure and the condensing pressure._
 
-To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
-the coefficient of performance (aka heating coefficient, aka COP):
+**_Example:_**
+
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
+the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperature:
 
 ```c#
 using System;
@@ -330,8 +401,9 @@ var compressor = new Compressor((80).Percent());
 var condenser =
     new Condenser(FluidsList.R32, (40).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 var cycle = new VCRCWithCompleteIntercooling(evaporator, compressor, condenser);
-Console.WriteLine(cycle.EER); // 2.485885473340216
-Console.WriteLine(cycle.COP); // 3.485885473340216
+Console.WriteLine(cycle.EER);                // 2.485885473340216
+Console.WriteLine(cycle.COP);                // 3.485885473340216
+Console.WriteLine(cycle.Point4.Temperature); // 74.77 °C
 ```
 
 ### Two-stage VCRC with economizer
@@ -344,8 +416,27 @@ Console.WriteLine(cycle.COP); // 3.485885473340216
 
 ![VCRC with economizer T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizer%20T-s%20chart.png)
 
-To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
-the coefficient of performance (aka heating coefficient, aka COP):
+**_List of points:_**
+
+- `Point0` - dew-point on the evaporating isobar.
+- `Point1` - evaporator outlet / first compression stage suction.
+- `Point2s` - first isentropic compression stage discharge.
+- `Point2` - first compression stage discharge.
+- `Point3` - second compression stage suction.
+- `Point4s` - second isentropic compression stage discharge.
+- `Point4` - second compression stage discharge / condenser inlet.
+- `Point5` - dew-point on the condensing isobar.
+- `Point6` - bubble-point on the condensing isobar.
+- `Point7` - condenser outlet / inlet to the expansion valve of the injection circuit (first EV) / inlet of the main stream into the economizer ("hot" inlet).
+- `Point8` - outlet from the expansion valve of the injection circuit (first EV) / inlet of the injected stream into the economizer ("cold" inlet).
+- `Point 9` - outlet of the injected stream from the economizer ("cold" outlet) / injection of cooled vapor into the compressor.
+- `Point10` - outlet of the main stream from the economizer ("hot" outlet) / inlet to the expansion valve of the evaporator circuit (second EV).
+- `Point11` - outlet from the expansion valve of the evaporator circuit (second EV) / evaporator inlet.
+
+**_Example:_**
+
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
+the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperature:
 
 ```c#
 using System;
@@ -366,8 +457,9 @@ var condenser =
 var economizer =
     new Economizer(evaporator, condenser, TemperatureDelta.FromKelvins(7), TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithEconomizer(evaporator, compressor, condenser, economizer);
-Console.WriteLine(cycle.EER); // 2.359978191965046
-Console.WriteLine(cycle.COP); // 3.359978191965046
+Console.WriteLine(cycle.EER);                // 2.359978191965046
+Console.WriteLine(cycle.COP);                // 3.359978191965046
+Console.WriteLine(cycle.Point4.Temperature); // 118.42 °C
 ```
 
 ### Two-stage VCRC with economizer and two-phase injection to the compressor
@@ -380,8 +472,27 @@ Console.WriteLine(cycle.COP); // 3.359978191965046
 
 ![VCRC with economizer and two-phase injection to the compressor T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizerTPI%20T-s%20chart.png)
 
-To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
-the coefficient of performance (aka heating coefficient, aka COP):
+**_List of points:_**
+
+- `Point0` - dew-point on the evaporating isobar.
+- `Point1` - evaporator outlet / first compression stage suction.
+- `Point2s` - first isentropic compression stage discharge.
+- `Point2` - first compression stage discharge.
+- `Point3` - second compression stage suction.
+- `Point4s` - second isentropic compression stage discharge.
+- `Point4` - second compression stage discharge / condenser inlet.
+- `Point5` - dew-point on the condensing isobar.
+- `Point6` - bubble-point on the condensing isobar.
+- `Point7` - condenser outlet / inlet to the expansion valve of the injection circuit (first EV) / inlet of the main stream into the economizer ("hot" inlet).
+- `Point8` - outlet from the expansion valve of the injection circuit (first EV) / inlet of the injected stream into the economizer ("cold" inlet).
+- `Point 9` - outlet of the injected stream from the economizer ("cold" outlet) / injection of two-phase refrigerant into the compressor.
+- `Point10` - outlet of the main stream from the economizer ("hot" outlet) / inlet to the expansion valve of the evaporator circuit (second EV).
+- `Point11` - outlet from the expansion valve of the evaporator circuit (second EV) / evaporator inlet.
+
+**_Example:_**
+
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
+the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperature:
 
 ```c#
 using System;
@@ -402,8 +513,9 @@ var condenser =
 var economizer =
     new EconomizerTPI(evaporator, condenser, TemperatureDelta.FromKelvins(7));
 var cycle = new VCRCWithEconomizerTPI(evaporator, compressor, condenser, economizer);
-Console.WriteLine(cycle.EER); // 2.4347473905936
-Console.WriteLine(cycle.COP); // 3.4347473905935995
+Console.WriteLine(cycle.EER);                // 2.4347473905936
+Console.WriteLine(cycle.COP);                // 3.4347473905935995
+Console.WriteLine(cycle.Point4.Temperature); // 74.77 °C
 ```
 
 ## Entropy analysis

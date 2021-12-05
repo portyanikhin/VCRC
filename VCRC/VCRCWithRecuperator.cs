@@ -64,7 +64,7 @@ namespace VCRC
         public Recuperator Recuperator { get; }
 
         /// <summary>
-        ///     Point 2 – recuperator "cold" outlet / compression stage inlet.
+        ///     Point 2 – recuperator "cold" outlet / compression stage suction.
         /// </summary>
         public Refrigerant Point2 { get; }
 
