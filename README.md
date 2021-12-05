@@ -260,6 +260,14 @@ Console.WriteLine(cycle.COP); // 3.1706671340106847
 
 ### Two-stage VCRC with incomplete intercooling
 
+**_Scheme:_**
+
+![VCRC with incomplete intercooling scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling.png)
+
+**_Temperature-entropy chart (T-s chart):_**
+
+![VCRC with incomplete intercooling T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling%20T-s%20chart.png)
+
 _Intermediate vessel with fixed pressure is optional.
 By default, the intermediate pressure is calculated as the square root of the product
 of the evaporating pressure and the condensing pressure._
