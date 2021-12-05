@@ -300,11 +300,11 @@ Console.WriteLine(cycle.COP); // 3.412204525388314
 
 **_Scheme:_**
 
-![VCRC with incomplete intercooling scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling.png)
+![VCRC with complete intercooling scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling.png)
 
 **_Temperature-entropy chart (T-s chart):_**
 
-![VCRC with incomplete intercooling T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling%20T-s%20chart.png)
+![VCRC with complete intercooling T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling%20T-s%20chart.png)
 
 _Intermediate vessel with fixed pressure is optional. 
 By default, the intermediate pressure is calculated as the square root of the product 
