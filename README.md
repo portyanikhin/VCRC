@@ -196,6 +196,8 @@ This is a complete analog of the [Economizer](#economizer), but without superhea
 
 **_Temperature-entropy chart (T-s chart):_**
 
+![Simple VCRC T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC%20T-s%20chart.png)
+
 To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
 the coefficient of performance (aka heating coefficient, aka COP):
 
