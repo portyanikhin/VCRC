@@ -190,7 +190,7 @@ This is a complete analog of the [Economizer](#economizer), but without superhea
 
 ### Simple single-stage VCRC
 
-**_Scheme:_**
+**_Schematic diagram:_**
 
 ![Simple VCRC scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC.png)
 
@@ -224,7 +224,7 @@ Console.WriteLine(cycle.COP); // 3.1851212290292206
 
 ### Single-stage VCRC with recuperator
 
-**_Scheme:_**
+**_Schematic diagram:_**
 
 ![VCRC with recuperator scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator.png)
 
@@ -260,7 +260,7 @@ Console.WriteLine(cycle.COP); // 3.1706671340106847
 
 ### Two-stage VCRC with incomplete intercooling
 
-**_Scheme:_**
+**_Schematic diagram:_**
 
 ![VCRC with incomplete intercooling scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling.png)
 
@@ -298,7 +298,7 @@ Console.WriteLine(cycle.COP); // 3.412204525388314
 
 ### Two-stage VCRC with complete intercooling
 
-**_Scheme:_**
+**_Schematic diagram:_**
 
 ![VCRC with complete intercooling scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling.png)
 
@@ -335,6 +335,14 @@ Console.WriteLine(cycle.COP); // 3.485885473340216
 ```
 
 ### Two-stage VCRC with economizer
+
+**_Schematic diagram:_**
+
+![VCRC with economizer scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizer.png)
+
+**_Temperature-entropy chart (T-s chart):_**
+
+![VCRC with economizer T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizer%20T-s%20chart.png)
 
 To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
 the coefficient of performance (aka heating coefficient, aka COP):
