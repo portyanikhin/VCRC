@@ -30,7 +30,7 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="10.3.5"/>
-        <PackageReference Include="SharpProp" Version="3.1.9"/>
+        <PackageReference Include="SharpProp" Version="3.1.10"/>
     </ItemGroup>
 
 </Project>
