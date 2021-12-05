@@ -372,6 +372,14 @@ Console.WriteLine(cycle.COP); // 3.359978191965046
 
 ### Two-stage VCRC with economizer and two-phase injection to the compressor
 
+**_Schematic diagram:_**
+
+![VCRC with economizer and two-phase injection to the compressor scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizerTPI.png)
+
+**_Temperature-entropy chart (T-s chart):_**
+
+![VCRC with economizer and two-phase injection to the compressor T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizerTPI%20T-s%20chart.png)
+
 To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
 the coefficient of performance (aka heating coefficient, aka COP):
 
