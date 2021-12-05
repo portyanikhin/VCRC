@@ -7,25 +7,27 @@
 [![License](https://img.shields.io/github/license/portyanikhin/VCRC)](https://github.com/portyanikhin/VCRC/blob/main/LICENSE)
 [![codecov](https://codecov.io/gh/portyanikhin/VCRC/branch/main/graph/badge.svg?token=aJmrRHNQnS)](https://codecov.io/gh/portyanikhin/VCRC)
 
-Cross-platform vapor-compression refrigeration cycles analysis tool using [SharpProp](https://github.com/portyanikhin/SharpProp).
+Cross-platform vapor-compression refrigeration cycles analysis tool
+using [SharpProp](https://github.com/portyanikhin/SharpProp).
 
 ## Overview
+
 - [Unit safety](#unit-safety)
 - [VCRC components](#vcrc-components)
-  - [Evaporator](#evaporator)
-  - [Compressor](#compressor)
-  - [Condenser](#condenser)
-  - [Recuperator](#recuperator)
-  - [Intermediate vessel](#intermediate-vessel)
-  - [Economizer](#economizer)
-  - [EconomizerTPI](#economizertpi)
+    - [Evaporator](#evaporator)
+    - [Compressor](#compressor)
+    - [Condenser](#condenser)
+    - [Recuperator](#recuperator)
+    - [Intermediate vessel](#intermediate-vessel)
+    - [Economizer](#economizer)
+    - [EconomizerTPI](#economizertpi)
 - [Subcritical VCRCs](#subcritical-vcrcs)
-  - [Simple single-stage VCRC](#simple-single-stage-vcrc)
-  - [Single-stage VCRC with recuperator](#single-stage-vcrc-with-recuperator)
-  - [Two-stage VCRC with incomplete intercooling](#two-stage-vcrc-with-incomplete-intercooling)
-  - [Two-stage VCRC with complete intercooling](#two-stage-vcrc-with-complete-intercooling)
-  - [Two-stage VCRC with economizer](#two-stage-vcrc-with-economizer)
-  - [Two-stage VCRC with economizer and two-phase injection to the compressor](#two-stage-vcrc-with-economizer-and-two-phase-injection-to-the-compressor)
+    - [Simple single-stage VCRC](#simple-single-stage-vcrc)
+    - [Single-stage VCRC with recuperator](#single-stage-vcrc-with-recuperator)
+    - [Two-stage VCRC with incomplete intercooling](#two-stage-vcrc-with-incomplete-intercooling)
+    - [Two-stage VCRC with complete intercooling](#two-stage-vcrc-with-complete-intercooling)
+    - [Two-stage VCRC with economizer](#two-stage-vcrc-with-economizer)
+    - [Two-stage VCRC with economizer and two-phase injection to the compressor](#two-stage-vcrc-with-economizer-and-two-phase-injection-to-the-compressor)
 - [Entropy analysis](#entropy-analysis)
 
 ## Unit safety
@@ -42,6 +44,7 @@ To analyze the vapor-compression refrigeration cycle (VCRC), you first need to b
 ### Evaporator
 
 For example:
+
 - Refrigerant: _R407C_.
 - Evaporating temperature: _5 °C_.
 - Superheat: _8 K_.
@@ -76,6 +79,7 @@ var compressor = new Compressor((80).Percent());
 ### Condenser
 
 For example:
+
 - Refrigerant: _R407C_.
 - Condensing temperature: _40 °C_.
 - Subcooling: _3 K_.
@@ -110,7 +114,8 @@ var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
 ### Intermediate vessel
 
 You can define an intermediate vessel with a fixed intermediate pressure or with an evaporator and condenser.
-In the latter case, the intermediate pressure is calculated as the square root of the product of the evaporating pressure and the condensing pressure.
+In the latter case, the intermediate pressure is calculated as the square root of the product
+of the evaporating pressure and the condensing pressure.
 
 Intermediate vessel with fixed _1 bar_ absolute pressure:
 
@@ -143,6 +148,7 @@ var intermediateVessel = new IntermediateVessel(evaporator, condenser);
 ### Economizer
 
 For example:
+
 - Absolute intermediate pressure: _1 bar_.
 - Temperature difference at economizer "cold" side: _7 K_.
 - Superheat: _5 K_.
@@ -184,7 +190,7 @@ This is a complete analog of the [Economizer](#economizer), but without superhea
 
 ### Simple single-stage VCRC
 
-To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and 
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
 the coefficient of performance (aka heating coefficient, aka COP):
 
 ```c#
@@ -323,7 +329,7 @@ Console.WriteLine(cycle.EER); // 2.359978191965046
 Console.WriteLine(cycle.COP); // 3.359978191965046
 ```
 
-###  Two-stage VCRC with economizer and two-phase injection to the compressor
+### Two-stage VCRC with economizer and two-phase injection to the compressor
 
 To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
 the coefficient of performance (aka heating coefficient, aka COP):
