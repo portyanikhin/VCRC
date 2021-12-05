@@ -224,6 +224,15 @@ Console.WriteLine(cycle.COP); // 3.1851212290292206
 
 ### Single-stage VCRC with recuperator
 
+**_Scheme:_**
+
+![VCRC with recuperator scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator.png)
+
+**_Temperature-entropy chart (T-s chart):_**
+
+![VCRC with recuperator T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator%20T-s%20chart.png)
+
+
 To calculate the energy efficiency ratio (aka cooling coefficient, aka EER) and
 the coefficient of performance (aka heating coefficient, aka COP):
 
