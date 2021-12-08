@@ -14,9 +14,9 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageReleaseNotes>Bump SharpProp from 3.1.9 to 3.1.10. Cleanup. Documentation update.</PackageReleaseNotes>
+        <PackageReleaseNotes>Bump SharpProp from 3.1.10 to 3.1.11.</PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>1.0.2</PackageVersion>
+        <PackageVersion>1.0.3</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFramework>net5.0</TargetFramework>
