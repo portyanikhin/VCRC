@@ -7,6 +7,7 @@
         <DocumentationFile>bin\$(Configuration)\$(TargetFramework)\$(AssemblyName).xml</DocumentationFile>
         <GenerateDocumentationFile>true</GenerateDocumentationFile>
         <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+        <LangVersion>10</LangVersion>
         <NoWarn>$(NoWarn);1591</NoWarn>
         <Nullable>enable</Nullable>
         <PackageIcon>icon.png</PackageIcon>
@@ -19,18 +20,18 @@
         <PackageVersion>1.0.3</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
-        <TargetFramework>net5.0</TargetFramework>
+        <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
         <Title>VCRC</Title>
     </PropertyGroup>
 
     <ItemGroup>
-        <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\"/>
-        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\" />
+        <None Include="..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="10.3.6"/>
-        <PackageReference Include="SharpProp" Version="3.1.11"/>
+        <PackageReference Include="FluentValidation" Version="10.3.6" />
+        <PackageReference Include="SharpProp" Version="3.1.11" />
     </ItemGroup>
 
 </Project>

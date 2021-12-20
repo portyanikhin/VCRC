@@ -1,8 +1,7 @@
-﻿namespace VCRC.Tests
+﻿namespace VCRC.Tests;
+
+public enum Bound
 {
-    public enum Bound
-    {
-        Lower,
-        Higher
-    }
+    Lower,
+    Higher
 }

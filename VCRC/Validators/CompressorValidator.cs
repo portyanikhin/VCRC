@@ -3,14 +3,13 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC.Components;
 
-namespace VCRC.Validators
+namespace VCRC.Validators;
+
+public class CompressorValidator : AbstractValidator<Compressor>
 {
-    public class CompressorValidator : AbstractValidator<Compressor>
+    public CompressorValidator()
     {
-        public CompressorValidator()
-        {
-            RuleFor(compressor => compressor.IsentropicEfficiency).ExclusiveBetween(Ratio.Zero, 100.Percent())
-                .WithMessage("Isentropic efficiency of the compressor should be in (0;100) %!");
-        }
+        RuleFor(compressor => compressor.IsentropicEfficiency).ExclusiveBetween(Ratio.Zero, 100.Percent())
+            .WithMessage("Isentropic efficiency of the compressor should be in (0;100) %!");
     }
 }

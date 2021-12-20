@@ -1,20 +1,19 @@
 ﻿using VCRC.Fluids.Attributes;
 
-namespace VCRC.Fluids
+namespace VCRC.Fluids;
+
+/// <summary>
+///     Two-phase points.
+/// </summary>
+public enum TwoPhase
 {
     /// <summary>
-    ///     Two-phase points.
+    ///     Bubble-point.
     /// </summary>
-    public enum TwoPhase
-    {
-        /// <summary>
-        ///     Bubble-point.
-        /// </summary>
-        [VaporQuality(0)] Bubble,
+    [VaporQuality(0)] Bubble,
 
-        /// <summary>
-        ///     Dew-point.
-        /// </summary>
-        [VaporQuality(100)] Dew
-    }
+    /// <summary>
+    ///     Dew-point.
+    /// </summary>
+    [VaporQuality(100)] Dew
 }
