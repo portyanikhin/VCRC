@@ -51,7 +51,7 @@ jobs:
         id: publish_nuget
         uses: rohith/publish-nuget@v2
         with:
-          PROJECT_FILE_PATH: SharpProp/SharpProp.csproj
+          PROJECT_FILE_PATH: VCRC/VCRC.csproj
           PACKAGE_NAME: SharpProp
           VERSION_REGEX: ^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$
           TAG_FORMAT: v*
