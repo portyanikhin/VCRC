@@ -52,7 +52,7 @@ jobs:
         uses: rohith/publish-nuget@v2
         with:
           PROJECT_FILE_PATH: VCRC/VCRC.csproj
-          PACKAGE_NAME: SharpProp
+          PACKAGE_NAME: VCRC
           VERSION_REGEX: ^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$
           TAG_FORMAT: v*
           NUGET_KEY: ${{secrets.NUGET_API_KEY}}
