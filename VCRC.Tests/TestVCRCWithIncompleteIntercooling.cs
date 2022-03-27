@@ -28,6 +28,17 @@ public class TestVCRCWithIncompleteIntercooling
         Cycle = new VCRCWithIncompleteIntercooling(evaporator, compressor, condenser);
     }
 
+    [Test]
+    public void TestWrongRefrigerant()
+    {
+        const FluidsList refrigerantName = FluidsList.R407C;
+        var evaporator = new Evaporator(refrigerantName, Cycle.Evaporator.Temperature, Cycle.Evaporator.Superheat);
+        var condenser = new Condenser(refrigerantName, Cycle.Condenser.Temperature, Cycle.Condenser.Subcooling);
+        Action action = () => _ = new VCRCWithIncompleteIntercooling(evaporator, Cycle.Compressor, condenser);
+        action.Should().Throw<ValidationException>()
+            .WithMessage("*Refrigerant should not have a temperature glide!*");
+    }
+
     [TestCase(Bound.Lower, "Intermediate pressure should be greater than evaporating pressure!")]
     [TestCase(Bound.Higher, "Intermediate pressure should be less than condensing pressure!")]
     public void TestWrongIntermediatePressure(Bound bound, string message)
