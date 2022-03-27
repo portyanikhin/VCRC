@@ -3,6 +3,8 @@ using CoolProp;
 using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
+using VCRC.Extensions;
 using VCRC.Validators.Fluids;
 
 namespace VCRC.Fluids;
@@ -49,6 +51,22 @@ public class Refrigerant : Fluid
     /// <exception cref="NullReferenceException">Invalid triple temperature!</exception>
     public new Temperature TripleTemperature =>
         base.TripleTemperature ?? throw new NullReferenceException("Invalid triple temperature!");
+
+    /// <summary>
+    ///     <c>true</c> if the refrigerant has a temperature glide.
+    /// </summary>
+    public bool HasGlide
+    {
+        get
+        {
+            var intermediatePressure = (TriplePressure + CriticalPressure) / 2;
+            var bubblePoint = WithState(Input.Pressure(intermediatePressure),
+                Input.Quality(TwoPhase.Bubble.VaporQuality()));
+            var dewPoint = WithState(Input.Pressure(intermediatePressure),
+                Input.Quality(TwoPhase.Dew.VaporQuality()));
+            return (dewPoint.Temperature - bubblePoint.Temperature).Abs() > 0.01.Kelvins();
+        }
+    }
 
     public override Refrigerant Factory() => new(Name);
 
