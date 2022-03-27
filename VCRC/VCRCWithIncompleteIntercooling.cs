@@ -8,6 +8,7 @@ using VCRC.Components;
 using VCRC.Extensions;
 using VCRC.Fluids;
 using VCRC.Validators;
+using VCRC.Validators.Fluids;
 
 namespace VCRC;
 
@@ -23,6 +24,7 @@ public class VCRCWithIncompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyA
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
     /// <param name="intermediateVessel">Intermediate vessel.</param>
+    /// <exception cref="ValidationException">Refrigerant should not have a temperature glide!</exception>
     /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
@@ -39,6 +41,7 @@ public class VCRCWithIncompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyA
     public VCRCWithIncompleteIntercooling(Evaporator evaporator, Compressor compressor, Condenser condenser,
         IntermediateVessel? intermediateVessel = null) : base(evaporator, compressor, condenser)
     {
+        new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
         IntermediateVessel = intermediateVessel ?? new IntermediateVessel(Evaporator, Condenser);
         Point2s = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure), Input.Entropy(Point1.Entropy));
         var isentropicSpecificWork1 = Point2s.Enthalpy - Point1.Enthalpy;
