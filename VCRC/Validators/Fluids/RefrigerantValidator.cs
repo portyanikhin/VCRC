@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using VCRC.Fluids;
 
-namespace VCRC.Validators;
+namespace VCRC.Validators.Fluids;
 
 public class RefrigerantValidator : AbstractValidator<Refrigerant>
 {

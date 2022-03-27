@@ -3,7 +3,7 @@ using CoolProp;
 using FluentValidation;
 using SharpProp;
 using UnitsNet;
-using VCRC.Validators;
+using VCRC.Validators.Fluids;
 
 namespace VCRC.Fluids;
 
@@ -19,7 +19,8 @@ public class Refrigerant : Fluid
     /// <exception cref="ValidationException">
     ///     The selected fluid is not a refrigerant (its name should start with 'R')!
     /// </exception>
-    public Refrigerant(FluidsList name) : base(name) => new RefrigerantValidator().ValidateAndThrow(this);
+    public Refrigerant(FluidsList name) : base(name) =>
+        new RefrigerantValidator().ValidateAndThrow(this);
 
     /// <summary>
     ///     Absolute pressure at the critical point (by default, kPa).

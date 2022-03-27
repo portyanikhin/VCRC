@@ -3,7 +3,7 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC.Components;
 
-namespace VCRC.Validators;
+namespace VCRC.Validators.Components;
 
 public class CompressorValidator : AbstractValidator<Compressor>
 {

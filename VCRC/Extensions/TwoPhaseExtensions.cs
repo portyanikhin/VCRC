@@ -12,5 +12,6 @@ public static class TwoPhaseExtensions
     /// </summary>
     /// <param name="member">The <see cref="TwoPhase" /> member.</param>
     /// <returns>Vapor quality of the two-phase point.</returns>
-    public static Ratio VaporQuality(this TwoPhase member) => member.GetAttribute<VaporQuality>().Value.Percent();
+    public static Ratio VaporQuality(this TwoPhase member) =>
+        member.GetAttribute<VaporQuality>().Value.Percent();
 }

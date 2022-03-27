@@ -3,7 +3,7 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 using VCRC.Components;
 
-namespace VCRC.Validators;
+namespace VCRC.Validators.Components;
 
 public class EconomizerValidator : AbstractValidator<Economizer>
 {

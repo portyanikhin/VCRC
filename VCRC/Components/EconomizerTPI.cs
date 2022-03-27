@@ -3,7 +3,7 @@ using FluentValidation;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.Units;
-using VCRC.Validators;
+using VCRC.Validators.Components;
 
 namespace VCRC.Components;
 
@@ -29,9 +29,11 @@ public class EconomizerTPI : IEquatable<EconomizerTPI>
 
     /// <summary>
     ///     Economizer as a component of VCRC with two-phase injection.
-    ///     Note: The intermediate pressure is calculated as the square root of the product
-    ///     of evaporating pressure and condensing pressure.
     /// </summary>
+    /// <remarks>
+    ///     The intermediate pressure is calculated as the square root of the product
+    ///     of evaporating pressure and condensing pressure.
+    /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="condenser">Condenser.</param>
     /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
@@ -66,9 +68,7 @@ public class EconomizerTPI : IEquatable<EconomizerTPI>
 
     public override int GetHashCode() => TemperatureDifference.GetHashCode();
 
-    public static bool operator ==(EconomizerTPI? left, EconomizerTPI? right) =>
-        Equals(left, right);
+    public static bool operator ==(EconomizerTPI? left, EconomizerTPI? right) => Equals(left, right);
 
-    public static bool operator !=(EconomizerTPI? left, EconomizerTPI? right) =>
-        !Equals(left, right);
+    public static bool operator !=(EconomizerTPI? left, EconomizerTPI? right) => !Equals(left, right);
 }

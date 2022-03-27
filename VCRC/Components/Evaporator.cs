@@ -4,7 +4,7 @@ using SharpProp;
 using UnitsNet;
 using VCRC.Extensions;
 using VCRC.Fluids;
-using VCRC.Validators;
+using VCRC.Validators.Components;
 
 namespace VCRC.Components;
 
