@@ -42,14 +42,16 @@ public class VCRCWithEconomizerTPI : TwoStageSubcriticalVCRC, IEntropyAnalysable
         EconomizerTPI economizer) : base(evaporator, compressor, condenser)
     {
         Economizer = economizer;
-        Point2s = Refrigerant.WithState(Input.Pressure(Economizer.Pressure), Input.Entropy(Point1.Entropy));
+        Point2s = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+            Input.Entropy(Point1.Entropy));
         var isentropicSpecificWork1 = Point2s.Enthalpy - Point1.Enthalpy;
         var specificWork1 = isentropicSpecificWork1 / Compressor.IsentropicEfficiency.DecimalFractions;
         Point2 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
             Input.Enthalpy(Point1.Enthalpy + specificWork1));
         Point3 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point4s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure), Input.Entropy(Point3.Entropy));
+        Point4s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+            Input.Entropy(Point3.Entropy));
         Point5 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point6 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
@@ -63,18 +65,20 @@ public class VCRCWithEconomizerTPI : TwoStageSubcriticalVCRC, IEntropyAnalysable
         Point10 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Temperature(Point8.Temperature + Economizer.TemperatureDifference));
         Point9 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
-            Input.Enthalpy(((Point8.Enthalpy.JoulesPerKilogram *
-                             (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram) +
-                             Point3.Enthalpy.JoulesPerKilogram * (Point7.Enthalpy.JoulesPerKilogram -
-                                                                  Point10.Enthalpy.JoulesPerKilogram)) /
-                            (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram +
-                                Point7.Enthalpy.JoulesPerKilogram - Point10.Enthalpy.JoulesPerKilogram))
+            Input.Enthalpy(
+                ((Point8.Enthalpy.JoulesPerKilogram *
+                  (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram) +
+                  Point3.Enthalpy.JoulesPerKilogram *
+                  (Point7.Enthalpy.JoulesPerKilogram - Point10.Enthalpy.JoulesPerKilogram)) /
+                 (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram +
+                     Point7.Enthalpy.JoulesPerKilogram - Point10.Enthalpy.JoulesPerKilogram))
                 .JoulesPerKilogram().ToUnit(SpecificEnergyUnit.KilojoulePerKilogram)));
         new VCRCWithEconomizerTPIValidator().ValidateAndThrow(this);
-        Point11 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure), Input.Enthalpy(Point10.Enthalpy));
-        SecondStageSpecificMassFlow = FirstStageSpecificMassFlow *
-                                      (1 + (Point2.Enthalpy - Point3.Enthalpy) /
-                                          (Point3.Enthalpy - Point9.Enthalpy));
+        Point11 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+            Input.Enthalpy(Point10.Enthalpy));
+        SecondStageSpecificMassFlow =
+            FirstStageSpecificMassFlow *
+            (1 + (Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point9.Enthalpy));
         var isentropicSpecificWork2 =
             SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
         var specificWork2 = isentropicSpecificWork2 / Compressor.IsentropicEfficiency.DecimalFractions;
@@ -167,9 +171,9 @@ public class VCRCWithEconomizerTPI : TwoStageSubcriticalVCRC, IEntropyAnalysable
         var thermodynamicEfficiency = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
         var condenserEnergyLoss =
-            SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point7.Enthalpy -
-                                                            (hotSource.Kelvins * (Point4s.Entropy - Point7.Entropy)
-                                                                .JoulesPerKilogramKelvin).JoulesPerKilogram());
+            SecondStageSpecificMassFlow.DecimalFractions *
+            (Point4s.Enthalpy - Point7.Enthalpy - (hotSource.Kelvins * (Point4s.Entropy - Point7.Entropy)
+                .JoulesPerKilogramKelvin).JoulesPerKilogram());
         var expansionValvesEnergyLoss =
             (hotSource.Kelvins *
              ((SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
@@ -180,16 +184,19 @@ public class VCRCWithEconomizerTPI : TwoStageSubcriticalVCRC, IEntropyAnalysable
             (FirstStageSpecificMassFlow.DecimalFractions * hotSource.Kelvins *
              ((Point1.Entropy - Point11.Entropy).JoulesPerKilogramKelvin -
               (Point1.Enthalpy - Point11.Enthalpy).JoulesPerKilogram / coldSource.Kelvins)).JoulesPerKilogram();
-        var economizerEnergyLoss = (hotSource.Kelvins *
-                                    ((SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-                                     (Point9.Entropy - Point8.Entropy) -
-                                     FirstStageSpecificMassFlow.DecimalFractions *
-                                     (Point7.Entropy - Point10.Entropy))
-                                    .JoulesPerKilogramKelvin).JoulesPerKilogram();
-        var mixingEnergyLoss = (hotSource.Kelvins * (SecondStageSpecificMassFlow.DecimalFractions * Point3.Entropy -
-                                                     (FirstStageSpecificMassFlow.DecimalFractions * Point2.Entropy +
-                                                      (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow)
-                                                      .DecimalFractions * Point9.Entropy)).JoulesPerKilogramKelvin)
+        var economizerEnergyLoss =
+            (hotSource.Kelvins *
+             ((SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
+              (Point9.Entropy - Point8.Entropy) -
+              FirstStageSpecificMassFlow.DecimalFractions *
+              (Point7.Entropy - Point10.Entropy))
+             .JoulesPerKilogramKelvin).JoulesPerKilogram();
+        var mixingEnergyLoss =
+            (hotSource.Kelvins *
+             (SecondStageSpecificMassFlow.DecimalFractions * Point3.Entropy -
+              (FirstStageSpecificMassFlow.DecimalFractions * Point2.Entropy +
+               (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow)
+               .DecimalFractions * Point9.Entropy)).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
             minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
