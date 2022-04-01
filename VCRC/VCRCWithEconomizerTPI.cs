@@ -134,32 +134,27 @@ public class VCRCWithEconomizerTPI : TwoStageSubcriticalVCRC, IEntropyAnalysable
     public Refrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – condenser outlet /
-    ///     inlet to the expansion valve of the injection circuit /
-    ///     inlet of the main stream into the economizer ("hot" inlet).
+    ///     Point 7 – condenser outlet / first EV inlet / economizer "hot" inlet.
     /// </summary>
     public Refrigerant Point7 { get; }
 
     /// <summary>
-    ///     Point 8 – outlet from the expansion valve of the injection circuit /
-    ///     inlet of the injected stream into the economizer ("cold" inlet).
+    ///     Point 8 – first EV outlet / economizer "cold" inlet.
     /// </summary>
     public Refrigerant Point8 { get; }
 
     /// <summary>
-    ///     Point 9 – outlet of the injected stream from the economizer ("cold" outlet) /
-    ///     injection of two-phase refrigerant into the compressor.
+    ///     Point 9 – economizer "cold" outlet / injection of two-phase refrigerant into the compressor.
     /// </summary>
     public Refrigerant Point9 { get; }
 
     /// <summary>
-    ///     Point 10 – outlet of the main stream from the economizer ("hot" outlet) /
-    ///     inlet to the expansion valve of the evaporator circuit.
+    ///     Point 10 – economizer "hot" outlet / second EV inlet.
     /// </summary>
     public Refrigerant Point10 { get; }
 
     /// <summary>
-    ///     Point 11 – outlet from the expansion valve of the evaporator circuit / evaporator inlet.
+    ///     Point 11 – second EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point11 { get; }
 

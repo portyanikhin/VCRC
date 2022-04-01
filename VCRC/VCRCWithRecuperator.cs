@@ -97,12 +97,12 @@ public class VCRCWithRecuperator : SubcriticalVCRC, IEntropyAnalysable
     public Refrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – recuperator "hot" outlet / expansion valve inlet.
+    ///     Point 7 – recuperator "hot" outlet / EV inlet.
     /// </summary>
     public Refrigerant Point7 { get; }
 
     /// <summary>
-    ///     Point 8 – expansion valve outlet / evaporator inlet.
+    ///     Point 8 – EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point8 { get; }
 

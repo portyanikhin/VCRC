@@ -70,12 +70,12 @@ public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
     public Refrigerant Point4 { get; }
 
     /// <summary>
-    ///     Point 5 – condenser outlet / expansion valve inlet.
+    ///     Point 5 – condenser outlet / EV inlet.
     /// </summary>
     public Refrigerant Point5 { get; }
 
     /// <summary>
-    ///     Point 6 – expansion valve outlet / evaporator inlet.
+    ///     Point 6 – EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point6 { get; }
 

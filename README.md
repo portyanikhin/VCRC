@@ -206,8 +206,8 @@ This is a complete analog of the [Economizer](#economizer), but without superhea
 - `Point2` - compression stage discharge / condenser inlet.
 - `Point3` - dew-point on the condensing isobar.
 - `Point4` - bubble-point on the condensing isobar.
-- `Point5` - condenser outlet / expansion valve inlet.
-- `Point6` - expansion valve outlet / evaporator inlet.
+- `Point5` - condenser outlet / EV inlet.
+- `Point6` - EV outlet / evaporator inlet.
 
 **_Example:_**
 
@@ -256,8 +256,8 @@ Console.WriteLine(cycle.Point2.Temperature); // 123.71 °C
 - `Point4` - dew-point on the condensing isobar.
 - `Point5` - bubble-point on the condensing isobar.
 - `Point6` - condenser outlet / recuperator "hot" inlet.
-- `Point7` - recuperator "hot" outlet / expansion valve inlet.
-- `Point8` - expansion valve outlet / evaporator inlet.
+- `Point7` - recuperator "hot" outlet / EV inlet.
+- `Point8` - EV outlet / evaporator inlet.
 
 **_Example:_**
 
@@ -308,11 +308,11 @@ Console.WriteLine(cycle.Point3.Temperature); // 130.49 °C
 - `Point4` - second compression stage discharge / condenser inlet.
 - `Point5` - dew-point on the condensing isobar.
 - `Point6` - bubble-point on the condensing isobar.
-- `Point7` - condenser outlet / first expansion valve inlet.
-- `Point8` - first expansion valve outlet / intermediate vessel inlet.
+- `Point7` - condenser outlet / first EV inlet.
+- `Point8` - first EV outlet / intermediate vessel inlet.
 - `Point9` - intermediate vessel vapor outlet / injection of cooled vapor into the compressor.
-- `Point10` - intermediate vessel liquid outlet / second expansion valve inlet.
-- `Point11` - second expansion valve outlet / evaporator inlet.
+- `Point10` - intermediate vessel liquid outlet / second EV inlet.
+- `Point11` - second EV outlet / evaporator inlet.
 
 **_NB:_**
 
@@ -368,10 +368,10 @@ Console.WriteLine(cycle.Point4.Temperature); // 115.35 °C
 - `Point4` - second compression stage discharge / condenser inlet.
 - `Point5` - dew-point on the condensing isobar.
 - `Point6` - bubble-point on the condensing isobar.
-- `Point7` - condenser outlet / first expansion valve inlet.
-- `Point8` - first expansion valve outlet / intermediate vessel inlet.
-- `Point9` - intermediate vessel liquid outlet / second expansion valve inlet.
-- `Point10` - second expansion valve outlet / evaporator inlet.
+- `Point7` - condenser outlet / first EV inlet.
+- `Point8` - first EV outlet / intermediate vessel inlet.
+- `Point9` - intermediate vessel liquid outlet / second EV inlet.
+- `Point10` - second EV outlet / evaporator inlet.
 
 **_NB:_**
 
@@ -427,11 +427,11 @@ Console.WriteLine(cycle.Point4.Temperature); // 74.77 °C
 - `Point4` - second compression stage discharge / condenser inlet.
 - `Point5` - dew-point on the condensing isobar.
 - `Point6` - bubble-point on the condensing isobar.
-- `Point7` - condenser outlet / inlet to the expansion valve of the injection circuit (first EV) / inlet of the main stream into the economizer ("hot" inlet).
-- `Point8` - outlet from the expansion valve of the injection circuit (first EV) / inlet of the injected stream into the economizer ("cold" inlet).
-- `Point 9` - outlet of the injected stream from the economizer ("cold" outlet) / injection of cooled vapor into the compressor.
-- `Point10` - outlet of the main stream from the economizer ("hot" outlet) / inlet to the expansion valve of the evaporator circuit (second EV).
-- `Point11` - outlet from the expansion valve of the evaporator circuit (second EV) / evaporator inlet.
+- `Point7` - condenser outlet / first EV inlet / economizer "hot" inlet.
+- `Point8` - first EV outlet / economizer "cold" inlet.
+- `Point 9` - economizer "cold" outlet / injection of cooled vapor into the compressor.
+- `Point10` - economizer "hot" outlet / second EV inlet.
+- `Point11` - second EV outlet / evaporator inlet.
 
 **_Example:_**
 
@@ -483,11 +483,11 @@ Console.WriteLine(cycle.Point4.Temperature); // 118.42 °C
 - `Point4` - second compression stage discharge / condenser inlet.
 - `Point5` - dew-point on the condensing isobar.
 - `Point6` - bubble-point on the condensing isobar.
-- `Point7` - condenser outlet / inlet to the expansion valve of the injection circuit (first EV) / inlet of the main stream into the economizer ("hot" inlet).
-- `Point8` - outlet from the expansion valve of the injection circuit (first EV) / inlet of the injected stream into the economizer ("cold" inlet).
-- `Point 9` - outlet of the injected stream from the economizer ("cold" outlet) / injection of two-phase refrigerant into the compressor.
-- `Point10` - outlet of the main stream from the economizer ("hot" outlet) / inlet to the expansion valve of the evaporator circuit (second EV).
-- `Point11` - outlet from the expansion valve of the evaporator circuit (second EV) / evaporator inlet.
+- `Point7` - condenser outlet / first EV inlet / economizer "hot" inlet.
+- `Point8` - first EV outlet / economizer "cold" inlet.
+- `Point 9` - economizer "cold" outlet / injection of two-phase refrigerant into the compressor.
+- `Point10` - economizer "hot" outlet / second EV inlet.
+- `Point11` - second EV outlet / evaporator inlet.
 
 **_Example:_**
 

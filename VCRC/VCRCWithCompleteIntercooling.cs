@@ -130,22 +130,22 @@ public class VCRCWithCompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyAna
     public Refrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – condenser outlet / first expansion valve inlet.
+    ///     Point 7 – condenser outlet / first EV inlet.
     /// </summary>
     public Refrigerant Point7 { get; }
 
     /// <summary>
-    ///     Point 8 – first expansion valve outlet / intermediate vessel inlet.
+    ///     Point 8 – first EV outlet / intermediate vessel inlet.
     /// </summary>
     public Refrigerant Point8 { get; }
 
     /// <summary>
-    ///     Point 9 – intermediate vessel liquid outlet / second expansion valve inlet.
+    ///     Point 9 – intermediate vessel liquid outlet / second EV inlet.
     /// </summary>
     public Refrigerant Point9 { get; }
 
     /// <summary>
-    ///     Point 10 – second expansion valve outlet / evaporator inlet.
+    ///     Point 10 – second EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point10 { get; }
 
