@@ -31,7 +31,7 @@ public class VCRCWithEconomizerTPI : TwoStageSubcriticalVCRC, IEntropyAnalysable
     ///     Intermediate pressure should be greater than evaporating pressure!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than condensing pressure!
+    ///     Intermediate pressure should be less than condensing pressure!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the compressor injection circuit!
