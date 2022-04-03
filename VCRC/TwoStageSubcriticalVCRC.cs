@@ -33,5 +33,5 @@ public abstract class TwoStageSubcriticalVCRC : SubcriticalVCRC
     /// <summary>
     ///     Specific ratio of the mass flow rate of the second compression stage
     /// </summary>
-    public Ratio SecondStageSpecificMassFlow { get; protected init; }
+    public Ratio SecondStageSpecificMassFlow { get; protected set; }
 }
