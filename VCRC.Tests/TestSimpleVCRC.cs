@@ -165,6 +165,7 @@ public class TestSimpleVCRC
         var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
         const double tolerance = 1e-10;
         result.ThermodynamicPerfection.Percent.Should().BeApproximately(21.600152157280235, tolerance);
+        result.MinSpecificWorkRatio.Percent.Should().BeApproximately(21.600152157280235, tolerance);
         result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(26.551093605669124, tolerance);
         result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(13.789884357670854, tolerance);

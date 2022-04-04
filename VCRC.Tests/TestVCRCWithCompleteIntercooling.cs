@@ -173,6 +173,7 @@ public class TestVCRCWithCompleteIntercooling
         var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
         const double tolerance = 1e-10;
         result.ThermodynamicPerfection.Percent.Should().BeApproximately(23.837382481910282, tolerance);
+        result.MinSpecificWorkRatio.Percent.Should().BeApproximately(23.692489879977753, tolerance);
         result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(24.213673144004755, tolerance);
         result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(9.58555508992268, tolerance);
