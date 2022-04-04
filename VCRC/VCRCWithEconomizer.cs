@@ -161,7 +161,7 @@ public class VCRCWithEconomizer : TwoStageSubcriticalVCRC, IEntropyAnalysable
         var (coldSource, hotSource) =
             IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point7.Temperature);
         var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
-        var thermodynamicEfficiency = Ratio
+        var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
         var condenserEnergyLoss =
             SecondStageSpecificMassFlow.DecimalFractions *
@@ -215,7 +215,7 @@ public class VCRCWithEconomizer : TwoStageSubcriticalVCRC, IEntropyAnalysable
         var analysisRelativeError = Ratio
             .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
                                   IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
-        return new EntropyAnalysisResult(thermodynamicEfficiency, minSpecificWorkRatio, compressorEnergyLossRatio,
+        return new EntropyAnalysisResult(thermodynamicPerfection, minSpecificWorkRatio, compressorEnergyLossRatio,
             condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero,
             economizerEnergyLossRatio, mixingEnergyLossRatio, analysisRelativeError);
     }

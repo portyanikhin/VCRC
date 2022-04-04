@@ -7,6 +7,7 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
 using VCRC.Components;
 using VCRC.Extensions;
@@ -21,7 +22,7 @@ namespace VCRC;
 /// <remarks>
 ///     Two-stage VCRC with economizer, recuperator and two-phase injection to the compressor.
 /// </remarks>
-public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC
+public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
 {
     /// <summary>
     ///     Mitsubishi Zubadan VCRC.
@@ -210,6 +211,77 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC
                 .Pascals()
                 .ToUnit(PressureUnit.Kilopascal);
         }
+    }
+
+    public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
+    {
+        var (coldSource, hotSource) =
+            IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point8.Temperature);
+        var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
+        var thermodynamicPerfection = Ratio
+            .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
+        var condenserEnergyLoss =
+            SecondStageSpecificMassFlow.DecimalFractions *
+            (Point5s.Enthalpy - Point8.Enthalpy - (hotSource.Kelvins * (Point5s.Entropy - Point8.Entropy)
+                .JoulesPerKilogramKelvin).JoulesPerKilogram());
+        var expansionValvesEnergyLoss =
+            (hotSource.Kelvins *
+             (SecondStageSpecificMassFlow.DecimalFractions * (Point9.Entropy - Point8.Entropy) +
+              (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
+              (Point11.Entropy - Point10.Entropy) +
+              FirstStageSpecificMassFlow.DecimalFractions * (Point14.Entropy - Point13.Entropy))
+             .JoulesPerKilogramKelvin).JoulesPerKilogram();
+        var evaporatorEnergyLoss =
+            (FirstStageSpecificMassFlow.DecimalFractions * hotSource.Kelvins *
+             ((Point1.Entropy - Point14.Entropy).JoulesPerKilogramKelvin -
+              (Point1.Enthalpy - Point14.Enthalpy).JoulesPerKilogram / coldSource.Kelvins)).JoulesPerKilogram();
+        var recuperatorEnergyLoss =
+            (hotSource.Kelvins *
+             (FirstStageSpecificMassFlow.DecimalFractions * (Point2.Entropy - Point1.Entropy) -
+              SecondStageSpecificMassFlow.DecimalFractions * (Point9.Entropy - Point10.Entropy))
+             .JoulesPerKilogramKelvin).JoulesPerKilogram();
+        var economizerEnergyLoss =
+            (hotSource.Kelvins *
+             ((SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
+              (Point12.Entropy - Point11.Entropy) -
+              FirstStageSpecificMassFlow.DecimalFractions *
+              (Point10.Entropy - Point13.Entropy))
+             .JoulesPerKilogramKelvin).JoulesPerKilogram();
+        var mixingEnergyLoss =
+            (hotSource.Kelvins *
+             (SecondStageSpecificMassFlow.DecimalFractions * Point4.Entropy -
+              (FirstStageSpecificMassFlow.DecimalFractions * Point3.Entropy +
+               (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow)
+               .DecimalFractions * Point12.Entropy)).JoulesPerKilogramKelvin)
+            .JoulesPerKilogram();
+        var calculatedIsentropicSpecificWork =
+            minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
+            recuperatorEnergyLoss + economizerEnergyLoss + mixingEnergyLoss;
+        var compressorEnergyLoss =
+            calculatedIsentropicSpecificWork * (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
+        var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;
+        var minSpecificWorkRatio = Ratio
+            .FromDecimalFractions(minSpecificWork / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var compressorEnergyLossRatio = Ratio
+            .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var condenserEnergyLossRatio = Ratio
+            .FromDecimalFractions(condenserEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var expansionValvesEnergyLossRatio = Ratio
+            .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var evaporatorEnergyLossRatio = Ratio
+            .FromDecimalFractions(evaporatorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var recuperatorEnergyLossRatio = Ratio
+            .FromDecimalFractions(recuperatorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var economizerEnergyLossRatio = Ratio
+            .FromDecimalFractions(economizerEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var mixingEnergyLossRatio = Ratio
+            .FromDecimalFractions(mixingEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var analysisRelativeError = Ratio
+            .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
+                                  IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
+        return new EntropyAnalysisResult(thermodynamicPerfection, minSpecificWorkRatio, compressorEnergyLossRatio,
+            condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio,
+            recuperatorEnergyLossRatio, economizerEnergyLossRatio, mixingEnergyLossRatio, analysisRelativeError);
     }
 
     private void CalculateInjectionQuality()
