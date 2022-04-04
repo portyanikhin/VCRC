@@ -455,11 +455,11 @@ var compressor = new Compressor((80).Percent());
 var condenser =
     new Condenser(FluidsList.R32, (40).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 var economizer =
-    new Economizer(evaporator, condenser, TemperatureDelta.FromKelvins(7), TemperatureDelta.FromKelvins(5));
+    new Economizer(evaporator, condenser, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithEconomizer(evaporator, compressor, condenser, economizer);
-Console.WriteLine(cycle.EER);                // 2.359978191965046
-Console.WriteLine(cycle.COP);                // 3.359978191965046
-Console.WriteLine(cycle.Point4.Temperature); // 118.42 °C
+Console.WriteLine(cycle.EER);                // 2.374585213330844
+Console.WriteLine(cycle.COP);                // 3.3745852133308443
+Console.WriteLine(cycle.Point4.Temperature); // 117.97 °C
 ```
 
 ### Two-stage VCRC with economizer and two-phase injection to the compressor
@@ -511,10 +511,10 @@ var compressor = new Compressor((80).Percent());
 var condenser =
     new Condenser(FluidsList.R32, (40).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 var economizer =
-    new EconomizerTPI(evaporator, condenser, TemperatureDelta.FromKelvins(7));
+    new EconomizerTPI(evaporator, condenser, TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithEconomizerTPI(evaporator, compressor, condenser, economizer);
-Console.WriteLine(cycle.EER);                // 2.4347473905936
-Console.WriteLine(cycle.COP);                // 3.4347473905935995
+Console.WriteLine(cycle.EER);                // 2.449607553764133
+Console.WriteLine(cycle.COP);                // 3.449607553764133
 Console.WriteLine(cycle.Point4.Temperature); // 74.77 °C
 ```
 
