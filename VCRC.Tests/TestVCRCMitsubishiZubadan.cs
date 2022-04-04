@@ -190,14 +190,14 @@ public class TestVCRCMitsubishiZubadan
     public void TestEntropyAnalysis()
     {
         var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
-        const double tolerance = 1e-6;
+        const double tolerance = 1e-10;
         result.ThermodynamicPerfection.Percent.Should().BeApproximately(23.06592494861838, tolerance);
         result.MinSpecificWorkRatio.Percent.Should().BeApproximately(22.87989757054636, tolerance);
         result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(23.53708040524894, tolerance);
         result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(8.216569075578189, tolerance);
         result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(19.160764385133717, tolerance);
-        result.RecuperatorEnergyLossRatio.Percent.Should().Be(0.8377929682890785);
+        result.RecuperatorEnergyLossRatio.Percent.Should().BeApproximately(0.8377929682890785, tolerance);
         result.EconomizerEnergyLossRatio.Percent.Should().BeApproximately(1.716253022648027, tolerance);
         result.MixingEnergyLossRatio.Percent.Should().BeApproximately(3.6516425725556885, tolerance);
         result.AnalysisRelativeError.Percent.Should().BeApproximately(0.8130603622609837, tolerance);
