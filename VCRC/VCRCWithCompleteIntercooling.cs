@@ -70,8 +70,9 @@ public class VCRCWithCompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyAna
             Input.Quality(TwoPhase.Bubble.VaporQuality()));
         Point10 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point9.Enthalpy));
-        _barbotageSpecificMassFlow = FirstStageSpecificMassFlow *
-                                     ((Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point9.Enthalpy));
+        _barbotageSpecificMassFlow =
+            FirstStageSpecificMassFlow *
+            ((Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point9.Enthalpy));
         SecondStageSpecificMassFlow =
             ((FirstStageSpecificMassFlow + _barbotageSpecificMassFlow) /
              (1 - Point8.Quality!.Value.DecimalFractions)).ToUnit(RatioUnit.Percent);

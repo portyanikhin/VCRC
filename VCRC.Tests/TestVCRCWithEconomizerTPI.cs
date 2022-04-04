@@ -74,8 +74,9 @@ public class TestVCRCWithEconomizerTPI
     public void TestPoint2()
     {
         Cycle.Point2.Pressure.Should().Be(Cycle.Economizer.Pressure);
-        Cycle.Point2.Enthalpy.Should().Be(Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+        Cycle.Point2.Enthalpy.Should()
+            .Be(Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
+                Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
         Cycle.Point2.Phase.Should().Be(Phases.Gas);
     }
 
@@ -100,8 +101,9 @@ public class TestVCRCWithEconomizerTPI
     public void TestPoint4()
     {
         Cycle.Point4.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point4.Enthalpy.Should().Be(Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+        Cycle.Point4.Enthalpy.Should()
+            .Be(Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
+                Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
         Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
         Cycle.Point4.Phase.Should().Be(Phases.Gas);
     }
@@ -142,14 +144,15 @@ public class TestVCRCWithEconomizerTPI
     public void TestPoint9()
     {
         Cycle.Point9.Pressure.Should().Be(Cycle.Economizer.Pressure);
-        Cycle.Point9.Enthalpy.Should().Be(
-            ((Cycle.Point8.Enthalpy.JoulesPerKilogram * (Cycle.Point2.Enthalpy.JoulesPerKilogram -
-                                                         Cycle.Point3.Enthalpy.JoulesPerKilogram) +
-              Cycle.Point3.Enthalpy.JoulesPerKilogram * (Cycle.Point7.Enthalpy.JoulesPerKilogram -
-                                                         Cycle.Point10.Enthalpy.JoulesPerKilogram)) /
-             (Cycle.Point2.Enthalpy.JoulesPerKilogram - Cycle.Point3.Enthalpy.JoulesPerKilogram +
-                 Cycle.Point7.Enthalpy.JoulesPerKilogram - Cycle.Point10.Enthalpy.JoulesPerKilogram))
-            .JoulesPerKilogram());
+        Cycle.Point9.Enthalpy.Should()
+            .Be(
+                ((Cycle.Point8.Enthalpy.JoulesPerKilogram *
+                  (Cycle.Point2.Enthalpy.JoulesPerKilogram - Cycle.Point3.Enthalpy.JoulesPerKilogram) +
+                  Cycle.Point3.Enthalpy.JoulesPerKilogram *
+                  (Cycle.Point7.Enthalpy.JoulesPerKilogram - Cycle.Point10.Enthalpy.JoulesPerKilogram)) /
+                 (Cycle.Point2.Enthalpy.JoulesPerKilogram - Cycle.Point3.Enthalpy.JoulesPerKilogram +
+                     Cycle.Point7.Enthalpy.JoulesPerKilogram - Cycle.Point10.Enthalpy.JoulesPerKilogram))
+                .JoulesPerKilogram());
         Cycle.Point9.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -157,7 +160,8 @@ public class TestVCRCWithEconomizerTPI
     public void TestPoint10()
     {
         Cycle.Point10.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point10.Temperature.Should().Be(Cycle.Point8.Temperature + Cycle.Economizer.TemperatureDifference);
+        Cycle.Point10.Temperature.Should()
+            .Be(Cycle.Point8.Temperature + Cycle.Economizer.TemperatureDifference);
         Cycle.Point10.Phase.Should().Be(Phases.Liquid);
     }
 

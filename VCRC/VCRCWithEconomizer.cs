@@ -71,9 +71,10 @@ public class VCRCWithEconomizer : TwoStageSubcriticalVCRC, IEntropyAnalysable
             FirstStageSpecificMassFlow *
             (1 + (Point7.Enthalpy - Point10.Enthalpy) / (Point9.Enthalpy - Point8.Enthalpy));
         Point3 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
-            Input.Enthalpy((FirstStageSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
-                            (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-                            Point9.Enthalpy) / SecondStageSpecificMassFlow.DecimalFractions));
+            Input.Enthalpy(
+                (FirstStageSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
+                 (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
+                 Point9.Enthalpy) / SecondStageSpecificMassFlow.DecimalFractions));
         Point4s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Entropy(Point3.Entropy));
         var isentropicSpecificWork2 =

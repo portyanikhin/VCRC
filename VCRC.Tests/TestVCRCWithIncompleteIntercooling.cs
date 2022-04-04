@@ -82,8 +82,9 @@ public class TestVCRCWithIncompleteIntercooling
     public void TestPoint2()
     {
         Cycle.Point2.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
-        Cycle.Point2.Enthalpy.Should().Be(Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+        Cycle.Point2.Enthalpy.Should()
+            .Be(Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
+                Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
         Cycle.Point2.Phase.Should().Be(Phases.Gas);
     }
 
@@ -111,8 +112,9 @@ public class TestVCRCWithIncompleteIntercooling
     public void TestPoint4()
     {
         Cycle.Point4.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point4.Enthalpy.Should().Be(Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+        Cycle.Point4.Enthalpy.Should()
+            .Be(Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
+                Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
         Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
         Cycle.Point4.Phase.Should().Be(Phases.SupercriticalGas);
     }
