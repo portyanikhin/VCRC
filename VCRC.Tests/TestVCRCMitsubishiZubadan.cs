@@ -190,7 +190,7 @@ public class TestVCRCMitsubishiZubadan
     public void TestEntropyAnalysis()
     {
         var result = Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
-        const double tolerance = 1e-10;
+        const double tolerance = 1e-8;
         result.ThermodynamicPerfection.Percent.Should().BeApproximately(23.06592494861838, tolerance);
         result.MinSpecificWorkRatio.Percent.Should().BeApproximately(22.87989757054636, tolerance);
         result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
