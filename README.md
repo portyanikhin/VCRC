@@ -190,13 +190,13 @@ This is a complete analog of the [Economizer](#economizer), but without superhea
 
 ### Simple single-stage VCRC
 
-**_Schematic diagram:_**
-
-![Simple VCRC scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC.png)
-
-**_Temperature-entropy chart (T-s chart):_**
-
-![Simple VCRC T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC%20T-s%20chart.png)
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+    <b><i>Schematic diagram</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC.png" alt="Simple VCRC scheme" width="65%"/><br><br>
+    <b><i>Temperature-entropy chart (T-s chart)</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/SimpleVCRC%20T-s%20chart.png" alt="Simple VCRC T-s chart" width="65%"/>
+</p>
 
 **_List of points:_**
 
@@ -238,13 +238,13 @@ Console.WriteLine(cycle.Point2.Temperature); // 123.71 °C
 
 ### Single-stage VCRC with recuperator
 
-**_Schematic diagram:_**
-
-![VCRC with recuperator scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator.png)
-
-**_Temperature-entropy chart (T-s chart):_**
-
-![VCRC with recuperator T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator%20T-s%20chart.png)
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+    <b><i>Schematic diagram</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator.png" alt="VCRC with recuperator scheme" width="65%"/><br><br>
+    <b><i>Temperature-entropy chart (T-s chart)</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithRecuperator%20T-s%20chart.png" alt="VCRC with recuperator T-s chart" width="65%"/>
+</p>
 
 **_List of points:_**
 
@@ -289,13 +289,13 @@ Console.WriteLine(cycle.Point3.Temperature); // 130.49 °C
 
 ### Two-stage VCRC with incomplete intercooling
 
-**_Schematic diagram:_**
-
-![VCRC with incomplete intercooling scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling.png)
-
-**_Temperature-entropy chart (T-s chart):_**
-
-![VCRC with incomplete intercooling T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling%20T-s%20chart.png)
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+    <b><i>Schematic diagram</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling.png" alt="VCRC with incomplete intercooling scheme" width="65%"/><br><br>
+    <b><i>Temperature-entropy chart (T-s chart)</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithIncompleteIntercooling%20T-s%20chart.png" alt="VCRC with incomplete intercooling T-s chart" width="65%"/>
+</p>
 
 **_List of points:_**
 
@@ -349,13 +349,13 @@ Console.WriteLine(cycle.Point4.Temperature); // 115.35 °C
 
 ### Two-stage VCRC with complete intercooling
 
-**_Schematic diagram:_**
-
-![VCRC with complete intercooling scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling.png)
-
-**_Temperature-entropy chart (T-s chart):_**
-
-![VCRC with complete intercooling T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling%20T-s%20chart.png)
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+    <b><i>Schematic diagram</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling.png" alt="VCRC with complete intercooling scheme" width="65%"/><br><br>
+    <b><i>Temperature-entropy chart (T-s chart)</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithCompleteIntercooling%20T-s%20chart.png" alt="VCRC with complete intercooling T-s chart" width="65%"/>
+</p>
 
 **_List of points:_**
 
@@ -408,13 +408,13 @@ Console.WriteLine(cycle.Point4.Temperature); // 74.77 °C
 
 ### Two-stage VCRC with economizer
 
-**_Schematic diagram:_**
-
-![VCRC with economizer scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizer.png)
-
-**_Temperature-entropy chart (T-s chart):_**
-
-![VCRC with economizer T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizer%20T-s%20chart.png)
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+    <b><i>Schematic diagram</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizer.png" alt="VCRC with economizer scheme" width="65%"/><br><br>
+    <b><i>Temperature-entropy chart (T-s chart)</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizer%20T-s%20chart.png" alt="VCRC with economizer T-s chart" width="65%"/>
+</p>
 
 **_List of points:_**
 
@@ -464,13 +464,13 @@ Console.WriteLine(cycle.Point4.Temperature); // 117.97 °C
 
 ### Two-stage VCRC with economizer and two-phase injection to the compressor
 
-**_Schematic diagram:_**
-
-![VCRC with economizer and two-phase injection to the compressor scheme](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizerTPI.png)
-
-**_Temperature-entropy chart (T-s chart):_**
-
-![VCRC with economizer and two-phase injection to the compressor T-s chart](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizerTPI%20T-s%20chart.png)
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+    <b><i>Schematic diagram</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizerTPI.png" alt="VCRC with economizer and two-phase injection to the compressor scheme" width="65%"/><br><br>
+    <b><i>Temperature-entropy chart (T-s chart)</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCWithEconomizerTPI%20T-s%20chart.png" alt="VCRC with economizer and two-phase injection to the compressor T-s chart" width="65%"/>
+</p>
 
 **_List of points:_**
 
