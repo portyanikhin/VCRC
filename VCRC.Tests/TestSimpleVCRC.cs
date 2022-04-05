@@ -17,7 +17,7 @@ public class TestSimpleVCRC
 {
     private SimpleVCRC Cycle { get; set; } = null!;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         const FluidsList refrigerantName = FluidsList.R32;

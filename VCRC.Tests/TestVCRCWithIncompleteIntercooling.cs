@@ -18,7 +18,7 @@ public class TestVCRCWithIncompleteIntercooling
 {
     private VCRCWithIncompleteIntercooling Cycle { get; set; } = null!;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         const FluidsList refrigerantName = FluidsList.R32;

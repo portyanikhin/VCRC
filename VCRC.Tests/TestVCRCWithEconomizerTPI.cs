@@ -18,7 +18,7 @@ public class TestVCRCWithEconomizerTPI
 {
     private VCRCWithEconomizerTPI Cycle { get; set; } = null!;
 
-    [SetUp]
+    [OneTimeSetUp]
     public void SetUp()
     {
         const FluidsList refrigerantName = FluidsList.R32;
