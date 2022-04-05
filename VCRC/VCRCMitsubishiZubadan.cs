@@ -293,7 +293,7 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
         try
         {
             NewtonRaphson.FindRootNearGuess(
-                ToSolve, Differentiate.FirstDerivativeFunc(ToSolve), 80, 1e-9, 100 - 1e-9, 1e-2);
+                ToSolve, Differentiate.FirstDerivativeFunc(ToSolve), 80, 1e-9, 100 - 1e-9, 1e-3);
         }
         catch (Exception)
         {
