@@ -15,9 +15,17 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <PackageReadmeFile>README.md</PackageReadmeFile>
-        <PackageReleaseNotes>Bump SharpProp from 3.1.19 to 3.2.0.</PackageReleaseNotes>
+        <PackageReleaseNotes>
+Massive update:
+- Added the Mitsubishi Zubadan VCRC.
+- Added entropy analysis for the Mitsubishi Zubadan VCRC.
+- Added entropy analysis in the range of indoor and outdoor temperatures.
+- Added validation rules for a refrigerant temperature glide to the VCRCWithCompleteIntercooling and VCRCWithIncompleteIntercooling classes.
+- Documentation update.
+- Bump SharpProp from 3.2.0 to 3.2.1.
+        </PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>1.0.12</PackageVersion>
+        <PackageVersion>1.1.0</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
