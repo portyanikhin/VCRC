@@ -14,7 +14,7 @@
         <PackageIconFullPath>$(MSBuildThisFileDirectory)pictures\icon.png</PackageIconFullPath>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
-        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageReadmeFile>NuGet.md</PackageReadmeFile>
         <PackageReleaseNotes>
 Massive update:
 - Added the Mitsubishi Zubadan VCRC.
@@ -22,10 +22,10 @@ Massive update:
 - Added entropy analysis in the range of indoor and outdoor temperatures.
 - Added validation rules for a refrigerant temperature glide to the VCRCWithCompleteIntercooling and VCRCWithIncompleteIntercooling classes.
 - Documentation update.
-- Bump SharpProp from 3.2.0 to 3.2.1.
+- Bump SharpProp from 3.2.0 to 3.2.2.
         </PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>1.1.1</PackageVersion>
+        <PackageVersion>1.1.2</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
@@ -34,7 +34,7 @@ Massive update:
 
     <ItemGroup>
         <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\"/>
-        <None Include="..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="..\NuGet.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
     <ItemGroup>
