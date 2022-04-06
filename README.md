@@ -618,3 +618,5 @@ Console.WriteLine(result.EconomizerEnergyLossRatio);      // 0 %
 Console.WriteLine(result.MixingEnergyLossRatio);          // 0 %
 Console.WriteLine(result.AnalysisRelativeError);          // 3.18e-14 %
 ```
+
+In addition, you can perform entropy analysis in the range of indoor and outdoor temperatures ([see example](https://github.com/portyanikhin/VCRC/blob/main/VCRC.Tests/Extensions/TestEntropyAnalysisExtensions.cs)).
