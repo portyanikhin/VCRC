@@ -10,6 +10,7 @@ public interface IEntropyAnalysable
     /// </summary>
     /// <param name="indoor">Indoor temperature.</param>
     /// <param name="outdoor">Outdoor temperature.</param>
+    /// <returns>Result of the VCRC entropy analysis.</returns>
     /// <exception cref="ArgumentException">Indoor and outdoor temperatures should not be equal!</exception>
     /// <exception cref="ArgumentException">
     ///     Wrong temperature difference in the evaporator! Increase 'cold' source temperature.
