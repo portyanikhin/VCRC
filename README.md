@@ -28,6 +28,7 @@ using [SharpProp](https://github.com/portyanikhin/SharpProp).
     - [Two-stage VCRC with complete intercooling](#two-stage-vcrc-with-complete-intercooling)
     - [Two-stage VCRC with economizer](#two-stage-vcrc-with-economizer)
     - [Two-stage VCRC with economizer and two-phase injection to the compressor](#two-stage-vcrc-with-economizer-and-two-phase-injection-to-the-compressor)
+    - [Mitsubishi Zubadan VCRC](#mitsubishi-zubadan-vcrc)
 - [Entropy analysis](#entropy-analysis)
 
 ## Unit safety
@@ -516,6 +517,66 @@ var cycle = new VCRCWithEconomizerTPI(evaporator, compressor, condenser, economi
 Console.WriteLine(cycle.EER);                // 2.449607553764133
 Console.WriteLine(cycle.COP);                // 3.449607553764133
 Console.WriteLine(cycle.Point4.Temperature); // 74.77 °C
+```
+
+### Mitsubishi Zubadan VCRC
+
+<!--suppress HtmlDeprecatedAttribute -->
+<p align="center">
+    <b><i>Schematic diagram</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCMitsubishiZubadan.png" alt="Mitsubishi Zubadan VCRC scheme" width="70%"/><br><br>
+    <b><i>Temperature-entropy chart (T-s chart)</i></b><br><br>
+    <img src="https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/VCRCMitsubishiZubadan%20T-s%20chart.png" alt="Mitsubishi Zubadan VCRC T-s chart" width="70%"/>
+</p>
+
+**_List of points:_**
+
+- `Point0` - dew-point on the evaporating isobar.
+- `Point1` - evaporator outlet / recuperator "cold" inlet.
+- `Point2` - recuperator "cold" outlet / first compression stage suction.
+- `Point 3s` - first isentropic compression stage discharge.
+- `Point 3` - first compression stage discharge.
+- `Point 4` - second compression stage suction.
+- `Point 5s` - second isentropic compression stage discharge.
+- `Point 5` - second compression stage discharge / condenser inlet.
+- `Point 6` - dew-point on the condensing isobar.
+- `Point 7` - bubble-point on the condensing isobar.
+- `Point 8` - condenser outlet / first EV inlet.
+- `Point 9` - first EV outlet / recuperator "hot" inlet.
+- `Point 10` - recuperator "hot" outlet / second EV inlet / economizer "hot" inlet.
+- `Point 11` - second EV outlet / economizer "cold" inlet.
+- `Point 12` - economizer "cold" outlet / injection of two-phase refrigerant into the compressor.
+- `Point 13` - economizer "hot" outlet / third EV inlet.
+- `Point 14` - third EV outlet / evaporator inlet.
+
+**_Example:_**
+
+To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
+the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperature:
+
+```c#
+using System;
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+using VCRC.Components;
+```
+
+```c#
+var evaporator =
+    new Evaporator(FluidsList.R32, (-25).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+var compressor = new Compressor((80).Percent());
+var condenser =
+    new Condenser(FluidsList.R32, (40).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
+var economizer =
+    new EconomizerTPI(evaporator, condenser, TemperatureDelta.FromKelvins(5));
+var cycle = new VCRCMitsubishiZubadan(evaporator, recuperator, compressor, condenser, economizer);
+Console.WriteLine(cycle.EER);                // 2.416508981309997
+Console.WriteLine(cycle.COP);                // 3.4165089804636946
+Console.WriteLine(cycle.Point5.Temperature); // 74.77 °C
 ```
 
 ## Entropy analysis
