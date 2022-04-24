@@ -1,4 +1,5 @@
-﻿using UnitsNet;
+﻿using EnumsNET;
+using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC.Fluids;
 using VCRC.Fluids.Attributes;
@@ -13,5 +14,5 @@ public static class TwoPhaseExtensions
     /// <param name="member">The <see cref="TwoPhase" /> member.</param>
     /// <returns>Vapor quality of the two-phase point.</returns>
     public static Ratio VaporQuality(this TwoPhase member) =>
-        member.GetAttribute<VaporQuality>().Value.Percent();
+        member.GetAttributes()!.Get<VaporQuality>()!.Value.Percent();
 }
