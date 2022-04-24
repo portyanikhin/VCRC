@@ -40,7 +40,7 @@ Massive update:
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="10.4.0"/>
         <PackageReference Include="MathNet.Numerics" Version="5.0.0"/>
-        <PackageReference Include="SharpProp" Version="3.2.2"/>
+        <PackageReference Include="SharpProp" Version="3.2.3"/>
     </ItemGroup>
 
 </Project>
