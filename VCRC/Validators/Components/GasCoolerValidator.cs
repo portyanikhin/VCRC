@@ -12,7 +12,7 @@ public class GasCoolerValidator : AbstractValidator<GasCooler>
         RuleFor(gasCooler => gasCooler.OutletTemperature)
             .ExclusiveBetween(refrigerant.CriticalTemperature, refrigerant.MaxTemperature)
             .WithMessage(
-                "Gas temperature at the gas cooler outlet should be in " +
+                "Gas cooler outlet temperature should be in " +
                 $"({Math.Round(refrigerant.CriticalTemperature.DegreesCelsius, 2)};" +
                 $"{Math.Round(refrigerant.MaxTemperature.DegreesCelsius, 2)}) °C!");
     }

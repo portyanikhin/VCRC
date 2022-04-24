@@ -11,12 +11,12 @@ using VCRC.Validators.Components;
 namespace VCRC.Components;
 
 /// <summary>
-///     Gas cooler as a component of transcritical VCRC.
+///     Gas cooler as a transcritical VCRC component.
 /// </summary>
 public class GasCooler : IEquatable<GasCooler>
 {
     /// <summary>
-    ///     Gas cooler as a component of transcritical VCRC.
+    ///     Gas cooler as a transcritical VCRC component.
     /// </summary>
     /// <remarks>
     ///     For R744, the absolute pressure in the gas cooler is optional.
@@ -26,10 +26,10 @@ public class GasCooler : IEquatable<GasCooler>
     ///     Applied Thermal Engineering. – 2015. – V. 89. – P. 656-662.
     /// </remarks>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
-    /// <param name="outletTemperature">Gas temperature at the gas cooler outlet.</param>
-    /// <param name="pressure">Absolute pressure in the gas cooler (optional for R744).</param>
+    /// <param name="outletTemperature">Gas cooler outlet temperature.</param>
+    /// <param name="pressure">Gas cooler absolute pressure (optional for R744).</param>
     /// <exception cref="ValidationException">
-    ///     Gas temperature at the gas cooler outlet should be in  ({CriticalTemperature};{MaxTemperature}) °C!
+    ///     Gas cooler outlet temperature should be in ({CriticalTemperature};{MaxTemperature}) °C!
     /// </exception>
     /// <exception cref="ArgumentException">
     ///     It is impossible to automatically calculate the absolute pressure in the gas cooler!
@@ -59,12 +59,12 @@ public class GasCooler : IEquatable<GasCooler>
     internal FluidsList RefrigerantName { get; }
 
     /// <summary>
-    ///     Gas temperature at the gas cooler outlet.
+    ///     Gas cooler outlet temperature.
     /// </summary>
     public Temperature OutletTemperature { get; }
 
     /// <summary>
-    ///     Absolute pressure in the gas cooler.
+    ///     Gas cooler absolute pressure.
     /// </summary>
     public Pressure Pressure { get; }
 
