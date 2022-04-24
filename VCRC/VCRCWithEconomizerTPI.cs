@@ -217,7 +217,7 @@ public class VCRCWithEconomizerTPI : TwoStageSubcriticalVCRC, IEntropyAnalysable
             .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
                                   IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
         return new EntropyAnalysisResult(thermodynamicPerfection, minSpecificWorkRatio, compressorEnergyLossRatio,
-            condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero,
+            condenserEnergyLossRatio, Ratio.Zero, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero,
             economizerEnergyLossRatio, mixingEnergyLossRatio, analysisRelativeError);
     }
 }

@@ -176,6 +176,7 @@ public class TestVCRCWithCompleteIntercooling
         result.MinSpecificWorkRatio.Percent.Should().BeApproximately(23.692489879977753, tolerance);
         result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(24.213673144004755, tolerance);
+        result.GasCoolerEnergyLossRatio.Percent.Should().Be(0);
         result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(9.58555508992268, tolerance);
         result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(19.84896115474834, tolerance);
         result.RecuperatorEnergyLossRatio.Percent.Should().Be(0);

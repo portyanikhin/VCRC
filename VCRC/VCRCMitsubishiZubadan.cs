@@ -280,7 +280,7 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
             .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
                                   IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
         return new EntropyAnalysisResult(thermodynamicPerfection, minSpecificWorkRatio, compressorEnergyLossRatio,
-            condenserEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio,
+            condenserEnergyLossRatio, Ratio.Zero, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio,
             recuperatorEnergyLossRatio, economizerEnergyLossRatio, mixingEnergyLossRatio, analysisRelativeError);
     }
 

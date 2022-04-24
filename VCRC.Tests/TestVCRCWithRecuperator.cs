@@ -167,6 +167,7 @@ public class TestVCRCWithRecuperator
         result.MinSpecificWorkRatio.Percent.Should().BeApproximately(21.45824801978035, tolerance);
         result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(27.58536859968224, tolerance);
+        result.GasCoolerEnergyLossRatio.Percent.Should().Be(0);
         result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(12.110197168311025, tolerance);
         result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(17.946008453548735, tolerance);
         result.RecuperatorEnergyLossRatio.Percent.Should().BeApproximately(0.9001777586776314, tolerance);

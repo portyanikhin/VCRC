@@ -8,6 +8,7 @@ public static class EntropyAnalysisResultExtensions
         => result.MinSpecificWorkRatio +
            result.CompressorEnergyLossRatio +
            result.CondenserEnergyLossRatio +
+           result.GasCoolerEnergyLossRatio +
            result.ExpansionValvesEnergyLossRatio +
            result.EvaporatorEnergyLossRatio +
            result.RecuperatorEnergyLossRatio +

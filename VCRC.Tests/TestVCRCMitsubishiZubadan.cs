@@ -195,6 +195,7 @@ public class TestVCRCMitsubishiZubadan
         result.MinSpecificWorkRatio.Percent.Should().BeApproximately(22.87989757054636, tolerance);
         result.CompressorEnergyLossRatio.Percent.Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent.Should().BeApproximately(23.53708040524894, tolerance);
+        result.GasCoolerEnergyLossRatio.Percent.Should().Be(0);
         result.ExpansionValvesEnergyLossRatio.Percent.Should().BeApproximately(8.216569075578189, tolerance);
         result.EvaporatorEnergyLossRatio.Percent.Should().BeApproximately(19.160764385133717, tolerance);
         result.RecuperatorEnergyLossRatio.Percent.Should().BeApproximately(0.8377929682890785, tolerance);
