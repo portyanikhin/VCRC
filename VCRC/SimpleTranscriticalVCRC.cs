@@ -21,9 +21,6 @@ public class SimpleTranscriticalVCRC : TranscriticalVCRC, IEntropyAnalysable
     /// <param name="compressor">Compressor.</param>
     /// <param name="gasCooler">Gas cooler.</param>
     /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
-    /// <exception cref="ValidationException">
-    ///     Gas cooler outlet temperature should be greater than evaporating temperature!
-    /// </exception>
     public SimpleTranscriticalVCRC(Evaporator evaporator, Compressor compressor, GasCooler gasCooler) :
         base(evaporator, compressor, gasCooler)
     {
