@@ -18,9 +18,11 @@ public class IntermediateVessel : IEquatable<IntermediateVessel>
 
     /// <summary>
     ///     Intermediate vessel as a VCRC component.
-    ///     Note: The intermediate pressure is calculated as the square root of the product
-    ///     of the evaporating pressure and the condensing pressure.
     /// </summary>
+    /// <remarks>
+    ///     The intermediate pressure is calculated as the square root of the product
+    ///     of the evaporating pressure and the condensing pressure.
+    /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="condenser">Condenser.</param>
     public IntermediateVessel(Evaporator evaporator, Condenser condenser) =>
