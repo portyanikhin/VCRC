@@ -15,8 +15,8 @@ public abstract class AbstractVCRC
     /// <summary>
     ///     VCRC base class.
     /// </summary>
-    /// <param name="compressor">Compressor.</param>
     /// <param name="evaporator">Evaporator.</param>
+    /// <param name="compressor">Compressor.</param>
     protected AbstractVCRC(Evaporator evaporator, Compressor compressor)
     {
         Evaporator = evaporator;

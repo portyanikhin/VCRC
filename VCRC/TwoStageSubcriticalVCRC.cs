@@ -13,8 +13,8 @@ public abstract class TwoStageSubcriticalVCRC : SubcriticalVCRC
     /// <summary>
     ///     Two-stage subcritical VCRC.
     /// </summary>
-    /// <param name="compressor">Compressor.</param>
     /// <param name="evaporator">Evaporator.</param>
+    /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
     /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
