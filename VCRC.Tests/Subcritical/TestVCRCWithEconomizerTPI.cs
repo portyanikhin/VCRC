@@ -13,7 +13,7 @@ using VCRC.Extensions;
 using VCRC.Fluids;
 using VCRC.Subcritical;
 
-namespace VCRC.Tests;
+namespace VCRC.Tests.Subcritical;
 
 public class TestVCRCWithEconomizerTPI
 {

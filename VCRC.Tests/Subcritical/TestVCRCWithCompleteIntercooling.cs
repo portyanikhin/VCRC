@@ -13,11 +13,11 @@ using VCRC.Extensions;
 using VCRC.Fluids;
 using VCRC.Subcritical;
 
-namespace VCRC.Tests;
+namespace VCRC.Tests.Subcritical;
 
-public class TestVCRCWithIncompleteIntercooling
+public class TestVCRCWithCompleteIntercooling
 {
-    private VCRCWithIncompleteIntercooling Cycle { get; set; } = null!;
+    private VCRCWithCompleteIntercooling Cycle { get; set; } = null!;
 
     [OneTimeSetUp]
     public void SetUp()
@@ -28,7 +28,7 @@ public class TestVCRCWithIncompleteIntercooling
         var compressor = new Compressor(80.Percent());
         var condenser = new Condenser(refrigerantName,
             50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-        Cycle = new VCRCWithIncompleteIntercooling(evaporator, compressor, condenser);
+        Cycle = new VCRCWithCompleteIntercooling(evaporator, compressor, condenser);
     }
 
     [Test]
@@ -74,7 +74,10 @@ public class TestVCRCWithIncompleteIntercooling
     {
         Cycle.FirstStageSpecificMassFlow.Should().Be(100.Percent());
         Cycle.SecondStageSpecificMassFlow.Should().Be(
-            Cycle.FirstStageSpecificMassFlow / (1 - Cycle.Point6.Quality!.Value.DecimalFractions));
+            Cycle.FirstStageSpecificMassFlow *
+            (1 + (Cycle.Point2.Enthalpy - Cycle.Point3.Enthalpy) /
+                (Cycle.Point3.Enthalpy - Cycle.Point7.Enthalpy)) /
+            (1 - Cycle.Point6.Quality!.Value.DecimalFractions));
     }
 
     [Test]
@@ -100,11 +103,8 @@ public class TestVCRCWithIncompleteIntercooling
     public void TestPoint3()
     {
         Cycle.Point3.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
-        Cycle.Point3.Enthalpy.Should().Be(
-            (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
-             (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow).DecimalFractions *
-             Cycle.Point7.Enthalpy) / Cycle.SecondStageSpecificMassFlow.DecimalFractions);
-        Cycle.Point3.Phase.Should().Be(Phases.Gas);
+        Cycle.Point3.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
+        Cycle.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
@@ -113,7 +113,7 @@ public class TestVCRCWithIncompleteIntercooling
     {
         Cycle.Point4s.Pressure.Should().Be(Cycle.Condenser.Pressure);
         Cycle.Point4s.Entropy.Should().Be(Cycle.Point3.Entropy);
-        Cycle.Point4s.Phase.Should().Be(Phases.SupercriticalGas);
+        Cycle.Point4s.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
@@ -124,7 +124,7 @@ public class TestVCRCWithIncompleteIntercooling
             Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
         Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
-        Cycle.Point4.Phase.Should().Be(Phases.SupercriticalGas);
+        Cycle.Point4.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
@@ -148,24 +148,16 @@ public class TestVCRCWithIncompleteIntercooling
     public void TestPoint7()
     {
         Cycle.Point7.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
-        Cycle.Point7.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
+        Cycle.Point7.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
         Cycle.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
     public void TestPoint8()
     {
-        Cycle.Point8.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
-        Cycle.Point8.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
+        Cycle.Point8.Pressure.Should().Be(Cycle.Evaporator.Pressure);
+        Cycle.Point8.Enthalpy.Should().Be(Cycle.Point7.Enthalpy);
         Cycle.Point8.Phase.Should().Be(Phases.TwoPhase);
-    }
-
-    [Test]
-    public void TestPoint9()
-    {
-        Cycle.Point9.Pressure.Should().Be(Cycle.Evaporator.Pressure);
-        Cycle.Point9.Enthalpy.Should().Be(Cycle.Point8.Enthalpy);
-        Cycle.Point9.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
@@ -175,27 +167,27 @@ public class TestVCRCWithIncompleteIntercooling
             Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
         const double tolerance = 1e-10;
         result.ThermodynamicPerfection.Percent
-            .Should().BeApproximately(23.25684783482117, tolerance);
+            .Should().BeApproximately(23.837382481910282, tolerance);
         result.MinSpecificWorkRatio.Percent
-            .Should().BeApproximately(23.118906292137904, tolerance);
+            .Should().BeApproximately(23.692489879977753, tolerance);
         result.CompressorEnergyLossRatio.Percent
             .Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent
-            .Should().BeApproximately(28.505574901004188, tolerance);
+            .Should().BeApproximately(24.213673144004755, tolerance);
         result.GasCoolerEnergyLossRatio.Percent
             .Should().Be(0);
         result.ExpansionValvesEnergyLossRatio.Percent
-            .Should().BeApproximately(8.578443900792276, tolerance);
+            .Should().BeApproximately(9.58555508992268, tolerance);
         result.EvaporatorEnergyLossRatio.Percent
-            .Should().BeApproximately(19.36842751680193, tolerance);
+            .Should().BeApproximately(19.84896115474834, tolerance);
         result.RecuperatorEnergyLossRatio.Percent
             .Should().Be(0);
         result.EconomizerEnergyLossRatio.Percent
             .Should().Be(0);
         result.MixingEnergyLossRatio.Percent
-            .Should().BeApproximately(0.42864738926370294, tolerance);
+            .Should().BeApproximately(2.659320731346461, tolerance);
         result.AnalysisRelativeError.Percent
-            .Should().BeApproximately(0.5966611955608466, tolerance);
+            .Should().BeApproximately(0.6115549807830497, tolerance);
         result.Sum().Percent
             .Should().BeApproximately(100, tolerance);
     }

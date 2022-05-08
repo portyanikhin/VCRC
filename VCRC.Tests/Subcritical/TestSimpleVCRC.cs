@@ -10,7 +10,7 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC.Components;
 using VCRC.Subcritical;
 
-namespace VCRC.Tests;
+namespace VCRC.Tests.Subcritical;
 
 public class TestSimpleVCRC
 {

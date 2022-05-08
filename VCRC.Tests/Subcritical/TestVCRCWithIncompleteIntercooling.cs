@@ -5,6 +5,7 @@ using FluentValidation;
 using NUnit.Framework;
 using SharpProp;
 using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC.Components;
@@ -12,11 +13,11 @@ using VCRC.Extensions;
 using VCRC.Fluids;
 using VCRC.Subcritical;
 
-namespace VCRC.Tests;
+namespace VCRC.Tests.Subcritical;
 
-public class TestVCRCWithEconomizer
+public class TestVCRCWithIncompleteIntercooling
 {
-    private VCRCWithEconomizer Cycle { get; set; } = null!;
+    private VCRCWithIncompleteIntercooling Cycle { get; set; } = null!;
 
     [OneTimeSetUp]
     public void SetUp()
@@ -27,9 +28,21 @@ public class TestVCRCWithEconomizer
         var compressor = new Compressor(80.Percent());
         var condenser = new Condenser(refrigerantName,
             50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-        var economizer = new Economizer(evaporator, condenser,
-            TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
-        Cycle = new VCRCWithEconomizer(evaporator, compressor, condenser, economizer);
+        Cycle = new VCRCWithIncompleteIntercooling(evaporator, compressor, condenser);
+    }
+
+    [Test]
+    public void TestWrongRefrigerant()
+    {
+        const FluidsList refrigerantName = FluidsList.R407C;
+        var evaporator = new Evaporator(refrigerantName,
+            Cycle.Evaporator.Temperature, Cycle.Evaporator.Superheat);
+        var condenser = new Condenser(refrigerantName,
+            Cycle.Condenser.Temperature, Cycle.Condenser.Subcooling);
+        Action action = () =>
+            _ = new VCRCWithIncompleteIntercooling(evaporator, Cycle.Compressor, condenser);
+        action.Should().Throw<ValidationException>()
+            .WithMessage("*Refrigerant should not have a temperature glide!*");
     }
 
     [TestCase(Bound.Lower, "Intermediate pressure should be greater than evaporating pressure!")]
@@ -37,38 +50,23 @@ public class TestVCRCWithEconomizer
     public void TestWrongIntermediatePressure(Bound bound, string message)
     {
         Action action = () =>
-            _ = new VCRCWithEconomizer(
+            _ = new VCRCWithIncompleteIntercooling(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                new Economizer(bound is Bound.Lower
-                        ? Cycle.Evaporator.Pressure
-                        : Cycle.Condenser.Pressure,
-                    Cycle.Economizer.TemperatureDifference,
-                    Cycle.Economizer.Superheat));
+                new IntermediateVessel(bound is Bound.Lower
+                    ? Cycle.Evaporator.Pressure
+                    : Cycle.Condenser.Pressure));
         action.Should().Throw<ValidationException>().WithMessage($"*{message}*");
     }
 
     [Test]
-    public void TestWrongEconomizerSuperheat()
+    public void TestWrongPhaseAtIntermediateVesselInlet()
     {
         Action action = () =>
-            _ = new VCRCWithEconomizer(
+            _ = new VCRCWithIncompleteIntercooling(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                new Economizer(Cycle.Economizer.Pressure,
-                    Cycle.Economizer.TemperatureDifference, TemperatureDelta.FromKelvins(50)));
+                new IntermediateVessel(Cycle.Condenser.Pressure - 1.Pascals()));
         action.Should().Throw<ValidationException>()
-            .WithMessage("*Wrong temperature difference at economizer 'hot' side!*");
-    }
-
-    [Test]
-    public void TestWrongEconomizerTemperatureDifference()
-    {
-        Action action = () =>
-            _ = new VCRCWithEconomizer(
-                Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                new Economizer(Cycle.Economizer.Pressure,
-                    TemperatureDelta.FromKelvins(50), Cycle.Economizer.Superheat));
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
+            .WithMessage("*There should be a two-phase refrigerant at the intermediate vessel inlet!*");
     }
 
     [Test]
@@ -76,15 +74,14 @@ public class TestVCRCWithEconomizer
     {
         Cycle.FirstStageSpecificMassFlow.Should().Be(100.Percent());
         Cycle.SecondStageSpecificMassFlow.Should().Be(
-            Cycle.FirstStageSpecificMassFlow * (1 + (Cycle.Point5.Enthalpy - Cycle.Point8.Enthalpy) /
-                (Cycle.Point7.Enthalpy - Cycle.Point6.Enthalpy)));
+            Cycle.FirstStageSpecificMassFlow / (1 - Cycle.Point6.Quality!.Value.DecimalFractions));
     }
 
     [Test]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint2s()
     {
-        Cycle.Point2s.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
         Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
         Cycle.Point2s.Phase.Should().Be(Phases.Gas);
     }
@@ -92,7 +89,7 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestPoint2()
     {
-        Cycle.Point2.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
         Cycle.Point2.Enthalpy.Should().Be(
             Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
@@ -102,7 +99,7 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
         Cycle.Point3.Enthalpy.Should().Be(
             (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
              (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow).DecimalFractions *
@@ -142,7 +139,7 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestPoint6()
     {
-        Cycle.Point6.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
         Cycle.Point6.Enthalpy.Should().Be(Cycle.Point5.Enthalpy);
         Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -150,20 +147,17 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().Be(Cycle.Economizer.Pressure);
-        Cycle.Point7.Temperature.Should().Be(
-            Cycle.Point7.WithState(Input.Pressure(Cycle.Economizer.Pressure),
-                Input.Quality(TwoPhase.Dew.VaporQuality())).Temperature + Cycle.Economizer.Superheat);
-        Cycle.Point7.Phase.Should().Be(Phases.Gas);
+        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point7.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
+        Cycle.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
     public void TestPoint8()
     {
-        Cycle.Point8.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point8.Temperature.Should().Be(
-            Cycle.Point6.Temperature + Cycle.Economizer.TemperatureDifference);
-        Cycle.Point8.Phase.Should().Be(Phases.Liquid);
+        Cycle.Point8.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point8.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
+        Cycle.Point8.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
@@ -181,27 +175,27 @@ public class TestVCRCWithEconomizer
             Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
         const double tolerance = 1e-10;
         result.ThermodynamicPerfection.Percent
-            .Should().BeApproximately(22.848748322248667, tolerance);
+            .Should().BeApproximately(23.25684783482117, tolerance);
         result.MinSpecificWorkRatio.Percent
-            .Should().BeApproximately(22.711116475337946, tolerance);
+            .Should().BeApproximately(23.118906292137904, tolerance);
         result.CompressorEnergyLossRatio.Percent
             .Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent
-            .Should().BeApproximately(28.52997928254207, tolerance);
+            .Should().BeApproximately(28.505574901004188, tolerance);
         result.GasCoolerEnergyLossRatio.Percent
             .Should().Be(0);
         result.ExpansionValvesEnergyLossRatio.Percent
-            .Should().BeApproximately(7.387516203361417, tolerance);
+            .Should().BeApproximately(8.578443900792276, tolerance);
         result.EvaporatorEnergyLossRatio.Percent
-            .Should().BeApproximately(19.019566482238176, tolerance);
+            .Should().BeApproximately(19.36842751680193, tolerance);
         result.RecuperatorEnergyLossRatio.Percent
             .Should().Be(0);
         result.EconomizerEnergyLossRatio.Percent
-            .Should().BeApproximately(2.125956902090879, tolerance);
+            .Should().Be(0);
         result.MixingEnergyLossRatio.Percent
-            .Should().BeApproximately(0.22586465442951428, tolerance);
+            .Should().BeApproximately(0.42864738926370294, tolerance);
         result.AnalysisRelativeError.Percent
-            .Should().BeApproximately(0.6060109244746809, tolerance);
+            .Should().BeApproximately(0.5966611955608466, tolerance);
         result.Sum().Percent
             .Should().BeApproximately(100, tolerance);
     }
