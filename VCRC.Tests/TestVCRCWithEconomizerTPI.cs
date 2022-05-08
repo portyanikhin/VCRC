@@ -11,6 +11,7 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC.Components;
 using VCRC.Extensions;
 using VCRC.Fluids;
+using VCRC.Subcritical;
 
 namespace VCRC.Tests;
 

@@ -5,39 +5,33 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
 using VCRC.Components;
-using VCRC.Extensions;
 using VCRC.Fluids;
 
-namespace VCRC;
+namespace VCRC.Transcritical;
 
 /// <summary>
-///     Simple single-stage VCRC.
+///     Simple single-stage transcritical VCRC.
 /// </summary>
-public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
+public class SimpleTranscriticalVCRC : TranscriticalVCRC, IEntropyAnalysable
 {
     /// <summary>
-    ///     Simple single-stage VCRC.
+    ///     Simple single-stage transcritical VCRC.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="condenser">Condenser.</param>
+    /// <param name="gasCooler">Gas cooler.</param>
     /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
-    /// <exception cref="ValidationException">
-    ///     Condensing temperature should be greater than evaporating temperature!
-    /// </exception>
-    public SimpleVCRC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
-        base(evaporator, compressor, condenser)
+    public SimpleTranscriticalVCRC(Evaporator evaporator, Compressor compressor, GasCooler gasCooler) :
+        base(evaporator, compressor, gasCooler)
     {
-        Point2s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+        Point2s = Refrigerant.WithState(Input.Pressure(GasCooler.Pressure),
             Input.Entropy(Point1.Entropy));
         IsentropicSpecificWork = Point2s.Enthalpy - Point1.Enthalpy;
         SpecificWork = IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
-        Point2 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+        Point2 = Refrigerant.WithState(Input.Pressure(GasCooler.Pressure),
             Input.Enthalpy(Point1.Enthalpy + SpecificWork));
-        Point3 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Condenser.BubblePoint.Clone()
-            : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+        Point3 = Refrigerant.WithState(Input.Pressure(GasCooler.Pressure),
+            Input.Temperature(GasCooler.OutletTemperature));
         Point4 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point3.Enthalpy));
         SpecificCoolingCapacity = Point1.Enthalpy - Point4.Enthalpy;
@@ -51,12 +45,12 @@ public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
     public Refrigerant Point2s { get; }
 
     /// <summary>
-    ///     Point 2 – compression stage discharge / condenser inlet.
+    ///     Point 2 – compression stage discharge / gas cooler inlet.
     /// </summary>
     public Refrigerant Point2 { get; }
 
     /// <summary>
-    ///     Point 3 – condenser outlet / EV inlet.
+    ///     Point 3 – gas cooler outlet / EV inlet.
     /// </summary>
     public Refrigerant Point3 { get; }
 
@@ -72,7 +66,7 @@ public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
         var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
-        var condenserEnergyLoss =
+        var gasCoolerEnergyLoss =
             Point2s.Enthalpy - Point3.Enthalpy -
             (hotSource.Kelvins * (Point2s.Entropy - Point3.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
         var expansionValvesEnergyLoss =
@@ -83,7 +77,7 @@ public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
               (Point1.Enthalpy - Point4.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
-            minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss;
+            minSpecificWork + gasCoolerEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss;
         var compressorEnergyLoss =
             calculatedIsentropicSpecificWork * (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
         var calculatedSpecificWork = calculatedIsentropicSpecificWork + compressorEnergyLoss;
@@ -91,8 +85,8 @@ public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
             .FromDecimalFractions(minSpecificWork / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
         var compressorEnergyLossRatio = Ratio
             .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
-        var condenserEnergyLossRatio = Ratio
-            .FromDecimalFractions(condenserEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
+        var gasCoolerEnergyLossRatio = Ratio
+            .FromDecimalFractions(gasCoolerEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
         var expansionValvesEnergyLossRatio = Ratio
             .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork).ToUnit(RatioUnit.Percent);
         var evaporatorEnergyLossRatio = Ratio
@@ -101,7 +95,7 @@ public class SimpleVCRC : SubcriticalVCRC, IEntropyAnalysable
             .FromDecimalFractions((calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
                                   IsentropicSpecificWork).ToUnit(RatioUnit.Percent);
         return new EntropyAnalysisResult(thermodynamicPerfection, minSpecificWorkRatio, compressorEnergyLossRatio,
-            condenserEnergyLossRatio, Ratio.Zero, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero,
+            Ratio.Zero, gasCoolerEnergyLossRatio, expansionValvesEnergyLossRatio, evaporatorEnergyLossRatio, Ratio.Zero,
             Ratio.Zero, Ratio.Zero, analysisRelativeError);
     }
 }

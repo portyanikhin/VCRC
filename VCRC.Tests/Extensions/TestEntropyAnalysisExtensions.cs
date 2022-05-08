@@ -9,6 +9,7 @@ using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC.Components;
 using VCRC.Extensions;
+using VCRC.Subcritical;
 
 namespace VCRC.Tests.Extensions;
 

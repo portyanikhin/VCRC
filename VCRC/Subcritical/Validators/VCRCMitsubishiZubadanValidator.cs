@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using UnitsNet;
 
-namespace VCRC.Validators;
+namespace VCRC.Subcritical.Validators;
 
 public class VCRCMitsubishiZubadanValidator : AbstractValidator<VCRCMitsubishiZubadan>
 {

@@ -1,8 +1,8 @@
 ﻿using FluentValidation;
 using VCRC.Components;
-using VCRC.Validators;
+using VCRC.Transcritical.Validators;
 
-namespace VCRC;
+namespace VCRC.Transcritical;
 
 /// <summary>
 ///     Transcritical VCRC.

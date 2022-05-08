@@ -3,7 +3,7 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC.Components;
 
-namespace VCRC;
+namespace VCRC.Subcritical;
 
 /// <summary>
 ///     Two-stage subcritical VCRC.

@@ -8,6 +8,7 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC.Components;
+using VCRC.Transcritical;
 
 namespace VCRC.Tests;
 

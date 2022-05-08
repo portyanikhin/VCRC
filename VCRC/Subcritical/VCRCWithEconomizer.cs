@@ -7,9 +7,9 @@ using UnitsNet.Units;
 using VCRC.Components;
 using VCRC.Extensions;
 using VCRC.Fluids;
-using VCRC.Validators;
+using VCRC.Subcritical.Validators;
 
-namespace VCRC;
+namespace VCRC.Subcritical;
 
 /// <summary>
 ///     Two-stage VCRC with economizer.

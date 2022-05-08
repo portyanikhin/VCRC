@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace VCRC.Validators;
+namespace VCRC.Transcritical.Validators;
 
 public class TranscriticalVCRCValidator : AbstractValidator<TranscriticalVCRC>
 {
