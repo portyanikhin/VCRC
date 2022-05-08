@@ -24,11 +24,11 @@ public class VCRCWithIncompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyA
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
     /// <param name="intermediateVessel">Intermediate vessel.</param>
-    /// <exception cref="ValidationException">Refrigerant should not have a temperature glide!</exception>
     /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
+    /// <exception cref="ValidationException">Refrigerant should not have a temperature glide!</exception>
     /// <exception cref="ValidationException">
     ///     Intermediate pressure should be greater than evaporating pressure!
     /// </exception>
