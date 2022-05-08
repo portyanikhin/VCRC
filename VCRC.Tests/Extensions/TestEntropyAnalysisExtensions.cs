@@ -28,8 +28,8 @@ public static class TestEntropyAnalysisExtensions
 
     [Test]
     public static void TestEntropyAnalysisInRange() =>
-        Cycles.EntropyAnalysis(Indoor, Outdoor)
-            .Should().Be(Cycles.Select((c, i) => c.EntropyAnalysis(Indoor[i], Outdoor[i])).ToList().Average());
+        Cycles.EntropyAnalysis(Indoor, Outdoor).Should().Be(
+            Cycles.Select((c, i) => c.EntropyAnalysis(Indoor[i], Outdoor[i])).ToList().Average());
 
     [Test]
     public static void TestInvalidInput()

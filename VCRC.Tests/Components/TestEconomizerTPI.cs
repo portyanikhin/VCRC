@@ -32,20 +32,21 @@ public static class TestEconomizerTPI
     [Test]
     public static void TestIntermediatePressure()
     {
-        var economizer = new EconomizerTPI(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
-        economizer.Pressure.Pascals.Should()
-            .Be(Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
+        var economizer = new EconomizerTPI(Evaporator, Condenser,
+            TemperatureDelta.FromKelvins(5));
+        economizer.Pressure.Pascals
+            .Should().Be(Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
     }
 
     [Test]
     public static void TestEquals()
     {
-        var origin = new EconomizerTPI(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
-        var same =
-            new EconomizerTPI(origin.Pressure, TemperatureDelta.FromKelvins(5));
-        var other =
-            new EconomizerTPI(origin.Pressure + 1.Atmospheres(),
-                TemperatureDelta.FromKelvins(10));
+        var origin = new EconomizerTPI(Evaporator, Condenser,
+            TemperatureDelta.FromKelvins(5));
+        var same = new EconomizerTPI(origin.Pressure,
+            TemperatureDelta.FromKelvins(5));
+        var other = new EconomizerTPI(origin.Pressure + 1.Atmospheres(),
+            TemperatureDelta.FromKelvins(10));
         new TestEquals<EconomizerTPI>(origin, same, other).Start();
         (origin == same).Should().BeTrue();
         (origin != other).Should().BeTrue();

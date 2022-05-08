@@ -33,6 +33,8 @@ public class Condenser : IEquatable<Condenser>
         new CondenserValidator(Refrigerant).ValidateAndThrow(this);
         Pressure = Refrigerant.WithState(Input.Temperature(Temperature),
             Input.Quality(PressureDefinition.VaporQuality())).Pressure;
+        BubblePoint = Refrigerant.WithState(Input.Pressure(Pressure),
+            Input.Quality(TwoPhase.Bubble.VaporQuality()));
     }
 
     private Refrigerant Refrigerant { get; }
@@ -61,6 +63,11 @@ public class Condenser : IEquatable<Condenser>
     ///     Absolute condensing pressure.
     /// </summary>
     public Pressure Pressure { get; }
+
+    /// <summary>
+    ///     Bubble-point on the condensing isobar.
+    /// </summary>
+    public Refrigerant BubblePoint { get; }
 
     public bool Equals(Condenser? other)
     {

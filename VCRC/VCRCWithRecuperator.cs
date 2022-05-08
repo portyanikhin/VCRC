@@ -43,20 +43,16 @@ public class VCRCWithRecuperator : SubcriticalVCRC, IEntropyAnalysable
         SpecificWork = IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
         Point3 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Enthalpy(Point2.Enthalpy + SpecificWork));
-        Point4 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-            Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point5 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-            Input.Quality(TwoPhase.Bubble.VaporQuality()));
-        Point6 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Point5.Clone()
+        Point4 = Condenser.Subcooling == TemperatureDelta.Zero
+            ? Condenser.BubblePoint.Clone()
             : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Point5.Temperature - Condenser.Subcooling));
-        Point7 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-            Input.Enthalpy(Point6.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy)));
-        Point8 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point7.Enthalpy));
-        SpecificCoolingCapacity = Point1.Enthalpy - Point8.Enthalpy;
-        SpecificHeatingCapacity = Point3.Enthalpy - Point6.Enthalpy;
+                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+        Point5 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+            Input.Enthalpy(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy)));
+        Point6 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+            Input.Enthalpy(Point5.Enthalpy));
+        SpecificCoolingCapacity = Point1.Enthalpy - Point6.Enthalpy;
+        SpecificHeatingCapacity = Point3.Enthalpy - Point4.Enthalpy;
         new VCRCWithRecuperatorValidator().ValidateAndThrow(this);
     }
 
@@ -82,49 +78,39 @@ public class VCRCWithRecuperator : SubcriticalVCRC, IEntropyAnalysable
     public Refrigerant Point3 { get; }
 
     /// <summary>
-    ///     Point 4 – dew-point on the condensing isobar.
+    ///     Point 4 – condenser outlet / recuperator "hot" inlet.
     /// </summary>
     public Refrigerant Point4 { get; }
 
     /// <summary>
-    ///     Point 5 – bubble-point on the condensing isobar.
+    ///     Point 5 – recuperator "hot" outlet / EV inlet.
     /// </summary>
     public Refrigerant Point5 { get; }
 
     /// <summary>
-    ///     Point 6 – condenser outlet / recuperator "hot" inlet.
+    ///     Point 6 – EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point6 { get; }
-
-    /// <summary>
-    ///     Point 7 – recuperator "hot" outlet / EV inlet.
-    /// </summary>
-    public Refrigerant Point7 { get; }
-
-    /// <summary>
-    ///     Point 8 – EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point8 { get; }
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
     {
         var (coldSource, hotSource) =
-            IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point6.Temperature);
+            IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point4.Temperature);
         var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
         var condenserEnergyLoss =
-            Point3s.Enthalpy - Point6.Enthalpy -
-            (hotSource.Kelvins * (Point3s.Entropy - Point6.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
+            Point3s.Enthalpy - Point4.Enthalpy -
+            (hotSource.Kelvins * (Point3s.Entropy - Point4.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
         var expansionValvesEnergyLoss =
-            (hotSource.Kelvins * (Point8.Entropy - Point7.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
+            (hotSource.Kelvins * (Point6.Entropy - Point5.Entropy).JoulesPerKilogramKelvin).JoulesPerKilogram();
         var evaporatorEnergyLoss =
             (hotSource.Kelvins *
-             ((Point1.Entropy - Point8.Entropy).JoulesPerKilogramKelvin -
-              (Point1.Enthalpy - Point8.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
+             ((Point1.Entropy - Point6.Entropy).JoulesPerKilogramKelvin -
+              (Point1.Enthalpy - Point6.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
             .JoulesPerKilogram();
         var recuperatorEnergyLoss =
-            (hotSource.Kelvins * (Point2.Entropy - Point1.Entropy - (Point6.Entropy - Point7.Entropy))
+            (hotSource.Kelvins * (Point2.Entropy - Point1.Entropy - (Point4.Entropy - Point5.Entropy))
                 .JoulesPerKilogramKelvin).JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
             minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +

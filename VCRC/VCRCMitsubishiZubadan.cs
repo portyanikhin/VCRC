@@ -84,18 +84,14 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point5s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Entropy(Point4.Entropy));
-        Point6 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-            Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point7 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-            Input.Quality(TwoPhase.Bubble.VaporQuality()));
-        Point8 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Point7.Clone()
+        Point6 = Condenser.Subcooling == TemperatureDelta.Zero
+            ? Condenser.BubblePoint.Clone()
             : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Point7.Temperature - Condenser.Subcooling));
-        CalculateInjectionQuality(); // Also calculates Point9, Point10, Point11, Point12, Point13
+                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+        CalculateInjectionQuality(); // Also calculates Point7, Point8, Point9, Point10, Point11
         new VCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
-        Point14 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point13!.Enthalpy));
+        Point12 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+            Input.Enthalpy(Point11!.Enthalpy));
         var isentropicSpecificWork2 =
             SecondStageSpecificMassFlow.DecimalFractions * (Point5s.Enthalpy - Point4.Enthalpy);
         var specificWork2 = isentropicSpecificWork2 / Compressor.IsentropicEfficiency.DecimalFractions;
@@ -103,9 +99,9 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
             Input.Enthalpy(Point4.Enthalpy + specificWork2 / SecondStageSpecificMassFlow.DecimalFractions));
         IsentropicSpecificWork = isentropicSpecificWork1 + isentropicSpecificWork2;
         SpecificWork = specificWork1 + specificWork2;
-        SpecificCoolingCapacity = Point1.Enthalpy - Point14.Enthalpy;
+        SpecificCoolingCapacity = Point1.Enthalpy - Point12.Enthalpy;
         SpecificHeatingCapacity =
-            SecondStageSpecificMassFlow.DecimalFractions * (Point5.Enthalpy - Point8.Enthalpy);
+            SecondStageSpecificMassFlow.DecimalFractions * (Point5.Enthalpy - Point6.Enthalpy);
     }
 
     /// <summary>
@@ -151,49 +147,39 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
     public Refrigerant Point5 { get; }
 
     /// <summary>
-    ///     Point 6 – dew-point on the condensing isobar.
+    ///     Point 6 – condenser outlet / first EV inlet.
     /// </summary>
     public Refrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – bubble-point on the condensing isobar.
+    ///     Point 7 – first EV outlet / recuperator "hot" inlet.
     /// </summary>
-    public Refrigerant Point7 { get; }
+    public Refrigerant Point7 { get; private set; } = null!;
 
     /// <summary>
-    ///     Point 8 – condenser outlet / first EV inlet.
+    ///     Point 8 – recuperator "hot" outlet / second EV inlet / economizer "hot" inlet.
     /// </summary>
-    public Refrigerant Point8 { get; }
+    public Refrigerant Point8 { get; private set; } = null!;
 
     /// <summary>
-    ///     Point 9 – first EV outlet / recuperator "hot" inlet.
+    ///     Point 9 – second EV outlet / economizer "cold" inlet.
     /// </summary>
     public Refrigerant Point9 { get; private set; } = null!;
 
     /// <summary>
-    ///     Point 10 – recuperator "hot" outlet / second EV inlet / economizer "hot" inlet.
+    ///     Point 10 – economizer "cold" outlet / injection of two-phase refrigerant into the compressor.
     /// </summary>
     public Refrigerant Point10 { get; private set; } = null!;
 
     /// <summary>
-    ///     Point 11 – second EV outlet / economizer "cold" inlet.
+    ///     Point 11 – economizer "hot" outlet / third EV inlet.
     /// </summary>
-    public Refrigerant Point11 { get; private set; } = null!;
+    public Refrigerant Point11 { get; private set; }
 
     /// <summary>
-    ///     Point 12 – economizer "cold" outlet / injection of two-phase refrigerant into the compressor.
+    ///     Point 12 – third EV outlet / evaporator inlet.
     /// </summary>
-    public Refrigerant Point12 { get; private set; } = null!;
-
-    /// <summary>
-    ///     Point 13 – economizer "hot" outlet / third EV inlet.
-    /// </summary>
-    public Refrigerant Point13 { get; private set; }
-
-    /// <summary>
-    ///     Point 14 – third EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point14 { get; }
+    public Refrigerant Point12 { get; }
 
     private Pressure RecuperatorHighPressure
     {
@@ -202,7 +188,7 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
             double ToSolve(double pressure) =>
                 (Refrigerant.WithState(Input.Pressure(pressure.Pascals()),
                      Input.Quality(TwoPhase.Bubble.VaporQuality())).Enthalpy -
-                 (Point8.Enthalpy - FirstStageSpecificMassFlow / SecondStageSpecificMassFlow *
+                 (Point6.Enthalpy - FirstStageSpecificMassFlow / SecondStageSpecificMassFlow *
                      (Point2.Enthalpy - Point1.Enthalpy)))
                 .JoulesPerKilogram;
 
@@ -216,43 +202,43 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
     {
         var (coldSource, hotSource) =
-            IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point8.Temperature);
+            IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point6.Temperature);
         var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
         var condenserEnergyLoss =
             SecondStageSpecificMassFlow.DecimalFractions *
-            (Point5s.Enthalpy - Point8.Enthalpy - (hotSource.Kelvins * (Point5s.Entropy - Point8.Entropy)
+            (Point5s.Enthalpy - Point6.Enthalpy - (hotSource.Kelvins * (Point5s.Entropy - Point6.Entropy)
                 .JoulesPerKilogramKelvin).JoulesPerKilogram());
         var expansionValvesEnergyLoss =
             (hotSource.Kelvins *
-             (SecondStageSpecificMassFlow.DecimalFractions * (Point9.Entropy - Point8.Entropy) +
+             (SecondStageSpecificMassFlow.DecimalFractions * (Point7.Entropy - Point6.Entropy) +
               (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-              (Point11.Entropy - Point10.Entropy) +
-              FirstStageSpecificMassFlow.DecimalFractions * (Point14.Entropy - Point13.Entropy))
+              (Point9.Entropy - Point8.Entropy) +
+              FirstStageSpecificMassFlow.DecimalFractions * (Point12.Entropy - Point11.Entropy))
              .JoulesPerKilogramKelvin).JoulesPerKilogram();
         var evaporatorEnergyLoss =
             (FirstStageSpecificMassFlow.DecimalFractions * hotSource.Kelvins *
-             ((Point1.Entropy - Point14.Entropy).JoulesPerKilogramKelvin -
-              (Point1.Enthalpy - Point14.Enthalpy).JoulesPerKilogram / coldSource.Kelvins)).JoulesPerKilogram();
+             ((Point1.Entropy - Point12.Entropy).JoulesPerKilogramKelvin -
+              (Point1.Enthalpy - Point12.Enthalpy).JoulesPerKilogram / coldSource.Kelvins)).JoulesPerKilogram();
         var recuperatorEnergyLoss =
             (hotSource.Kelvins *
              (FirstStageSpecificMassFlow.DecimalFractions * (Point2.Entropy - Point1.Entropy) -
-              SecondStageSpecificMassFlow.DecimalFractions * (Point9.Entropy - Point10.Entropy))
+              SecondStageSpecificMassFlow.DecimalFractions * (Point7.Entropy - Point8.Entropy))
              .JoulesPerKilogramKelvin).JoulesPerKilogram();
         var economizerEnergyLoss =
             (hotSource.Kelvins *
              ((SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-              (Point12.Entropy - Point11.Entropy) -
+              (Point10.Entropy - Point9.Entropy) -
               FirstStageSpecificMassFlow.DecimalFractions *
-              (Point10.Entropy - Point13.Entropy))
+              (Point8.Entropy - Point11.Entropy))
              .JoulesPerKilogramKelvin).JoulesPerKilogram();
         var mixingEnergyLoss =
             (hotSource.Kelvins *
              (SecondStageSpecificMassFlow.DecimalFractions * Point4.Entropy -
               (FirstStageSpecificMassFlow.DecimalFractions * Point3.Entropy +
                (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow)
-               .DecimalFractions * Point12.Entropy)).JoulesPerKilogramKelvin)
+               .DecimalFractions * Point10.Entropy)).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
             minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +
@@ -303,20 +289,20 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
 
     private TemperatureDelta CalculateEconomizerTemperatureDifference(Ratio injectionQuality)
     {
-        Point12 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point10 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
             Input.Quality(injectionQuality));
         SecondStageSpecificMassFlow =
             FirstStageSpecificMassFlow *
-            (1 + (Point3.Enthalpy - Point4.Enthalpy) / (Point4.Enthalpy - Point12.Enthalpy));
-        Point9 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
-            Input.Enthalpy(Point8.Enthalpy));
-        Point10 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
+            (1 + (Point3.Enthalpy - Point4.Enthalpy) / (Point4.Enthalpy - Point10.Enthalpy));
+        Point7 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
+            Input.Enthalpy(Point6.Enthalpy));
+        Point8 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
             Input.Quality(TwoPhase.Bubble.VaporQuality()));
-        Point11 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
-            Input.Enthalpy(Point10.Enthalpy));
-        Point13 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
-            Input.Enthalpy(Point10.Enthalpy - (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow) /
-                FirstStageSpecificMassFlow * (Point12.Enthalpy - Point11.Enthalpy)));
-        return Point13.Temperature - Point11.Temperature;
+        Point9 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+            Input.Enthalpy(Point8.Enthalpy));
+        Point11 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
+            Input.Enthalpy(Point8.Enthalpy - (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow) /
+                FirstStageSpecificMassFlow * (Point10.Enthalpy - Point9.Enthalpy)));
+        return Point11.Temperature - Point9.Temperature;
     }
 }

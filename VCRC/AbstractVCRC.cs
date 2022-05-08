@@ -22,12 +22,10 @@ public abstract class AbstractVCRC
         (Evaporator, Compressor) = (evaporator, compressor);
         RefrigerantName = Evaporator.RefrigerantName;
         Refrigerant = new Refrigerant(RefrigerantName);
-        Point0 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point1 = Evaporator.Superheat == TemperatureDelta.Zero
-            ? Point0.Clone()
+            ? Evaporator.DewPoint.Clone()
             : Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-                Input.Temperature(Point0.Temperature + Evaporator.Superheat));
+                Input.Temperature(Evaporator.DewPoint.Temperature + Evaporator.Superheat));
     }
 
     protected Refrigerant Refrigerant { get; }
@@ -46,11 +44,6 @@ public abstract class AbstractVCRC
     ///     Compressor as a VCRC component.
     /// </summary>
     public Compressor Compressor { get; }
-
-    /// <summary>
-    ///     Point 0 – dew-point on the evaporating isobar.
-    /// </summary>
-    public Refrigerant Point0 { get; }
 
     /// <summary>
     ///     Point 1 – evaporator outlet.

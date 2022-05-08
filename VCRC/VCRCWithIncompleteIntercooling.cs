@@ -49,29 +49,25 @@ public class VCRCWithIncompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyA
         var specificWork1 = isentropicSpecificWork1 / Compressor.IsentropicEfficiency.DecimalFractions;
         Point2 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
             Input.Enthalpy(Point1.Enthalpy + specificWork1));
-        Point5 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-            Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point6 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-            Input.Quality(TwoPhase.Bubble.VaporQuality()));
-        Point7 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Point6.Clone()
+        Point5 = Condenser.Subcooling == TemperatureDelta.Zero
+            ? Condenser.BubblePoint.Clone()
             : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Point6.Temperature - Condenser.Subcooling));
-        Point8 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
-            Input.Enthalpy(Point7.Enthalpy));
+                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+        Point6 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+            Input.Enthalpy(Point5.Enthalpy));
         new VCRCWithIncompleteIntercoolingValidator().ValidateAndThrow(this);
-        Point9 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point7 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point10 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point8 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
             Input.Quality(TwoPhase.Bubble.VaporQuality()));
-        Point11 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point10.Enthalpy));
+        Point9 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+            Input.Enthalpy(Point8.Enthalpy));
         SecondStageSpecificMassFlow =
-            (FirstStageSpecificMassFlow / (1 - Point8.Quality!.Value.DecimalFractions)).ToUnit(RatioUnit.Percent);
+            (FirstStageSpecificMassFlow / (1 - Point6.Quality!.Value.DecimalFractions)).ToUnit(RatioUnit.Percent);
         Point3 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
             Input.Enthalpy((FirstStageSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
                             (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-                            Point9.Enthalpy) / SecondStageSpecificMassFlow.DecimalFractions));
+                            Point7.Enthalpy) / SecondStageSpecificMassFlow.DecimalFractions));
         Point4s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Entropy(Point3.Entropy));
         var isentropicSpecificWork2 =
@@ -81,9 +77,9 @@ public class VCRCWithIncompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyA
             Input.Enthalpy(Point3.Enthalpy + specificWork2 / SecondStageSpecificMassFlow.DecimalFractions));
         IsentropicSpecificWork = isentropicSpecificWork1 + isentropicSpecificWork2;
         SpecificWork = specificWork1 + specificWork2;
-        SpecificCoolingCapacity = Point1.Enthalpy - Point11.Enthalpy;
+        SpecificCoolingCapacity = Point1.Enthalpy - Point9.Enthalpy;
         SpecificHeatingCapacity =
-            SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point7.Enthalpy);
+            SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
     }
 
     /// <summary>
@@ -119,66 +115,56 @@ public class VCRCWithIncompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyA
     public Refrigerant Point4 { get; }
 
     /// <summary>
-    ///     Point 5 – dew-point on the condensing isobar.
+    ///     Point 5 – condenser outlet / first EV inlet.
     /// </summary>
     public Refrigerant Point5 { get; }
 
     /// <summary>
-    ///     Point 6 – bubble-point on the condensing isobar.
+    ///     Point 6 – first EV outlet / intermediate vessel inlet.
     /// </summary>
     public Refrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – condenser outlet / first EV inlet.
+    ///     Point 7 – intermediate vessel vapor outlet / injection of cooled vapor into the compressor.
     /// </summary>
     public Refrigerant Point7 { get; }
 
     /// <summary>
-    ///     Point 8 – first EV outlet / intermediate vessel inlet.
+    ///     Point 8 – intermediate vessel liquid outlet / second EV inlet.
     /// </summary>
     public Refrigerant Point8 { get; }
 
     /// <summary>
-    ///     Point 9 – intermediate vessel vapor outlet / injection of cooled vapor into the compressor.
+    ///     Point 9 – second EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point9 { get; }
-
-    /// <summary>
-    ///     Point 10 – intermediate vessel liquid outlet / second EV inlet.
-    /// </summary>
-    public Refrigerant Point10 { get; }
-
-    /// <summary>
-    ///     Point 11 – second EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point11 { get; }
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
     {
         var (coldSource, hotSource) =
-            IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point7.Temperature);
+            IEntropyAnalysable.SourceTemperatures(indoor, outdoor, Point1.Temperature, Point5.Temperature);
         var minSpecificWork = SpecificCoolingCapacity * (hotSource - coldSource).Kelvins / coldSource.Kelvins;
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork).ToUnit(RatioUnit.Percent);
         var condenserEnergyLoss =
             SecondStageSpecificMassFlow.DecimalFractions *
-            (Point4s.Enthalpy - Point7.Enthalpy - (hotSource.Kelvins * (Point4s.Entropy - Point7.Entropy)
+            (Point4s.Enthalpy - Point5.Enthalpy - (hotSource.Kelvins * (Point4s.Entropy - Point5.Entropy)
                 .JoulesPerKilogramKelvin).JoulesPerKilogram());
         var expansionValvesEnergyLoss =
             (hotSource.Kelvins *
-             (SecondStageSpecificMassFlow.DecimalFractions * (Point8.Entropy - Point7.Entropy) +
-              FirstStageSpecificMassFlow.DecimalFractions * (Point11.Entropy - Point10.Entropy))
+             (SecondStageSpecificMassFlow.DecimalFractions * (Point6.Entropy - Point5.Entropy) +
+              FirstStageSpecificMassFlow.DecimalFractions * (Point9.Entropy - Point8.Entropy))
              .JoulesPerKilogramKelvin).JoulesPerKilogram();
         var evaporatorEnergyLoss =
             (FirstStageSpecificMassFlow.DecimalFractions * hotSource.Kelvins *
-             ((Point1.Entropy - Point11.Entropy).JoulesPerKilogramKelvin -
-              (Point1.Enthalpy - Point11.Enthalpy).JoulesPerKilogram / coldSource.Kelvins)).JoulesPerKilogram();
+             ((Point1.Entropy - Point9.Entropy).JoulesPerKilogramKelvin -
+              (Point1.Enthalpy - Point9.Enthalpy).JoulesPerKilogram / coldSource.Kelvins)).JoulesPerKilogram();
         var mixingEnergyLoss =
             (hotSource.Kelvins *
              (SecondStageSpecificMassFlow.DecimalFractions * Point3.Entropy -
               (FirstStageSpecificMassFlow.DecimalFractions * Point2.Entropy +
                (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow)
-               .DecimalFractions * Point9.Entropy)).JoulesPerKilogramKelvin)
+               .DecimalFractions * Point7.Entropy)).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
             minSpecificWork + condenserEnergyLoss + expansionValvesEnergyLoss + evaporatorEnergyLoss +

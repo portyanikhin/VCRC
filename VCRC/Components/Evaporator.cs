@@ -33,6 +33,8 @@ public class Evaporator : IEquatable<Evaporator>
         new EvaporatorValidator(Refrigerant).ValidateAndThrow(this);
         Pressure = Refrigerant.WithState(Input.Temperature(Temperature),
             Input.Quality(PressureDefinition.VaporQuality())).Pressure;
+        DewPoint = Refrigerant.WithState(Input.Pressure(Pressure),
+            Input.Quality(TwoPhase.Dew.VaporQuality()));
     }
 
     private Refrigerant Refrigerant { get; }
@@ -61,6 +63,11 @@ public class Evaporator : IEquatable<Evaporator>
     ///     Absolute evaporating pressure.
     /// </summary>
     public Pressure Pressure { get; }
+
+    /// <summary>
+    ///     Dew-point on the evaporating isobar.
+    /// </summary>
+    public Refrigerant DewPoint { get; }
 
     public bool Equals(Evaporator? other)
     {

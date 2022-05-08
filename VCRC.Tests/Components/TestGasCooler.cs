@@ -23,7 +23,8 @@ public static class TestGasCooler
     public static void TestWrongTemperature(double temperature)
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
-        Action action = () => _ = new GasCooler(RefrigerantName, temperature.DegreesCelsius());
+        Action action = () =>
+            _ = new GasCooler(RefrigerantName, temperature.DegreesCelsius());
         action.Should().Throw<ValidationException>()
             .WithMessage("*Gas cooler outlet temperature should be in (30.98;1726.85) °C!*");
     }
@@ -31,7 +32,8 @@ public static class TestGasCooler
     [Test]
     public static void TestNeedToDefinePressure()
     {
-        Action action = () => _ = new GasCooler(FluidsList.R729, OutletTemperature);
+        Action action = () =>
+            _ = new GasCooler(FluidsList.R729, OutletTemperature);
         action.Should().Throw<ArgumentException>()
             .WithMessage(
                 "It is impossible to automatically calculate the absolute pressure in the gas cooler! " +
@@ -40,7 +42,8 @@ public static class TestGasCooler
 
     [Test]
     public static void TestPressure() =>
-        GasCooler.Pressure.Should().Be((2.759 * OutletTemperature.DegreesCelsius - 9.912).Bars());
+        GasCooler.Pressure.Should().Be(
+            (2.759 * OutletTemperature.DegreesCelsius - 9.912).Bars());
 
     [Test]
     public static void TestEquals()

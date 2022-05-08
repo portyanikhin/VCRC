@@ -21,8 +21,8 @@ public static class TestIntermediateVessel
     public static void TestIntermediatePressure()
     {
         var intermediateVessel = new IntermediateVessel(Evaporator, Condenser);
-        intermediateVessel.Pressure.Pascals.Should()
-            .Be(Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
+        intermediateVessel.Pressure.Pascals.Should().Be(
+            Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
     }
 
     [Test]
