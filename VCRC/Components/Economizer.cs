@@ -1,7 +1,7 @@
 ﻿using System;
 using FluentValidation;
 using UnitsNet;
-using VCRC.Validators.Components;
+using VCRC.Components.Validators;
 
 namespace VCRC.Components;
 

@@ -3,7 +3,7 @@ using FluentValidation;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.Units;
-using VCRC.Validators.Components;
+using VCRC.Components.Validators;
 
 namespace VCRC.Components;
 

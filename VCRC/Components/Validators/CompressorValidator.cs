@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
-using VCRC.Components;
 
-namespace VCRC.Validators.Components;
+namespace VCRC.Components.Validators;
 
 public class CompressorValidator : AbstractValidator<Compressor>
 {

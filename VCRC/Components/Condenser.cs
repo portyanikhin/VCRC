@@ -2,9 +2,9 @@
 using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using VCRC.Components.Validators;
 using VCRC.Extensions;
 using VCRC.Fluids;
-using VCRC.Validators.Components;
 
 namespace VCRC.Components;
 
