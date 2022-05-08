@@ -15,8 +15,8 @@ public class VCRCWithEconomizerValidator : AbstractValidator<VCRCWithEconomizer>
         RuleFor(vcrc => vcrc.Point7.Temperature)
             .LessThan(vcrc => vcrc.Point5.Temperature)
             .WithMessage("Wrong temperature difference at economizer 'hot' side!");
-        RuleFor(vcrc => vcrc.Point8.Temperature)
-            .LessThan(vcrc => vcrc.Point5.Temperature)
+        RuleFor(vcrc => vcrc.Point6.Temperature)
+            .LessThan(vcrc => vcrc.Point8.Temperature)
             .WithMessage("Too high temperature difference at economizer 'cold' side!");
     }
 }
