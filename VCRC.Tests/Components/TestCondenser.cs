@@ -51,12 +51,12 @@ public static class TestCondenser
     [Test]
     public static void TestEquals()
     {
-        var condenser = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
-        var sameCondenser = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
-        var otherCondenser = new Condenser(RefrigerantName, CondensingTemperature,
+        var origin = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
+        var same = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
+        var other = new Condenser(RefrigerantName, CondensingTemperature,
             Subcooling + TemperatureDelta.FromKelvins(2));
-        _ = new TestEquals<Condenser>(condenser, sameCondenser, otherCondenser);
-        (condenser == sameCondenser).Should().BeTrue();
-        (condenser != otherCondenser).Should().BeTrue();
+        new TestEquals<Condenser>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

@@ -28,11 +28,11 @@ public static class TestIntermediateVessel
     [Test]
     public static void TestEquals()
     {
-        var intermediateVessel = new IntermediateVessel(Evaporator, Condenser);
-        var sameIntermediateVessel = new IntermediateVessel(intermediateVessel.Pressure);
-        var otherIntermediateVessel = new IntermediateVessel(intermediateVessel.Pressure + 1.Atmospheres());
-        _ = new TestEquals<IntermediateVessel>(intermediateVessel, sameIntermediateVessel, otherIntermediateVessel);
-        (intermediateVessel == sameIntermediateVessel).Should().BeTrue();
-        (intermediateVessel != otherIntermediateVessel).Should().BeTrue();
+        var origin = new IntermediateVessel(Evaporator, Condenser);
+        var same = new IntermediateVessel(origin.Pressure);
+        var other = new IntermediateVessel(origin.Pressure + 1.Atmospheres());
+        new TestEquals<IntermediateVessel>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

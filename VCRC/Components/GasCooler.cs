@@ -37,9 +37,8 @@ public class GasCooler : IEquatable<GasCooler>
     /// </exception>
     public GasCooler(FluidsList refrigerantName, Temperature outletTemperature, Pressure? pressure = null)
     {
-        RefrigerantName = refrigerantName;
+        (RefrigerantName, OutletTemperature) = (refrigerantName, outletTemperature);
         Refrigerant = new Refrigerant(RefrigerantName);
-        OutletTemperature = outletTemperature;
         new GasCoolerValidator(Refrigerant).ValidateAndThrow(this);
         if (pressure.HasValue)
             Pressure = pressure.Value;

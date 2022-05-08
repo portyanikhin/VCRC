@@ -21,11 +21,11 @@ public static class TestRecuperator
     [Test]
     public static void TestEquals()
     {
-        var recuperator = new Recuperator(5.Kelvins());
-        var sameRecuperator = new Recuperator(5.Kelvins());
-        var otherRecuperator = new Recuperator(8.Kelvins());
-        _ = new TestEquals<Recuperator>(recuperator, sameRecuperator, otherRecuperator);
-        (recuperator == sameRecuperator).Should().BeTrue();
-        (recuperator != otherRecuperator).Should().BeTrue();
+        var origin = new Recuperator(5.Kelvins());
+        var same = new Recuperator(5.Kelvins());
+        var other = new Recuperator(8.Kelvins());
+        new TestEquals<Recuperator>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

@@ -31,14 +31,14 @@ public static class TestEconomizer
     [Test]
     public static void TestEquals()
     {
-        var economizer =
+        var origin =
             new Economizer(Evaporator, Condenser, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(8));
-        var sameEconomizer =
-            new Economizer(economizer.Pressure, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(8));
-        var otherEconomizer =
-            new Economizer(economizer.Pressure, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
-        _ = new TestEquals<Economizer>(economizer, sameEconomizer, otherEconomizer);
-        (economizer == sameEconomizer).Should().BeTrue();
-        (economizer != otherEconomizer).Should().BeTrue();
+        var same =
+            new Economizer(origin.Pressure, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(8));
+        var other =
+            new Economizer(origin.Pressure, TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+        new TestEquals<Economizer>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

@@ -40,14 +40,14 @@ public static class TestEconomizerTPI
     [Test]
     public static void TestEquals()
     {
-        var economizer = new EconomizerTPI(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
-        var sameEconomizer =
-            new EconomizerTPI(economizer.Pressure, TemperatureDelta.FromKelvins(5));
-        var otherEconomizer =
-            new EconomizerTPI(economizer.Pressure + 1.Atmospheres(),
+        var origin = new EconomizerTPI(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
+        var same =
+            new EconomizerTPI(origin.Pressure, TemperatureDelta.FromKelvins(5));
+        var other =
+            new EconomizerTPI(origin.Pressure + 1.Atmospheres(),
                 TemperatureDelta.FromKelvins(10));
-        _ = new TestEquals<EconomizerTPI>(economizer, sameEconomizer, otherEconomizer);
-        (economizer == sameEconomizer).Should().BeTrue();
-        (economizer != otherEconomizer).Should().BeTrue();
+        new TestEquals<EconomizerTPI>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

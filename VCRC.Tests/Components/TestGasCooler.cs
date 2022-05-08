@@ -45,12 +45,12 @@ public static class TestGasCooler
     [Test]
     public static void TestEquals()
     {
-        var gasCooler = new GasCooler(RefrigerantName, OutletTemperature);
-        var sameGasCooler = new GasCooler(RefrigerantName, OutletTemperature,
+        var origin = new GasCooler(RefrigerantName, OutletTemperature);
+        var same = new GasCooler(RefrigerantName, OutletTemperature,
             (2.759 * OutletTemperature.DegreesCelsius - 9.912).Bars().ToUnit(PressureUnit.Kilopascal));
-        var otherGasCooler = new GasCooler(RefrigerantName, OutletTemperature + TemperatureDelta.FromKelvins(2));
-        _ = new TestEquals<GasCooler>(gasCooler, sameGasCooler, otherGasCooler);
-        (gasCooler == sameGasCooler).Should().BeTrue();
-        (gasCooler != otherGasCooler).Should().BeTrue();
+        var other = new GasCooler(RefrigerantName, OutletTemperature + TemperatureDelta.FromKelvins(2));
+        new TestEquals<GasCooler>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

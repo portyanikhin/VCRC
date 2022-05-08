@@ -21,11 +21,11 @@ public static class TestCompressor
     [Test]
     public static void TestEquals()
     {
-        var compressor = new Compressor(80.Percent());
-        var sameCompressor = new Compressor(80.Percent());
-        var otherCompressor = new Compressor(70.Percent());
-        _ = new TestEquals<Compressor>(compressor, sameCompressor, otherCompressor);
-        (compressor == sameCompressor).Should().BeTrue();
-        (compressor != otherCompressor).Should().BeTrue();
+        var origin = new Compressor(80.Percent());
+        var same = new Compressor(80.Percent());
+        var other = new Compressor(70.Percent());
+        new TestEquals<Compressor>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

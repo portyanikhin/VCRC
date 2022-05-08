@@ -5,14 +5,23 @@ namespace VCRC.Tests.Components;
 
 public class TestEquals<T> where T : IEquatable<T>
 {
-    public TestEquals(in T originObj, in T sameObj, in T otherObj)
+    public TestEquals(in T origin, in T same, in T other) =>
+        (Origin, Same, Other) = (origin, same, other);
+
+    private T Origin { get; }
+
+    private T Same { get; }
+
+    private T Other { get; }
+
+    public void Start()
     {
-        originObj.Should().Be(originObj);
-        originObj.Should().BeSameAs(originObj);
-        originObj.Should().Be(sameObj);
-        originObj.Should().NotBeSameAs(sameObj);
-        originObj.Should().NotBe(otherObj);
-        originObj.Should().NotBeNull();
-        originObj.Equals(new object()).Should().BeFalse();
+        Origin.Should().Be(Origin);
+        Origin.Should().BeSameAs(Origin);
+        Origin.Should().Be(Same);
+        Origin.Should().NotBeSameAs(Same);
+        Origin.Should().NotBe(Other);
+        Origin.Should().NotBeNull();
+        Origin.Equals(new object()).Should().BeFalse();
     }
 }

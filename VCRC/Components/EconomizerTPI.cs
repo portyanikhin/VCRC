@@ -22,8 +22,7 @@ public class EconomizerTPI : IEquatable<EconomizerTPI>
     /// </exception>
     public EconomizerTPI(Pressure pressure, TemperatureDelta temperatureDifference)
     {
-        Pressure = pressure;
-        TemperatureDifference = temperatureDifference;
+        (Pressure, TemperatureDifference) = (pressure, temperatureDifference);
         new EconomizerTPIValidator().ValidateAndThrow(this);
     }
 

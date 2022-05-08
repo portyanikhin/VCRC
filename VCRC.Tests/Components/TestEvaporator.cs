@@ -51,12 +51,12 @@ public static class TestEvaporator
     [Test]
     public static void TestEquals()
     {
-        var evaporator = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
-        var sameEvaporator = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
-        var otherEvaporator = new Evaporator(RefrigerantName, EvaporatingTemperature,
+        var origin = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
+        var same = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
+        var other = new Evaporator(RefrigerantName, EvaporatingTemperature,
             Superheat - TemperatureDelta.FromKelvins(3));
-        _ = new TestEquals<Evaporator>(evaporator, sameEvaporator, otherEvaporator);
-        (evaporator == sameEvaporator).Should().BeTrue();
-        (evaporator != otherEvaporator).Should().BeTrue();
+        new TestEquals<Evaporator>(origin, same, other).Start();
+        (origin == same).Should().BeTrue();
+        (origin != other).Should().BeTrue();
     }
 }

@@ -27,11 +27,9 @@ public class Evaporator : IEquatable<Evaporator>
     public Evaporator(FluidsList refrigerantName, Temperature temperature, TemperatureDelta superheat,
         TwoPhase pressureDefinition = TwoPhase.Dew)
     {
-        RefrigerantName = refrigerantName;
+        (RefrigerantName, Temperature, Superheat, PressureDefinition) =
+            (refrigerantName, temperature, superheat, pressureDefinition);
         Refrigerant = new Refrigerant(RefrigerantName);
-        Temperature = temperature;
-        Superheat = superheat;
-        PressureDefinition = pressureDefinition;
         new EvaporatorValidator(Refrigerant).ValidateAndThrow(this);
         Pressure = Refrigerant.WithState(Input.Temperature(Temperature),
             Input.Quality(PressureDefinition.VaporQuality())).Pressure;

@@ -27,11 +27,9 @@ public class Condenser : IEquatable<Condenser>
     public Condenser(FluidsList refrigerantName, Temperature temperature, TemperatureDelta subcooling,
         TwoPhase pressureDefinition = TwoPhase.Bubble)
     {
-        RefrigerantName = refrigerantName;
+        (RefrigerantName, Temperature, Subcooling, PressureDefinition) =
+            (refrigerantName, temperature, subcooling, pressureDefinition);
         Refrigerant = new Refrigerant(RefrigerantName);
-        Temperature = temperature;
-        Subcooling = subcooling;
-        PressureDefinition = pressureDefinition;
         new CondenserValidator(Refrigerant).ValidateAndThrow(this);
         Pressure = Refrigerant.WithState(Input.Temperature(Temperature),
             Input.Quality(PressureDefinition.VaporQuality())).Pressure;

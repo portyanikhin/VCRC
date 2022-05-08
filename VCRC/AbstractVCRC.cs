@@ -19,8 +19,7 @@ public abstract class AbstractVCRC
     /// <param name="compressor">Compressor.</param>
     protected AbstractVCRC(Evaporator evaporator, Compressor compressor)
     {
-        Evaporator = evaporator;
-        Compressor = compressor;
+        (Evaporator, Compressor) = (evaporator, compressor);
         RefrigerantName = Evaporator.RefrigerantName;
         Refrigerant = new Refrigerant(RefrigerantName);
         Point0 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
