@@ -31,8 +31,8 @@ public class VCRCMitsubishiZubadanValidator : AbstractValidator<VCRCMitsubishiZu
         RuleFor(vcrc => vcrc.Point10.Temperature)
             .LessThan(vcrc => vcrc.Point8.Temperature)
             .WithMessage("Wrong temperature difference at economizer 'hot' side!");
-        RuleFor(vcrc => vcrc.Point9.Temperature)
-            .LessThan(vcrc => vcrc.Point11.Temperature)
+        RuleFor(vcrc => vcrc.Point11.Temperature)
+            .LessThan(vcrc => vcrc.Point8.Temperature)
             .WithMessage("Too high temperature difference at economizer 'cold' side!");
     }
 }
