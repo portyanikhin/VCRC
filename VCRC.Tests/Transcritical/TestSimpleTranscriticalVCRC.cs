@@ -33,7 +33,7 @@ public class TestSimpleTranscriticalVCRC
             _ = new SimpleTranscriticalVCRC(
                 new Evaporator(FluidsList.R32, Cycle.Evaporator.Temperature, Cycle.Evaporator.Superheat),
                 Cycle.Compressor,
-                new GasCooler(FluidsList.R744, Cycle.GasCooler.OutletTemperature));
+                new GasCooler(FluidsList.R744, Cycle.GasCooler.Temperature));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Only one refrigerant should be selected!*");
     }
@@ -59,7 +59,7 @@ public class TestSimpleTranscriticalVCRC
     public void TestPoint3()
     {
         Cycle.Point3.Pressure.Should().Be(Cycle.GasCooler.Pressure);
-        Cycle.Point3.Temperature.Should().Be(Cycle.GasCooler.OutletTemperature);
+        Cycle.Point3.Temperature.Should().Be(Cycle.GasCooler.Temperature);
         Cycle.Point3.Phase.Should().Be(Phases.Supercritical);
     }
 

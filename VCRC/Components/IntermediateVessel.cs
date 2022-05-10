@@ -22,12 +22,12 @@ public record IntermediateVessel
     /// </summary>
     /// <remarks>
     ///     The intermediate pressure is calculated as the square root of the product
-    ///     of the evaporating pressure and the condensing pressure.
+    ///     of the evaporating pressure and the condensing or gas cooler pressure.
     /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
-    /// <param name="condenser">Condenser.</param>
-    public IntermediateVessel(Evaporator evaporator, Condenser condenser) =>
-        Pressure = Math.Sqrt(evaporator.Pressure.Pascals * condenser.Pressure.Pascals).Pascals()
+    /// <param name="heatEmitter">Condenser or gas cooler.</param>
+    public IntermediateVessel(Evaporator evaporator, IHeatEmitter heatEmitter) =>
+        Pressure = Math.Sqrt(evaporator.Pressure.Pascals * heatEmitter.Pressure.Pascals).Pascals()
             .ToUnit(PressureUnit.Kilopascal);
 
     /// <summary>

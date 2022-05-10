@@ -34,10 +34,10 @@ public record Economizer : EconomizerTPI
     /// </summary>
     /// <remarks>
     ///     The intermediate pressure is calculated as the square root of the product
-    ///     of evaporating pressure and condensing pressure.
+    ///     of the evaporating pressure and the condensing or gas cooler pressure.
     /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
-    /// <param name="condenser">Condenser.</param>
+    /// <param name="heatEmitter">Condenser or gas cooler.</param>
     /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
     /// <param name="superheat">Superheat in the economizer.</param>
     /// <exception cref="ValidationException">
@@ -46,8 +46,8 @@ public record Economizer : EconomizerTPI
     /// <exception cref="ValidationException">
     ///     Superheat in the economizer should be in [0;50] K!
     /// </exception>
-    public Economizer(Evaporator evaporator, Condenser condenser, TemperatureDelta temperatureDifference,
-        TemperatureDelta superheat) : base(evaporator, condenser, temperatureDifference)
+    public Economizer(Evaporator evaporator, IHeatEmitter heatEmitter, TemperatureDelta temperatureDifference,
+        TemperatureDelta superheat) : base(evaporator, heatEmitter, temperatureDifference)
     {
         Superheat = superheat.ToUnit(TemperatureDeltaUnit.Kelvin);
         new EconomizerValidator().ValidateAndThrow(this);

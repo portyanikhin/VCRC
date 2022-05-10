@@ -33,16 +33,16 @@ public record EconomizerTPI
     /// </summary>
     /// <remarks>
     ///     The intermediate pressure is calculated as the square root of the product
-    ///     of evaporating pressure and condensing pressure.
+    ///     of the evaporating pressure and the condensing or gas cooler pressure.
     /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
-    /// <param name="condenser">Condenser.</param>
+    /// <param name="heatEmitter">Condenser or gas cooler.</param>
     /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
     /// <exception cref="ValidationException">
     ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
     /// </exception>
-    public EconomizerTPI(Evaporator evaporator, Condenser condenser, TemperatureDelta temperatureDifference) :
-        this(Math.Sqrt(evaporator.Pressure.Pascals * condenser.Pressure.Pascals).Pascals(), temperatureDifference)
+    public EconomizerTPI(Evaporator evaporator, IHeatEmitter heatEmitter, TemperatureDelta temperatureDifference) :
+        this(Math.Sqrt(evaporator.Pressure.Pascals * heatEmitter.Pressure.Pascals).Pascals(), temperatureDifference)
     {
     }
 

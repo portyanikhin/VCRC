@@ -7,6 +7,7 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC.Abstract;
 using VCRC.Components;
 using VCRC.Subcritical;
 
@@ -143,7 +144,8 @@ public class TestSimpleVCRC
 
     [TestCase(20, 20, "Indoor and outdoor temperatures should not be equal!")]
     [TestCase(5, 35, "Wrong temperature difference in the evaporator! Increase 'cold' source temperature.")]
-    [TestCase(20, 50, "Wrong temperature difference in the condenser! Decrease 'hot' source temperature.")]
+    [TestCase(20, 50,
+        "Wrong temperature difference in the condenser or gas cooler! Decrease 'hot' source temperature.")]
     public void TestEntropyAnalysisWrongTemperatures(double indoor, double outdoor, string message)
     {
         IEntropyAnalysable vcrc = Cycle;

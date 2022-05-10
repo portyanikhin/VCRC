@@ -1,11 +1,12 @@
 ﻿using FluentValidation;
 using UnitsNet;
+using VCRC.Components;
 
-namespace VCRC.Subcritical.Validators;
+namespace VCRC.Abstract.Validators;
 
-public class VCRCMitsubishiZubadanValidator : AbstractValidator<VCRCMitsubishiZubadan>
+public class AbstractVCRCMitsubishiZubadanValidator : AbstractValidator<AbstractVCRCMitsubishiZubadan>
 {
-    public VCRCMitsubishiZubadanValidator()
+    public AbstractVCRCMitsubishiZubadanValidator()
     {
         RuleFor(vcrc => vcrc.Recuperator.Superheat)
             .GreaterThan(TemperatureDelta.Zero)
@@ -23,8 +24,13 @@ public class VCRCMitsubishiZubadanValidator : AbstractValidator<VCRCMitsubishiZu
             .GreaterThan(vcrc => vcrc.Evaporator.Pressure)
             .WithMessage("Intermediate pressure should be greater than evaporating pressure!");
         RuleFor(vcrc => vcrc.Economizer.Pressure)
-            .LessThan(vcrc => vcrc.Condenser.Pressure)
+            .LessThan(vcrc => vcrc.HeatEmitter.Pressure)
+            .When(vcrc => vcrc.HeatEmitter is Condenser)
             .WithMessage("Intermediate pressure should be less than condensing pressure!");
+        RuleFor(vcrc => vcrc.Economizer.Pressure)
+            .LessThan(vcrc => vcrc.HeatEmitter.Pressure)
+            .When(vcrc => vcrc.HeatEmitter is GasCooler)
+            .WithMessage("Intermediate pressure should be less than gas cooler pressure!");
         RuleFor(vcrc => vcrc.Point10.Quality)
             .Must(quality => quality?.DecimalFractions is > 0 and < 1)
             .WithMessage("There should be a two-phase refrigerant at the compressor injection circuit!");

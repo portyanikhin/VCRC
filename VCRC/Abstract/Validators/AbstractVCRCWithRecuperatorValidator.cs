@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace VCRC.Subcritical.Validators;
+namespace VCRC.Abstract.Validators;
 
-public class VCRCWithRecuperatorValidator : AbstractValidator<VCRCWithRecuperator>
+public class AbstractVCRCWithRecuperatorValidator : AbstractValidator<AbstractVCRCWithRecuperator>
 {
-    public VCRCWithRecuperatorValidator()
+    public AbstractVCRCWithRecuperatorValidator()
     {
         RuleFor(vcrc => vcrc.Point4.Temperature)
             .GreaterThan(vcrc => vcrc.Point2.Temperature)

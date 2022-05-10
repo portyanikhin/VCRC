@@ -15,9 +15,9 @@ using VCRC.Subcritical;
 
 namespace VCRC.Tests.Subcritical;
 
-public class TestVCRCWithCompleteIntercooling
+public class TestVCRCWithCIC
 {
-    private VCRCWithCompleteIntercooling Cycle { get; set; } = null!;
+    private VCRCWithCIC Cycle { get; set; } = null!;
 
     [OneTimeSetUp]
     public void SetUp()
@@ -28,7 +28,7 @@ public class TestVCRCWithCompleteIntercooling
         var compressor = new Compressor(80.Percent());
         var condenser = new Condenser(refrigerantName,
             50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-        Cycle = new VCRCWithCompleteIntercooling(evaporator, compressor, condenser);
+        Cycle = new VCRCWithCIC(evaporator, compressor, condenser);
     }
 
     [Test]
@@ -40,7 +40,7 @@ public class TestVCRCWithCompleteIntercooling
         var condenser = new Condenser(refrigerantName,
             Cycle.Condenser.Temperature, Cycle.Condenser.Subcooling);
         Action action = () =>
-            _ = new VCRCWithIncompleteIntercooling(evaporator, Cycle.Compressor, condenser);
+            _ = new VCRCWithIIC(evaporator, Cycle.Compressor, condenser);
         action.Should().Throw<ValidationException>()
             .WithMessage("*Refrigerant should not have a temperature glide!*");
     }
@@ -50,7 +50,7 @@ public class TestVCRCWithCompleteIntercooling
     public void TestWrongIntermediatePressure(Bound bound, string message)
     {
         Action action = () =>
-            _ = new VCRCWithIncompleteIntercooling(
+            _ = new VCRCWithIIC(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
                 new IntermediateVessel(bound is Bound.Lower
                     ? Cycle.Evaporator.Pressure
@@ -62,7 +62,7 @@ public class TestVCRCWithCompleteIntercooling
     public void TestWrongPhaseAtIntermediateVesselInlet()
     {
         Action action = () =>
-            _ = new VCRCWithIncompleteIntercooling(
+            _ = new VCRCWithIIC(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
                 new IntermediateVessel(Cycle.Condenser.Pressure - 1.Pascals()));
         action.Should().Throw<ValidationException>()

@@ -1,7 +1,7 @@
 ﻿using System;
 using UnitsNet;
 
-namespace VCRC;
+namespace VCRC.Abstract;
 
 public interface IEntropyAnalysable
 {
@@ -16,7 +16,7 @@ public interface IEntropyAnalysable
     ///     Wrong temperature difference in the evaporator! Increase 'cold' source temperature.
     /// </exception>
     /// <exception cref="ArgumentException">
-    ///     Wrong temperature difference in the condenser! Decrease 'hot' source temperature.
+    ///     Wrong temperature difference in the condenser or gas cooler! Decrease 'hot' source temperature.
     /// </exception>
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor);
 
@@ -30,7 +30,7 @@ public interface IEntropyAnalysable
                 "Wrong temperature difference in the evaporator! Increase 'cold' source temperature.");
         if (hotSource >= hotSourceMax)
             throw new ArgumentException(
-                "Wrong temperature difference in the condenser! Decrease 'hot' source temperature.");
+                "Wrong temperature difference in the condenser or gas cooler! Decrease 'hot' source temperature.");
         return (coldSource, hotSource);
     }
 }

@@ -8,7 +8,7 @@ public class GasCoolerValidator : AbstractValidator<GasCooler>
 {
     public GasCoolerValidator(Refrigerant refrigerant)
     {
-        RuleFor(gasCooler => gasCooler.OutletTemperature)
+        RuleFor(gasCooler => gasCooler.Temperature)
             .GreaterThan(refrigerant.CriticalTemperature)
             .WithMessage(
                 "Gas cooler outlet temperature should be greater than " +

@@ -11,7 +11,7 @@ namespace VCRC.Components;
 /// <summary>
 ///     Condenser as a VCRC component.
 /// </summary>
-public record Condenser
+public record Condenser : IHeatEmitter
 {
     /// <summary>
     ///     Condenser as a VCRC component.
@@ -34,6 +34,11 @@ public record Condenser
     }
 
     /// <summary>
+    ///     Subcooling in the condenser.
+    /// </summary>
+    public TemperatureDelta Subcooling { get; }
+
+    /// <summary>
     ///     Selected refrigerant name.
     /// </summary>
     public FluidsList RefrigerantName { get; }
@@ -42,11 +47,6 @@ public record Condenser
     ///     Condensing temperature (bubble-point).
     /// </summary>
     public Temperature Temperature { get; }
-
-    /// <summary>
-    ///     Subcooling in the condenser.
-    /// </summary>
-    public TemperatureDelta Subcooling { get; }
 
     /// <summary>
     ///     Absolute condensing pressure.

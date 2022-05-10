@@ -13,7 +13,7 @@ namespace VCRC.Components;
 /// <summary>
 ///     Gas cooler as a transcritical VCRC component.
 /// </summary>
-public record GasCooler
+public record GasCooler : IHeatEmitter
 {
     /// <summary>
     ///     Gas cooler as a transcritical VCRC component.
@@ -40,12 +40,12 @@ public record GasCooler
     /// </exception>
     public GasCooler(FluidsList refrigerantName, Temperature outletTemperature, Pressure? pressure = null)
     {
-        (RefrigerantName, OutletTemperature) =
+        (RefrigerantName, Temperature) =
             (refrigerantName, outletTemperature.ToUnit(TemperatureUnit.DegreeCelsius));
         if (pressure.HasValue)
             Pressure = pressure.Value.ToUnit(PressureUnit.Kilopascal);
-        else if (RefrigerantName is FluidsList.R744 && OutletTemperature <= 60.DegreesCelsius())
-            Pressure = (2.759 * OutletTemperature.DegreesCelsius - 9.912).Bars()
+        else if (RefrigerantName is FluidsList.R744 && Temperature <= 60.DegreesCelsius())
+            Pressure = (2.759 * Temperature.DegreesCelsius - 9.912).Bars()
                 .ToUnit(PressureUnit.Kilopascal);
         else
             throw new ArgumentException(
@@ -62,7 +62,7 @@ public record GasCooler
     /// <summary>
     ///     Gas cooler outlet temperature.
     /// </summary>
-    public Temperature OutletTemperature { get; }
+    public Temperature Temperature { get; }
 
     /// <summary>
     ///     Gas cooler absolute pressure.

@@ -3,37 +3,37 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC.Components;
 
-namespace VCRC.Subcritical;
+namespace VCRC.Abstract;
 
 /// <summary>
-///     Two-stage subcritical VCRC.
+///     Two-stage VCRC base class.
 /// </summary>
-public abstract class TwoStageSubcriticalVCRC : SubcriticalVCRC
+public abstract class AbstractTwoStageVCRC : AbstractVCRC
 {
     /// <summary>
-    ///     Two-stage subcritical VCRC.
+    ///     Two-stage VCRC base class.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="condenser">Condenser.</param>
+    /// <param name="heatEmitter">Condenser or gas cooler.</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    protected TwoStageSubcriticalVCRC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
-        base(evaporator, compressor, condenser)
+    protected AbstractTwoStageVCRC(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
+        base(evaporator, compressor, heatEmitter)
     {
     }
 
     /// <summary>
-    ///     Specific ratio of the mass flow rate of the first compression stage
+    ///     Specific ratio of the mass flow rate of the first compression stage.
     /// </summary>
     public Ratio FirstStageSpecificMassFlow { get; } = 100.Percent();
 
     /// <summary>
-    ///     Specific ratio of the mass flow rate of the second compression stage
+    ///     Specific ratio of the mass flow rate of the second compression stage.
     /// </summary>
     public Ratio SecondStageSpecificMassFlow { get; protected set; }
 }

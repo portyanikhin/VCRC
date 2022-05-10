@@ -1,4 +1,5 @@
 ﻿using UnitsNet;
+using VCRC.Abstract;
 
 namespace VCRC.Tests;
 

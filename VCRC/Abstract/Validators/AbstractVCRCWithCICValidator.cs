@@ -1,17 +1,23 @@
 ﻿using FluentValidation;
+using VCRC.Components;
 
-namespace VCRC.Subcritical.Validators;
+namespace VCRC.Abstract.Validators;
 
-public class VCRCWithCompleteIntercoolingValidator : AbstractValidator<VCRCWithCompleteIntercooling>
+public class AbstractVCRCWithCICValidator : AbstractValidator<AbstractVCRCWithCIC>
 {
-    public VCRCWithCompleteIntercoolingValidator()
+    public AbstractVCRCWithCICValidator()
     {
         RuleFor(vcrc => vcrc.IntermediateVessel.Pressure)
             .GreaterThan(vcrc => vcrc.Evaporator.Pressure)
             .WithMessage("Intermediate pressure should be greater than evaporating pressure!");
         RuleFor(vcrc => vcrc.IntermediateVessel.Pressure)
-            .LessThan(vcrc => vcrc.Condenser.Pressure)
+            .LessThan(vcrc => vcrc.HeatEmitter.Pressure)
+            .When(vcrc => vcrc.HeatEmitter is Condenser)
             .WithMessage("Intermediate pressure should be less than condensing pressure!");
+        RuleFor(vcrc => vcrc.IntermediateVessel.Pressure)
+            .LessThan(vcrc => vcrc.HeatEmitter.Pressure)
+            .When(vcrc => vcrc.HeatEmitter is GasCooler)
+            .WithMessage("Intermediate pressure should be less than gas cooler pressure!");
         RuleFor(vcrc => vcrc.Point6.Quality)
             .Must(quality => quality?.DecimalFractions is > 0 and < 1)
             .WithMessage("There should be a two-phase refrigerant at the intermediate vessel inlet!");

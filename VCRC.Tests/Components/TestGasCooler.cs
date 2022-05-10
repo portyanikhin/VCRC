@@ -20,7 +20,7 @@ public static class TestGasCooler
     public static void TestNeedToDefinePressure()
     {
         Action action = () =>
-            _ = new GasCooler(FluidsList.R729, GasCooler.OutletTemperature);
+            _ = new GasCooler(FluidsList.R729, GasCooler.Temperature);
         action.Should().Throw<ArgumentException>()
             .WithMessage(
                 "It is impossible to automatically calculate the absolute pressure in the gas cooler! " +
@@ -42,8 +42,7 @@ public static class TestGasCooler
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new GasCooler(GasCooler.RefrigerantName, GasCooler.OutletTemperature,
-                Pressure.Zero);
+            _ = new GasCooler(GasCooler.RefrigerantName, GasCooler.Temperature, Pressure.Zero);
         action.Should().Throw<ValidationException>()
             .WithMessage("*Gas cooler absolute pressure should be greater than 7.38 MPa!*");
     }
@@ -51,5 +50,5 @@ public static class TestGasCooler
     [Test]
     public static void TestPressure() =>
         GasCooler.Pressure.Should().Be(
-            (2.759 * GasCooler.OutletTemperature.DegreesCelsius - 9.912).Bars());
+            (2.759 * GasCooler.Temperature.DegreesCelsius - 9.912).Bars());
 }
