@@ -1,6 +1,6 @@
-﻿using System;
-using FluentValidation;
+﻿using FluentValidation;
 using UnitsNet;
+using UnitsNet.Units;
 using VCRC.Components.Validators;
 
 namespace VCRC.Components;
@@ -8,7 +8,7 @@ namespace VCRC.Components;
 /// <summary>
 ///     Economizer as a VCRC component.
 /// </summary>
-public class Economizer : EconomizerTPI, IEquatable<Economizer>
+public record Economizer : EconomizerTPI
 {
     /// <summary>
     ///     Economizer as a VCRC component.
@@ -19,11 +19,13 @@ public class Economizer : EconomizerTPI, IEquatable<Economizer>
     /// <exception cref="ValidationException">
     ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
     /// </exception>
-    /// <exception cref="ValidationException">Superheat in the economizer should be in [0;50] K!</exception>
+    /// <exception cref="ValidationException">
+    ///     Superheat in the economizer should be in [0;50] K!
+    /// </exception>
     public Economizer(Pressure pressure, TemperatureDelta temperatureDifference, TemperatureDelta superheat) :
         base(pressure, temperatureDifference)
     {
-        Superheat = superheat;
+        Superheat = superheat.ToUnit(TemperatureDeltaUnit.Kelvin);
         new EconomizerValidator().ValidateAndThrow(this);
     }
 
@@ -41,11 +43,13 @@ public class Economizer : EconomizerTPI, IEquatable<Economizer>
     /// <exception cref="ValidationException">
     ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
     /// </exception>
-    /// <exception cref="ValidationException">Superheat in the economizer should be in [0;50] K!</exception>
+    /// <exception cref="ValidationException">
+    ///     Superheat in the economizer should be in [0;50] K!
+    /// </exception>
     public Economizer(Evaporator evaporator, Condenser condenser, TemperatureDelta temperatureDifference,
         TemperatureDelta superheat) : base(evaporator, condenser, temperatureDifference)
     {
-        Superheat = superheat;
+        Superheat = superheat.ToUnit(TemperatureDeltaUnit.Kelvin);
         new EconomizerValidator().ValidateAndThrow(this);
     }
 
@@ -53,19 +57,4 @@ public class Economizer : EconomizerTPI, IEquatable<Economizer>
     ///     Superheat in the economizer.
     /// </summary>
     public TemperatureDelta Superheat { get; }
-
-    public bool Equals(Economizer? other)
-    {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return GetHashCode() == other.GetHashCode();
-    }
-
-    public override bool Equals(object? obj) => Equals(obj as Economizer);
-
-    public override int GetHashCode() => HashCode.Combine(base.GetHashCode(), Superheat);
-
-    public static bool operator ==(Economizer? left, Economizer? right) => Equals(left, right);
-
-    public static bool operator !=(Economizer? left, Economizer? right) => !Equals(left, right);
 }

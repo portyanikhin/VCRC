@@ -27,18 +27,4 @@ public static class TestEconomizer
         action.Should().Throw<ValidationException>()
             .WithMessage("*Superheat in the economizer should be in [0;50] K!*");
     }
-
-    [Test]
-    public static void TestEquals()
-    {
-        var origin = new Economizer(Evaporator, Condenser, TemperatureDelta.FromKelvins(5),
-            TemperatureDelta.FromKelvins(8));
-        var same = new Economizer(origin.Pressure, TemperatureDelta.FromKelvins(5),
-            TemperatureDelta.FromKelvins(8));
-        var other = new Economizer(origin.Pressure, TemperatureDelta.FromKelvins(5),
-            TemperatureDelta.FromKelvins(5));
-        new TestEquals<Economizer>(origin, same, other).Start();
-        (origin == same).Should().BeTrue();
-        (origin != other).Should().BeTrue();
-    }
 }

@@ -20,20 +20,15 @@ public abstract class AbstractVCRC
     protected AbstractVCRC(Evaporator evaporator, Compressor compressor)
     {
         (Evaporator, Compressor) = (evaporator, compressor);
-        RefrigerantName = Evaporator.RefrigerantName;
-        Refrigerant = new Refrigerant(RefrigerantName);
+        Refrigerant = new Refrigerant(Evaporator.RefrigerantName);
         Point1 = Evaporator.Superheat == TemperatureDelta.Zero
-            ? Evaporator.DewPoint.Clone()
+            ? Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+                Input.Quality(TwoPhase.Dew.VaporQuality()))
             : Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-                Input.Temperature(Evaporator.DewPoint.Temperature + Evaporator.Superheat));
+                Input.Temperature(Evaporator.Temperature + Evaporator.Superheat));
     }
 
     protected Refrigerant Refrigerant { get; }
-
-    /// <summary>
-    ///     Selected refrigerant name.
-    /// </summary>
-    public FluidsList RefrigerantName { get; }
 
     /// <summary>
     ///     Evaporator as a VCRC component.

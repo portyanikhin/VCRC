@@ -14,11 +14,8 @@ namespace VCRC.Tests.Components;
 
 public static class TestEvaporator
 {
-    private const FluidsList RefrigerantName = FluidsList.R407C;
-    private static readonly Refrigerant Refrigerant = new(RefrigerantName);
-    private static readonly Temperature EvaporatingTemperature = 5.DegreesCelsius();
-    private static readonly TemperatureDelta Superheat = TemperatureDelta.FromKelvins(8);
-    private static readonly Evaporator Evaporator = new(RefrigerantName, EvaporatingTemperature, Superheat);
+    private static readonly Evaporator Evaporator =
+        new(FluidsList.R407C, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
 
     [TestCase(-74)]
     [TestCase(87)]
@@ -26,7 +23,8 @@ public static class TestEvaporator
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new Evaporator(RefrigerantName, temperature.DegreesCelsius(), Superheat);
+            _ = new Evaporator(Evaporator.RefrigerantName, temperature.DegreesCelsius(),
+                Evaporator.Superheat);
         action.Should().Throw<ValidationException>()
             .WithMessage("*Evaporating temperature should be in (-73.15;86.2) °C!*");
     }
@@ -36,38 +34,16 @@ public static class TestEvaporator
     public static void TestWrongSuperheat(double superheat)
     {
         Action action = () =>
-            _ = new Evaporator(RefrigerantName, EvaporatingTemperature,
+            _ = new Evaporator(Evaporator.RefrigerantName, Evaporator.Temperature,
                 TemperatureDelta.FromKelvins(superheat));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Superheat in the evaporator should be in [0;50] K!*");
     }
 
     [Test]
-    public static void TestPressureDefinition()
-    {
-        var evaporator = new Evaporator(RefrigerantName, EvaporatingTemperature,
-            Superheat, TwoPhase.Bubble);
-        evaporator.PressureDefinition.Should().Be(TwoPhase.Bubble);
-        evaporator.Pressure.Should().Be(
-            Refrigerant.WithState(Input.Temperature(EvaporatingTemperature),
-                Input.Quality(TwoPhase.Bubble.VaporQuality())).Pressure);
-    }
-
-    [Test]
-    public static void TestDewPoint() =>
-        Evaporator.DewPoint.Should().Be(
-            Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-                Input.Quality(TwoPhase.Dew.VaporQuality())));
-
-    [Test]
-    public static void TestEquals()
-    {
-        var origin = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
-        var same = new Evaporator(RefrigerantName, EvaporatingTemperature, Superheat);
-        var other = new Evaporator(RefrigerantName, EvaporatingTemperature,
-            Superheat - TemperatureDelta.FromKelvins(3));
-        new TestEquals<Evaporator>(origin, same, other).Start();
-        (origin == same).Should().BeTrue();
-        (origin != other).Should().BeTrue();
-    }
+    public static void TestPressure() =>
+        Evaporator.Pressure.Should().Be(
+            new Refrigerant(Evaporator.RefrigerantName)
+                .WithState(Input.Temperature(Evaporator.Temperature),
+                    Input.Quality(TwoPhase.Dew.VaporQuality())).Pressure);
 }

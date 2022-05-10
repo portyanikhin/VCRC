@@ -113,7 +113,7 @@ public class TestVCRCMitsubishiZubadan
     {
         Cycle.Point6.Pressure.Should().Be(Cycle.Condenser.Pressure);
         Cycle.Point6.Temperature.Should().Be(
-            Cycle.Condenser.BubblePoint.Temperature - Cycle.Condenser.Subcooling);
+            Cycle.Condenser.Temperature - Cycle.Condenser.Subcooling);
         Cycle.Point6.Phase.Should().Be(Phases.Liquid);
     }
 

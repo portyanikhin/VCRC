@@ -4,7 +4,6 @@ using FluentValidation;
 using NUnit.Framework;
 using SharpProp;
 using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC.Components;
 
@@ -18,6 +17,9 @@ public static class TestEconomizerTPI
     private static readonly Condenser Condenser =
         new(FluidsList.R32, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 
+    private static readonly EconomizerTPI Economizer =
+        new(Evaporator, Condenser, TemperatureDelta.FromKelvins(5));
+
     [TestCase(-1)]
     [TestCase(51)]
     public static void TestWrongTemperatureDifference(double temperatureDifference)
@@ -30,25 +32,7 @@ public static class TestEconomizerTPI
     }
 
     [Test]
-    public static void TestIntermediatePressure()
-    {
-        var economizer = new EconomizerTPI(Evaporator, Condenser,
-            TemperatureDelta.FromKelvins(5));
-        economizer.Pressure.Pascals
-            .Should().Be(Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
-    }
-
-    [Test]
-    public static void TestEquals()
-    {
-        var origin = new EconomizerTPI(Evaporator, Condenser,
-            TemperatureDelta.FromKelvins(5));
-        var same = new EconomizerTPI(origin.Pressure,
-            TemperatureDelta.FromKelvins(5));
-        var other = new EconomizerTPI(origin.Pressure + 1.Atmospheres(),
-            TemperatureDelta.FromKelvins(10));
-        new TestEquals<EconomizerTPI>(origin, same, other).Start();
-        (origin == same).Should().BeTrue();
-        (origin != other).Should().BeTrue();
-    }
+    public static void TestPressure() =>
+        Economizer.Pressure.Pascals.Should().Be(
+            Math.Sqrt(Evaporator.Pressure.Pascals * Condenser.Pressure.Pascals));
 }

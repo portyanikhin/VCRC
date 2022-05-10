@@ -23,7 +23,9 @@ public class VCRCWithEconomizer : TwoStageSubcriticalVCRC, IEntropyAnalysable
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
     /// <param name="economizer">Economizer.</param>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+    /// <exception cref="ValidationException">
+    ///     Only one refrigerant should be selected!
+    /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
@@ -33,8 +35,12 @@ public class VCRCWithEconomizer : TwoStageSubcriticalVCRC, IEntropyAnalysable
     /// <exception cref="ValidationException">
     ///     Intermediate pressure should be less than condensing pressure!
     /// </exception>
-    /// <exception cref="ValidationException">Wrong temperature difference at economizer 'hot' side!</exception>
-    /// <exception cref="ValidationException">Too high temperature difference at economizer 'cold' side!</exception>
+    /// <exception cref="ValidationException">
+    ///     Wrong temperature difference at economizer 'hot' side!
+    /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Too high temperature difference at economizer 'cold' side!
+    /// </exception>
     public VCRCWithEconomizer(Evaporator evaporator, Compressor compressor, Condenser condenser,
         Economizer economizer) : base(evaporator, compressor, condenser)
     {
@@ -46,9 +52,10 @@ public class VCRCWithEconomizer : TwoStageSubcriticalVCRC, IEntropyAnalysable
         Point2 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
             Input.Enthalpy(Point1.Enthalpy + specificWork1));
         Point5 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Condenser.BubblePoint.Clone()
+            ? Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+                Input.Quality(TwoPhase.Bubble.VaporQuality()))
             : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+                Input.Temperature(Condenser.Temperature - Condenser.Subcooling));
         Point6 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
             Input.Enthalpy(Point5.Enthalpy));
         var dewPointAtIntermediatePressure =

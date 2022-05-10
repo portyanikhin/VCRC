@@ -13,7 +13,7 @@ namespace VCRC.Components;
 /// <summary>
 ///     Gas cooler as a transcritical VCRC component.
 /// </summary>
-public class GasCooler : IEquatable<GasCooler>
+public record GasCooler
 {
     /// <summary>
     ///     Gas cooler as a transcritical VCRC component.
@@ -28,34 +28,36 @@ public class GasCooler : IEquatable<GasCooler>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
     /// <param name="outletTemperature">Gas cooler outlet temperature.</param>
     /// <param name="pressure">Gas cooler absolute pressure (optional for R744).</param>
-    /// <exception cref="ValidationException">
-    ///     Gas cooler outlet temperature should be in ({CriticalTemperature};{MaxTemperature}) °C!
-    /// </exception>
     /// <exception cref="ArgumentException">
     ///     It is impossible to automatically calculate the absolute pressure in the gas cooler!
     ///     It is necessary to define it.
     /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Gas cooler outlet temperature should be greater than {CriticalTemperature} °C!
+    /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Gas cooler absolute pressure should be greater than {CriticalPressure} MPa!
+    /// </exception>
     public GasCooler(FluidsList refrigerantName, Temperature outletTemperature, Pressure? pressure = null)
     {
-        (RefrigerantName, OutletTemperature) = (refrigerantName, outletTemperature);
-        Refrigerant = new Refrigerant(RefrigerantName);
-        new GasCoolerValidator(Refrigerant).ValidateAndThrow(this);
+        (RefrigerantName, OutletTemperature) =
+            (refrigerantName, outletTemperature.ToUnit(TemperatureUnit.DegreeCelsius));
         if (pressure.HasValue)
-            Pressure = pressure.Value;
+            Pressure = pressure.Value.ToUnit(PressureUnit.Kilopascal);
         else if (RefrigerantName is FluidsList.R744 && OutletTemperature <= 60.DegreesCelsius())
-            Pressure = (2.759 * OutletTemperature.DegreesCelsius - 9.912).Bars().ToUnit(PressureUnit.Kilopascal);
+            Pressure = (2.759 * OutletTemperature.DegreesCelsius - 9.912).Bars()
+                .ToUnit(PressureUnit.Kilopascal);
         else
             throw new ArgumentException(
                 "It is impossible to automatically calculate the absolute pressure in the gas cooler! " +
                 "It is necessary to define it.");
+        new GasCoolerValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
     }
-
-    private Refrigerant Refrigerant { get; }
 
     /// <summary>
     ///     Selected refrigerant name.
     /// </summary>
-    internal FluidsList RefrigerantName { get; }
+    public FluidsList RefrigerantName { get; }
 
     /// <summary>
     ///     Gas cooler outlet temperature.
@@ -66,20 +68,4 @@ public class GasCooler : IEquatable<GasCooler>
     ///     Gas cooler absolute pressure.
     /// </summary>
     public Pressure Pressure { get; }
-
-    public bool Equals(GasCooler? other)
-    {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return GetHashCode() == other.GetHashCode();
-    }
-
-    public override bool Equals(object? obj) => Equals(obj as GasCooler);
-
-    public override int GetHashCode() =>
-        HashCode.Combine((int) RefrigerantName, OutletTemperature, Pressure);
-
-    public static bool operator ==(GasCooler? left, GasCooler? right) => Equals(left, right);
-
-    public static bool operator !=(GasCooler? left, GasCooler? right) => !Equals(left, right);
 }

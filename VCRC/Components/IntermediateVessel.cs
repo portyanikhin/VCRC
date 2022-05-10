@@ -8,13 +8,14 @@ namespace VCRC.Components;
 /// <summary>
 ///     Intermediate vessel as a VCRC component.
 /// </summary>
-public class IntermediateVessel : IEquatable<IntermediateVessel>
+public record IntermediateVessel
 {
     /// <summary>
     ///     Intermediate vessel as a VCRC component.
     /// </summary>
     /// <param name="pressure">Absolute intermediate pressure.</param>
-    public IntermediateVessel(Pressure pressure) => Pressure = pressure;
+    public IntermediateVessel(Pressure pressure) =>
+        Pressure = pressure.ToUnit(PressureUnit.Kilopascal);
 
     /// <summary>
     ///     Intermediate vessel as a VCRC component.
@@ -33,19 +34,4 @@ public class IntermediateVessel : IEquatable<IntermediateVessel>
     ///     Absolute intermediate pressure.
     /// </summary>
     public Pressure Pressure { get; }
-
-    public bool Equals(IntermediateVessel? other)
-    {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return GetHashCode() == other.GetHashCode();
-    }
-
-    public override bool Equals(object? obj) => Equals(obj as IntermediateVessel);
-
-    public override int GetHashCode() => Pressure.GetHashCode();
-
-    public static bool operator ==(IntermediateVessel? left, IntermediateVessel? right) => Equals(left, right);
-
-    public static bool operator !=(IntermediateVessel? left, IntermediateVessel? right) => !Equals(left, right);
 }

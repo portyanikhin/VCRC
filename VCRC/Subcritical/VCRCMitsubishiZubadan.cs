@@ -35,8 +35,12 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
     /// <param name="economizer">Economizer.</param>
-    /// <exception cref="ArgumentException">Solution not found!</exception>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+    /// <exception cref="ArgumentException">
+    ///     Solution not found!
+    /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Only one refrigerant should be selected!
+    /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
@@ -85,9 +89,10 @@ public class VCRCMitsubishiZubadan : TwoStageSubcriticalVCRC, IEntropyAnalysable
         Point5s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Entropy(Point4.Entropy));
         Point6 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Condenser.BubblePoint.Clone()
+            ? Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+                Input.Quality(TwoPhase.Bubble.VaporQuality()))
             : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+                Input.Temperature(Condenser.Temperature - Condenser.Subcooling));
         CalculateInjectionQuality(); // Also calculates Point7, Point8, Point9, Point10, Point11
         new VCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
         Point12 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),

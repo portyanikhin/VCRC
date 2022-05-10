@@ -15,7 +15,9 @@ public abstract class TranscriticalVCRC : AbstractVCRC
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="gasCooler">Gas cooler.</param>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+    /// <exception cref="ValidationException">
+    ///     Only one refrigerant should be selected!
+    /// </exception>
     protected TranscriticalVCRC(Evaporator evaporator, Compressor compressor, GasCooler gasCooler) :
         base(evaporator, compressor)
     {

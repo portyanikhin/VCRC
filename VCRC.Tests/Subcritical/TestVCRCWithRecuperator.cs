@@ -34,7 +34,7 @@ public class TestVCRCWithRecuperator
     {
         Action action = () =>
             _ = new VCRCWithRecuperator(
-                new Evaporator(Cycle.RefrigerantName,
+                new Evaporator(Cycle.Evaporator.RefrigerantName,
                     Cycle.Evaporator.Temperature, TemperatureDelta.FromKelvins(50)),
                 Cycle.Recuperator, Cycle.Compressor, Cycle.Condenser);
         action.Should().Throw<ValidationException>()
@@ -47,7 +47,7 @@ public class TestVCRCWithRecuperator
         Action action = () =>
             _ = new VCRCWithRecuperator(
                 Cycle.Evaporator, Cycle.Recuperator, Cycle.Compressor,
-                new Condenser(Cycle.RefrigerantName,
+                new Condenser(Cycle.Condenser.RefrigerantName,
                     Cycle.Condenser.Temperature, TemperatureDelta.FromKelvins(50)));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Wrong temperature difference at recuperator 'cold' side!*");
@@ -58,11 +58,12 @@ public class TestVCRCWithRecuperator
     {
         var cycleZeroEvaporatorSuperheat =
             new VCRCWithRecuperator(
-                new Evaporator(Cycle.RefrigerantName,
+                new Evaporator(Cycle.Evaporator.RefrigerantName,
                     Cycle.Evaporator.Temperature, TemperatureDelta.Zero),
                 Cycle.Recuperator, Cycle.Compressor, Cycle.Condenser);
-        cycleZeroEvaporatorSuperheat.Evaporator.DewPoint
-            .Should().Be(cycleZeroEvaporatorSuperheat.Point1);
+        cycleZeroEvaporatorSuperheat.Point1.Pressure.Should().Be(
+            cycleZeroEvaporatorSuperheat.Evaporator.Pressure);
+        cycleZeroEvaporatorSuperheat.Point1.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
@@ -82,10 +83,11 @@ public class TestVCRCWithRecuperator
         var cycleWithZeroSubcooling =
             new VCRCWithRecuperator(
                 Cycle.Evaporator, Cycle.Recuperator, Cycle.Compressor,
-                new Condenser(Cycle.RefrigerantName,
+                new Condenser(Cycle.Condenser.RefrigerantName,
                     Cycle.Condenser.Temperature, TemperatureDelta.Zero));
-        cycleWithZeroSubcooling.Point4
-            .Should().Be(cycleWithZeroSubcooling.Condenser.BubblePoint);
+        cycleWithZeroSubcooling.Point4.Pressure.Should().Be(
+            cycleWithZeroSubcooling.Condenser.Pressure);
+        cycleWithZeroSubcooling.Point4.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
@@ -93,7 +95,7 @@ public class TestVCRCWithRecuperator
     {
         Cycle.Point1.Pressure.Should().Be(Cycle.Evaporator.Pressure);
         Cycle.Point1.Temperature.Should().Be(
-            Cycle.Evaporator.DewPoint.Temperature + Cycle.Evaporator.Superheat);
+            Cycle.Evaporator.Temperature + Cycle.Evaporator.Superheat);
         Cycle.Point1.Phase.Should().Be(Phases.Gas);
     }
 
@@ -129,7 +131,7 @@ public class TestVCRCWithRecuperator
     {
         Cycle.Point4.Pressure.Should().Be(Cycle.Condenser.Pressure);
         Cycle.Point4.Temperature.Should().Be(
-            Cycle.Condenser.BubblePoint.Temperature - Cycle.Condenser.Subcooling);
+            Cycle.Condenser.Temperature - Cycle.Condenser.Subcooling);
         Cycle.Point4.Phase.Should().Be(Phases.Liquid);
     }
 

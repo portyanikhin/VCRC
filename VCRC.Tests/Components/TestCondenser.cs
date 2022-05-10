@@ -14,11 +14,8 @@ namespace VCRC.Tests.Components;
 
 public static class TestCondenser
 {
-    private const FluidsList RefrigerantName = FluidsList.R407C;
-    private static readonly Refrigerant Refrigerant = new(RefrigerantName);
-    private static readonly Temperature CondensingTemperature = 50.DegreesCelsius();
-    private static readonly TemperatureDelta Subcooling = TemperatureDelta.FromKelvins(3);
-    private static readonly Condenser Condenser = new(RefrigerantName, CondensingTemperature, Subcooling);
+    private static readonly Condenser Condenser =
+        new(FluidsList.R407C, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 
     [TestCase(-74)]
     [TestCase(87)]
@@ -26,7 +23,8 @@ public static class TestCondenser
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new Condenser(RefrigerantName, temperature.DegreesCelsius(), Subcooling);
+            _ = new Condenser(Condenser.RefrigerantName, temperature.DegreesCelsius(),
+                Condenser.Subcooling);
         action.Should().Throw<ValidationException>()
             .WithMessage("*Condensing temperature should be in (-73.15;86.2) °C!*");
     }
@@ -36,38 +34,16 @@ public static class TestCondenser
     public static void TestWrongSubcooling(double subcooling)
     {
         Action action = () =>
-            _ = new Condenser(RefrigerantName, CondensingTemperature,
+            _ = new Condenser(Condenser.RefrigerantName, Condenser.Temperature,
                 TemperatureDelta.FromKelvins(subcooling));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Subcooling in the condenser should be in [0;50] K!*");
     }
 
     [Test]
-    public static void TestPressureDefinition()
-    {
-        var condenser = new Condenser(RefrigerantName, CondensingTemperature,
-            Subcooling, TwoPhase.Dew);
-        condenser.PressureDefinition.Should().Be(TwoPhase.Dew);
-        condenser.Pressure.Should().Be(
-            Refrigerant.WithState(Input.Temperature(CondensingTemperature),
-                Input.Quality(TwoPhase.Dew.VaporQuality())).Pressure);
-    }
-
-    [Test]
-    public static void TestBubblePoint() =>
-        Condenser.BubblePoint.Should().Be(
-            Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Quality(TwoPhase.Bubble.VaporQuality())));
-
-    [Test]
-    public static void TestEquals()
-    {
-        var origin = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
-        var same = new Condenser(RefrigerantName, CondensingTemperature, Subcooling);
-        var other = new Condenser(RefrigerantName, CondensingTemperature,
-            Subcooling + TemperatureDelta.FromKelvins(2));
-        new TestEquals<Condenser>(origin, same, other).Start();
-        (origin == same).Should().BeTrue();
-        (origin != other).Should().BeTrue();
-    }
+    public static void TestPressure() =>
+        Condenser.Pressure.Should().Be(
+            new Refrigerant(Condenser.RefrigerantName)
+                .WithState(Input.Temperature(Condenser.Temperature),
+                    Input.Quality(TwoPhase.Bubble.VaporQuality())).Pressure);
 }

@@ -19,11 +19,10 @@ public class TestSimpleVCRC
     [OneTimeSetUp]
     public void SetUp()
     {
-        const FluidsList refrigerantName = FluidsList.R32;
-        var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(),
+        var evaporator = new Evaporator(FluidsList.R32, 5.DegreesCelsius(),
             TemperatureDelta.FromKelvins(8));
         var compressor = new Compressor(80.Percent());
-        var condenser = new Condenser(refrigerantName, 50.DegreesCelsius(),
+        var condenser = new Condenser(FluidsList.R32, 50.DegreesCelsius(),
             TemperatureDelta.FromKelvins(3));
         Cycle = new SimpleVCRC(evaporator, compressor, condenser);
     }
@@ -34,10 +33,10 @@ public class TestSimpleVCRC
     {
         Action action = () =>
             _ = new SimpleVCRC(
-                new Evaporator(Cycle.RefrigerantName,
+                new Evaporator(Cycle.Evaporator.RefrigerantName,
                     evaporatingTemperature.DegreesCelsius(), Cycle.Evaporator.Superheat),
                 Cycle.Compressor,
-                new Condenser(Cycle.RefrigerantName,
+                new Condenser(Cycle.Condenser.RefrigerantName,
                     condensingTemperature.DegreesCelsius(), Cycle.Condenser.Subcooling));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Condensing temperature should be greater than evaporating temperature!*");
@@ -62,11 +61,12 @@ public class TestSimpleVCRC
     {
         var cycleWithZeroSuperheat =
             new SimpleVCRC(
-                new Evaporator(Cycle.RefrigerantName,
+                new Evaporator(Cycle.Evaporator.RefrigerantName,
                     Cycle.Evaporator.Temperature, TemperatureDelta.Zero),
                 Cycle.Compressor, Cycle.Condenser);
-        cycleWithZeroSuperheat.Point1
-            .Should().Be(cycleWithZeroSuperheat.Evaporator.DewPoint);
+        cycleWithZeroSuperheat.Point1.Pressure.Should().Be(
+            cycleWithZeroSuperheat.Evaporator.Pressure);
+        cycleWithZeroSuperheat.Point1.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
@@ -74,10 +74,11 @@ public class TestSimpleVCRC
     {
         var cycleWithZeroSubcooling =
             new SimpleVCRC(Cycle.Evaporator, Cycle.Compressor,
-                new Condenser(Cycle.RefrigerantName,
+                new Condenser(Cycle.Condenser.RefrigerantName,
                     Cycle.Condenser.Temperature, TemperatureDelta.Zero));
-        cycleWithZeroSubcooling.Point3
-            .Should().Be(cycleWithZeroSubcooling.Condenser.BubblePoint);
+        cycleWithZeroSubcooling.Point3.Pressure.Should().Be(
+            cycleWithZeroSubcooling.Condenser.Pressure);
+        cycleWithZeroSubcooling.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
@@ -85,7 +86,7 @@ public class TestSimpleVCRC
     {
         Cycle.Point1.Pressure.Should().Be(Cycle.Evaporator.Pressure);
         Cycle.Point1.Temperature.Should().Be(
-            Cycle.Evaporator.DewPoint.Temperature + Cycle.Evaporator.Superheat);
+            Cycle.Evaporator.Temperature + Cycle.Evaporator.Superheat);
         Cycle.Point1.Phase.Should().Be(Phases.Gas);
     }
 
@@ -111,7 +112,7 @@ public class TestSimpleVCRC
     {
         Cycle.Point3.Pressure.Should().Be(Cycle.Condenser.Pressure);
         Cycle.Point3.Temperature.Should().Be(
-            Cycle.Condenser.BubblePoint.Temperature - Cycle.Condenser.Subcooling);
+            Cycle.Condenser.Temperature - Cycle.Condenser.Subcooling);
         Cycle.Point3.Phase.Should().Be(Phases.Liquid);
     }
 

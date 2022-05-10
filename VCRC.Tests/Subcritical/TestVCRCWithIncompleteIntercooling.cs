@@ -132,7 +132,7 @@ public class TestVCRCWithIncompleteIntercooling
     {
         Cycle.Point5.Pressure.Should().Be(Cycle.Condenser.Pressure);
         Cycle.Point5.Temperature.Should().Be(
-            Cycle.Condenser.BubblePoint.Temperature - Cycle.Condenser.Subcooling);
+            Cycle.Condenser.Temperature - Cycle.Condenser.Subcooling);
         Cycle.Point5.Phase.Should().Be(Phases.Liquid);
     }
 

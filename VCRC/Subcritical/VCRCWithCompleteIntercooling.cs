@@ -26,11 +26,15 @@ public class VCRCWithCompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyAna
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
     /// <param name="intermediateVessel">Intermediate vessel.</param>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+    /// <exception cref="ValidationException">
+    ///     Only one refrigerant should be selected!
+    /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    /// <exception cref="ValidationException">Refrigerant should not have a temperature glide!</exception>
+    /// <exception cref="ValidationException">
+    ///     Refrigerant should not have a temperature glide!
+    /// </exception>
     /// <exception cref="ValidationException">
     ///     Intermediate pressure should be greater than evaporating pressure!
     /// </exception>
@@ -56,9 +60,10 @@ public class VCRCWithCompleteIntercooling : TwoStageSubcriticalVCRC, IEntropyAna
         Point4s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Entropy(Point3.Entropy));
         Point5 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Condenser.BubblePoint.Clone()
+            ? Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+                Input.Quality(TwoPhase.Bubble.VaporQuality()))
             : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+                Input.Temperature(Condenser.Temperature - Condenser.Subcooling));
         Point6 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
             Input.Enthalpy(Point5.Enthalpy));
         new VCRCWithCompleteIntercoolingValidator().ValidateAndThrow(this);

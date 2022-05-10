@@ -23,12 +23,18 @@ public class VCRCWithRecuperator : SubcriticalVCRC, IEntropyAnalysable
     /// <param name="recuperator">Recuperator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
+    /// <exception cref="ValidationException">
+    ///     Only one refrigerant should be selected!
+    /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    /// <exception cref="ValidationException">Wrong temperature difference at recuperator 'hot' side!</exception>
-    /// <exception cref="ValidationException">Wrong temperature difference at recuperator 'cold' side!</exception>
+    /// <exception cref="ValidationException">
+    ///     Wrong temperature difference at recuperator 'hot' side!
+    /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Wrong temperature difference at recuperator 'cold' side!
+    /// </exception>
     public VCRCWithRecuperator(Evaporator evaporator, Recuperator recuperator, Compressor compressor,
         Condenser condenser) : base(evaporator, compressor, condenser)
     {
@@ -44,9 +50,10 @@ public class VCRCWithRecuperator : SubcriticalVCRC, IEntropyAnalysable
         Point3 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Enthalpy(Point2.Enthalpy + SpecificWork));
         Point4 = Condenser.Subcooling == TemperatureDelta.Zero
-            ? Condenser.BubblePoint.Clone()
+            ? Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
+                Input.Quality(TwoPhase.Bubble.VaporQuality()))
             : Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
-                Input.Temperature(Condenser.BubblePoint.Temperature - Condenser.Subcooling));
+                Input.Temperature(Condenser.Temperature - Condenser.Subcooling));
         Point5 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Enthalpy(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy)));
         Point6 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),

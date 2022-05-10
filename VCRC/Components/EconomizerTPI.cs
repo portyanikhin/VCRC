@@ -10,7 +10,7 @@ namespace VCRC.Components;
 /// <summary>
 ///     Economizer as a component of VCRC with two-phase injection to the compressor.
 /// </summary>
-public class EconomizerTPI : IEquatable<EconomizerTPI>
+public record EconomizerTPI
 {
     /// <summary>
     ///     Economizer as a component of VCRC with two-phase injection to the compressor.
@@ -22,7 +22,9 @@ public class EconomizerTPI : IEquatable<EconomizerTPI>
     /// </exception>
     public EconomizerTPI(Pressure pressure, TemperatureDelta temperatureDifference)
     {
-        (Pressure, TemperatureDifference) = (pressure, temperatureDifference);
+        (Pressure, TemperatureDifference) =
+            (pressure.ToUnit(PressureUnit.Kilopascal),
+                temperatureDifference.ToUnit(TemperatureDeltaUnit.Kelvin));
         new EconomizerTPIValidator().ValidateAndThrow(this);
     }
 
@@ -39,10 +41,8 @@ public class EconomizerTPI : IEquatable<EconomizerTPI>
     /// <exception cref="ValidationException">
     ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
     /// </exception>
-    public EconomizerTPI(Evaporator evaporator, Condenser condenser,
-        TemperatureDelta temperatureDifference) : this(Math
-        .Sqrt(evaporator.Pressure.Pascals * condenser.Pressure.Pascals).Pascals()
-        .ToUnit(PressureUnit.Kilopascal), temperatureDifference)
+    public EconomizerTPI(Evaporator evaporator, Condenser condenser, TemperatureDelta temperatureDifference) :
+        this(Math.Sqrt(evaporator.Pressure.Pascals * condenser.Pressure.Pascals).Pascals(), temperatureDifference)
     {
     }
 
@@ -55,19 +55,4 @@ public class EconomizerTPI : IEquatable<EconomizerTPI>
     ///     Absolute intermediate pressure.
     /// </summary>
     public Pressure Pressure { get; }
-
-    public bool Equals(EconomizerTPI? other)
-    {
-        if (ReferenceEquals(null, other)) return false;
-        if (ReferenceEquals(this, other)) return true;
-        return GetHashCode() == other.GetHashCode();
-    }
-
-    public override bool Equals(object? obj) => Equals(obj as EconomizerTPI);
-
-    public override int GetHashCode() => TemperatureDifference.GetHashCode();
-
-    public static bool operator ==(EconomizerTPI? left, EconomizerTPI? right) => Equals(left, right);
-
-    public static bool operator !=(EconomizerTPI? left, EconomizerTPI? right) => !Equals(left, right);
 }
