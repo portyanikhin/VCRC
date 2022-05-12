@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using VCRC.Abstract;
 using VCRC.Components;
+using VCRC.Fluids;
 
 namespace VCRC.Subcritical;
 
@@ -46,4 +47,14 @@ public class VCRCWithCIC : AbstractVCRCWithCIC
     ///     Condenser as a VCRC component.
     /// </summary>
     public Condenser Condenser { get; }
+
+    /// <summary>
+    ///     Point 4 – second compression stage discharge / condenser inlet.
+    /// </summary>
+    public new Refrigerant Point4 => base.Point4;
+
+    /// <summary>
+    ///     Point 5 – condenser outlet / first EV inlet.
+    /// </summary>
+    public new Refrigerant Point5 => base.Point5;
 }

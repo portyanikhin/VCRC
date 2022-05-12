@@ -2,6 +2,7 @@
 using FluentValidation;
 using VCRC.Abstract;
 using VCRC.Components;
+using VCRC.Fluids;
 
 namespace VCRC.Subcritical;
 
@@ -69,4 +70,14 @@ public class VCRCMitsubishiZubadan : AbstractVCRCMitsubishiZubadan
     ///     Condenser as a VCRC component.
     /// </summary>
     public Condenser Condenser { get; }
+
+    /// <summary>
+    ///     Point 5 – second compression stage discharge / condenser inlet.
+    /// </summary>
+    public new Refrigerant Point5 => base.Point5;
+
+    /// <summary>
+    ///     Point 6 – condenser outlet / first EV inlet.
+    /// </summary>
+    public new Refrigerant Point6 => base.Point6;
 }

@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using VCRC.Abstract;
 using VCRC.Components;
+using VCRC.Fluids;
 
 namespace VCRC.Transcritical;
 
@@ -26,4 +27,14 @@ public class SimpleTranscriticalVCRC : AbstractSimpleVCRC
     ///     Gas cooler as a transcritical VCRC component.
     /// </summary>
     public GasCooler GasCooler { get; }
+
+    /// <summary>
+    ///     Point 2 – compression stage discharge / gas cooler inlet.
+    /// </summary>
+    public new Refrigerant Point2 => base.Point2;
+
+    /// <summary>
+    ///     Point 3 – gas cooler outlet / EV inlet.
+    /// </summary>
+    public new Refrigerant Point3 => base.Point3;
 }

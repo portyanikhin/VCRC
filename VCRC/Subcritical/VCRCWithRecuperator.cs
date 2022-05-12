@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using VCRC.Abstract;
 using VCRC.Components;
+using VCRC.Fluids;
 
 namespace VCRC.Subcritical;
 
@@ -36,4 +37,14 @@ public class VCRCWithRecuperator : AbstractVCRCWithRecuperator
     ///     Condenser as a VCRC component.
     /// </summary>
     public Condenser Condenser { get; }
+
+    /// <summary>
+    ///     Point 3 – compression stage discharge / condenser inlet.
+    /// </summary>
+    public new Refrigerant Point3 => base.Point3;
+
+    /// <summary>
+    ///     Point 4 – condenser outlet / recuperator "hot" inlet.
+    /// </summary>
+    public new Refrigerant Point4 => base.Point4;
 }
