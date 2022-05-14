@@ -119,9 +119,9 @@ public class TestTranscriticalVCRCWithIIC
     public void TestPoint4()
     {
         Cycle.Point4.Pressure.Should().Be(Cycle.GasCooler.Pressure);
-        Cycle.Point4.Enthalpy.Should().Be(
-            Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+        Cycle.Point4.Enthalpy.JoulesPerKilogram.Should().BeApproximately(
+            (Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
+                Cycle.Compressor.IsentropicEfficiency.DecimalFractions).JoulesPerKilogram, 1e-10);
         Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
         Cycle.Point4.Phase.Should().Be(Phases.Supercritical);
     }
