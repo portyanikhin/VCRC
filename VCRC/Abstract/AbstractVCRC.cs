@@ -55,7 +55,7 @@ public abstract class AbstractVCRC
     /// <summary>
     ///     Point 1 – evaporator outlet.
     /// </summary>
-    public Refrigerant Point1 { get; }
+    internal Refrigerant Point1 { get; }
 
     /// <summary>
     ///     Specific work of isentropic compression (by default, kJ/kg).

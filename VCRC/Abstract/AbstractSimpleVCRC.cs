@@ -51,6 +51,11 @@ public abstract class AbstractSimpleVCRC : AbstractVCRC, IEntropyAnalysable
     }
 
     /// <summary>
+    ///     Point 1 – evaporator outlet / compression stage suction.
+    /// </summary>
+    public new Refrigerant Point1 => base.Point1;
+
+    /// <summary>
     ///     Point 2s – isentropic compression stage discharge.
     /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]

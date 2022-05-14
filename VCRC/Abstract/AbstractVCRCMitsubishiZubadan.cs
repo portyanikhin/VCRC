@@ -126,6 +126,11 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     public EconomizerTPI Economizer { get; }
 
     /// <summary>
+    ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
+    /// </summary>
+    public new Refrigerant Point1 => base.Point1;
+
+    /// <summary>
     ///     Point 2 – recuperator "cold" outlet / first compression stage suction.
     /// </summary>
     public Refrigerant Point2 { get; }

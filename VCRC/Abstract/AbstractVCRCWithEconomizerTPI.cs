@@ -106,6 +106,11 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
     public EconomizerTPI Economizer { get; }
 
     /// <summary>
+    ///     Point 1 – evaporator outlet / first compression stage suction.
+    /// </summary>
+    public new Refrigerant Point1 => base.Point1;
+
+    /// <summary>
     ///     Point 2s – first isentropic compression stage discharge.
     /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]

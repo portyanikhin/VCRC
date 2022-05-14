@@ -72,6 +72,11 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
     public Recuperator Recuperator { get; }
 
     /// <summary>
+    ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
+    /// </summary>
+    public new Refrigerant Point1 => base.Point1;
+
+    /// <summary>
     ///     Point 2 – recuperator "cold" outlet / compression stage suction.
     /// </summary>
     public Refrigerant Point2 { get; }
