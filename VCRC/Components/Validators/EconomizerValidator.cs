@@ -4,9 +4,9 @@ using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC.Components.Validators;
 
-public class EconomizerValidator : AbstractValidator<Economizer>
+internal class EconomizerValidator : AbstractValidator<Economizer>
 {
-    public EconomizerValidator()
+    internal EconomizerValidator()
     {
         RuleFor(economizer => economizer.Superheat)
             .InclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())

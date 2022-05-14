@@ -3,9 +3,9 @@ using VCRC.Components;
 
 namespace VCRC.Abstract.Validators;
 
-public class AbstractVCRCValidator : AbstractValidator<AbstractVCRC>
+internal class AbstractVCRCValidator : AbstractValidator<AbstractVCRC>
 {
-    public AbstractVCRCValidator()
+    internal AbstractVCRCValidator()
     {
         RuleFor(vcrc => vcrc.Evaporator.RefrigerantName)
             .Equal(vcrc => vcrc.HeatEmitter.RefrigerantName)

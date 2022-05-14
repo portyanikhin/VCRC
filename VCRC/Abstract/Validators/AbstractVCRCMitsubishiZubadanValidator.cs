@@ -4,9 +4,9 @@ using VCRC.Components;
 
 namespace VCRC.Abstract.Validators;
 
-public class AbstractVCRCMitsubishiZubadanValidator : AbstractValidator<AbstractVCRCMitsubishiZubadan>
+internal class AbstractVCRCMitsubishiZubadanValidator : AbstractValidator<AbstractVCRCMitsubishiZubadan>
 {
-    public AbstractVCRCMitsubishiZubadanValidator()
+    internal AbstractVCRCMitsubishiZubadanValidator()
     {
         RuleFor(vcrc => vcrc.Recuperator.Superheat)
             .GreaterThan(TemperatureDelta.Zero)

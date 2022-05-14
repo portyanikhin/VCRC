@@ -2,9 +2,9 @@
 
 namespace VCRC.Abstract.Validators;
 
-public class AbstractVCRCWithRecuperatorValidator : AbstractValidator<AbstractVCRCWithRecuperator>
+internal class AbstractVCRCWithRecuperatorValidator : AbstractValidator<AbstractVCRCWithRecuperator>
 {
-    public AbstractVCRCWithRecuperatorValidator()
+    internal AbstractVCRCWithRecuperatorValidator()
     {
         RuleFor(vcrc => vcrc.Point4.Temperature)
             .GreaterThan(vcrc => vcrc.Point2.Temperature)

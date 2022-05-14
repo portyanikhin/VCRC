@@ -6,9 +6,9 @@ using VCRC.Fluids;
 
 namespace VCRC.Components.Validators;
 
-public class CondenserValidator : AbstractValidator<Condenser>
+internal class CondenserValidator : AbstractValidator<Condenser>
 {
-    public CondenserValidator(Refrigerant refrigerant)
+    internal CondenserValidator(Refrigerant refrigerant)
     {
         RuleFor(condenser => condenser.Temperature)
             .ExclusiveBetween(refrigerant.TripleTemperature, refrigerant.CriticalTemperature)

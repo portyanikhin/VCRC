@@ -3,9 +3,9 @@ using VCRC.Components;
 
 namespace VCRC.Abstract.Validators;
 
-public class AbstractVCRCWithEconomizerValidator : AbstractValidator<AbstractVCRCWithEconomizer>
+internal class AbstractVCRCWithEconomizerValidator : AbstractValidator<AbstractVCRCWithEconomizer>
 {
-    public AbstractVCRCWithEconomizerValidator()
+    internal AbstractVCRCWithEconomizerValidator()
     {
         RuleFor(vcrc => vcrc.Economizer.Pressure)
             .GreaterThan(vcrc => vcrc.Evaporator.Pressure)

@@ -85,12 +85,12 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
     /// <summary>
     ///     Point 3 – compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
-    public Refrigerant Point3 { get; }
+    internal Refrigerant Point3 { get; }
 
     /// <summary>
     ///     Point 4 – condenser or gas cooler outlet / recuperator "hot" inlet.
     /// </summary>
-    public Refrigerant Point4 { get; }
+    internal Refrigerant Point4 { get; }
 
     /// <summary>
     ///     Point 5 – recuperator "hot" outlet / EV inlet.

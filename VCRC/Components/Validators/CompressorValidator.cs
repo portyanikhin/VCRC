@@ -4,9 +4,9 @@ using UnitsNet.NumberExtensions.NumberToRatio;
 
 namespace VCRC.Components.Validators;
 
-public class CompressorValidator : AbstractValidator<Compressor>
+internal class CompressorValidator : AbstractValidator<Compressor>
 {
-    public CompressorValidator()
+    internal CompressorValidator()
     {
         RuleFor(compressor => compressor.IsentropicEfficiency)
             .ExclusiveBetween(Ratio.Zero, 100.Percent())

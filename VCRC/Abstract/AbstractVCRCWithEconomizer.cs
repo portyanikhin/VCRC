@@ -128,12 +128,12 @@ public abstract class AbstractVCRCWithEconomizer : AbstractTwoStageVCRC, IEntrop
     /// <summary>
     ///     Point 4 – second compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
-    public Refrigerant Point4 { get; }
+    internal Refrigerant Point4 { get; }
 
     /// <summary>
     ///     Point 5 – condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
     /// </summary>
-    public Refrigerant Point5 { get; }
+    internal Refrigerant Point5 { get; }
 
     /// <summary>
     ///     Point 6 – first EV outlet / economizer "cold" inlet.

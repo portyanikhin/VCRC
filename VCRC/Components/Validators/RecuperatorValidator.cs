@@ -4,9 +4,9 @@ using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC.Components.Validators;
 
-public class RecuperatorValidator : AbstractValidator<Recuperator>
+internal class RecuperatorValidator : AbstractValidator<Recuperator>
 {
-    public RecuperatorValidator()
+    internal RecuperatorValidator()
     {
         RuleFor(recuperator => recuperator.Superheat)
             .InclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())

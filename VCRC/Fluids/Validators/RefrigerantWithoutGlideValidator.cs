@@ -2,9 +2,9 @@
 
 namespace VCRC.Fluids.Validators;
 
-public class RefrigerantWithoutGlideValidator : AbstractValidator<Refrigerant>
+internal class RefrigerantWithoutGlideValidator : AbstractValidator<Refrigerant>
 {
-    public RefrigerantWithoutGlideValidator()
+    internal RefrigerantWithoutGlideValidator()
     {
         RuleFor(refrigerant => refrigerant.HasGlide)
             .Equal(false)

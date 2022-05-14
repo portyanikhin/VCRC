@@ -4,9 +4,9 @@ using VCRC.Fluids;
 
 namespace VCRC.Components.Validators;
 
-public class GasCoolerValidator : AbstractValidator<GasCooler>
+internal class GasCoolerValidator : AbstractValidator<GasCooler>
 {
-    public GasCoolerValidator(Refrigerant refrigerant)
+    internal GasCoolerValidator(Refrigerant refrigerant)
     {
         RuleFor(gasCooler => gasCooler.Temperature)
             .GreaterThan(refrigerant.CriticalTemperature)

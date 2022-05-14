@@ -155,12 +155,12 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     /// <summary>
     ///     Point 5 – second compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
-    public Refrigerant Point5 { get; }
+    internal Refrigerant Point5 { get; }
 
     /// <summary>
     ///     Point 6 – condenser or gas cooler outlet / first EV inlet.
     /// </summary>
-    public Refrigerant Point6 { get; }
+    internal Refrigerant Point6 { get; }
 
     /// <summary>
     ///     Point 7 – first EV outlet / recuperator "hot" inlet.

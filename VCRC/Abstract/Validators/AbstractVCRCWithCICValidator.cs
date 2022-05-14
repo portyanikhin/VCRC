@@ -3,9 +3,9 @@ using VCRC.Components;
 
 namespace VCRC.Abstract.Validators;
 
-public class AbstractVCRCWithCICValidator : AbstractValidator<AbstractVCRCWithCIC>
+internal class AbstractVCRCWithCICValidator : AbstractValidator<AbstractVCRCWithCIC>
 {
-    public AbstractVCRCWithCICValidator()
+    internal AbstractVCRCWithCICValidator()
     {
         RuleFor(vcrc => vcrc.IntermediateVessel.Pressure)
             .GreaterThan(vcrc => vcrc.Evaporator.Pressure)

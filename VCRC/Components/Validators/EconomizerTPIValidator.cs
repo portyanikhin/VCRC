@@ -4,9 +4,9 @@ using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC.Components.Validators;
 
-public class EconomizerTPIValidator : AbstractValidator<EconomizerTPI>
+internal class EconomizerTPIValidator : AbstractValidator<EconomizerTPI>
 {
-    public EconomizerTPIValidator()
+    internal EconomizerTPIValidator()
     {
         RuleFor(economizer => economizer.TemperatureDifference)
             .InclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())

@@ -2,9 +2,9 @@
 
 namespace VCRC.Fluids.Validators;
 
-public class RefrigerantValidator : AbstractValidator<Refrigerant>
+internal class RefrigerantValidator : AbstractValidator<Refrigerant>
 {
-    public RefrigerantValidator()
+    internal RefrigerantValidator()
     {
         RuleFor(refrigerant => refrigerant.Name)
             .Must(name => name.ToString().StartsWith('R'))
