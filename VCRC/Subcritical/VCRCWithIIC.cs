@@ -25,9 +25,6 @@ public class VCRCWithIIC : AbstractVCRCWithIIC
     /// <exception cref="ValidationException">
     ///     Refrigerant should not have a temperature glide!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     There should be a two-phase refrigerant at the intermediate vessel inlet!
-    /// </exception>
     public VCRCWithIIC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
         base(evaporator, compressor, condenser) =>
         Condenser = condenser;

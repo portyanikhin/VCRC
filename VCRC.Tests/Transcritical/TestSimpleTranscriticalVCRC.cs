@@ -20,7 +20,8 @@ public class TestSimpleTranscriticalVCRC
     public void SetUp()
     {
         const FluidsList refrigerantName = FluidsList.R744;
-        var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
+        var evaporator = new Evaporator(refrigerantName, 5.DegreesCelsius(),
+            TemperatureDelta.FromKelvins(8));
         var compressor = new Compressor(80.Percent());
         var gasCooler = new GasCooler(refrigerantName, 40.DegreesCelsius());
         Cycle = new SimpleTranscriticalVCRC(evaporator, compressor, gasCooler);
@@ -31,7 +32,8 @@ public class TestSimpleTranscriticalVCRC
     {
         Action action = () =>
             _ = new SimpleTranscriticalVCRC(
-                new Evaporator(FluidsList.R32, Cycle.Evaporator.Temperature, Cycle.Evaporator.Superheat),
+                new Evaporator(FluidsList.R32,
+                    Cycle.Evaporator.Temperature, Cycle.Evaporator.Superheat),
                 Cycle.Compressor,
                 new GasCooler(FluidsList.R744, Cycle.GasCooler.Temperature));
         action.Should().Throw<ValidationException>()
