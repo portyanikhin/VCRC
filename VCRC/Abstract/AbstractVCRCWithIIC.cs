@@ -4,7 +4,6 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
-using VCRC.Abstract.Validators;
 using VCRC.Components;
 using VCRC.Extensions;
 using VCRC.Fluids;
@@ -20,13 +19,9 @@ public abstract class AbstractVCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalys
     /// <summary>
     ///     Two-stage VCRC with incomplete intercooling base class.
     /// </summary>
-    /// <remarks>
-    ///     If an intermediate vessel is not specified, it will be constructed automatically.
-    /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatEmitter">Condenser or gas cooler.</param>
-    /// <param name="intermediateVessel">Intermediate vessel (optional).</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
@@ -36,29 +31,15 @@ public abstract class AbstractVCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalys
     /// <exception cref="ValidationException">
     ///     Refrigerant should not have a temperature glide!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than condensing pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than gas cooler pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     There should be a two-phase refrigerant at the intermediate vessel inlet!
-    /// </exception>
-    protected AbstractVCRCWithIIC(Evaporator evaporator, Compressor compressor,
-        IHeatEmitter heatEmitter, IntermediateVessel? intermediateVessel = null) :
+    protected AbstractVCRCWithIIC(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
         base(evaporator, compressor, heatEmitter)
     {
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
-        IntermediateVessel = intermediateVessel ?? new IntermediateVessel(Evaporator, HeatEmitter);
-        Point2s = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point2s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Entropy(Point1.Entropy));
         var isentropicSpecificWork1 = Point2s.Enthalpy - Point1.Enthalpy;
         var specificWork1 = isentropicSpecificWork1 / Compressor.IsentropicEfficiency.DecimalFractions;
-        Point2 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point2 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point1.Enthalpy + specificWork1));
         Point5 = HeatEmitter is Condenser condenser
             ? condenser.Subcooling == TemperatureDelta.Zero
@@ -68,18 +49,17 @@ public abstract class AbstractVCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalys
                     Input.Temperature(condenser.Temperature - condenser.Subcooling))
             : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
                 Input.Temperature(HeatEmitter.Temperature));
-        Point6 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point6 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point5.Enthalpy));
-        new AbstractVCRCWithIICValidator().ValidateAndThrow(this);
-        Point7 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point7 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point8 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point8 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Bubble.VaporQuality()));
         Point9 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point8.Enthalpy));
         SecondStageSpecificMassFlow =
             (FirstStageSpecificMassFlow / (1 - Point6.Quality!.Value.DecimalFractions)).ToUnit(RatioUnit.Percent);
-        Point3 = Refrigerant.WithState(Input.Pressure(IntermediateVessel.Pressure),
+        Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy((FirstStageSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
                             (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
                             Point7.Enthalpy) / SecondStageSpecificMassFlow.DecimalFractions));
@@ -96,11 +76,6 @@ public abstract class AbstractVCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalys
         SpecificHeatingCapacity =
             SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
     }
-
-    /// <summary>
-    ///     Intermediate vessel as a VCRC component.
-    /// </summary>
-    public IntermediateVessel IntermediateVessel { get; }
 
     /// <summary>
     ///     Point 1 – evaporator outlet / first compression stage suction.

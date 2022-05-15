@@ -26,8 +26,8 @@ public class TestTranscriticalVCRCWithEconomizer
             5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
         var compressor = new Compressor(80.Percent());
         var gasCooler = new GasCooler(refrigerantName, 40.DegreesCelsius());
-        var economizer = new Economizer(evaporator, gasCooler,
-            TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+        var economizer = new Economizer(TemperatureDelta.FromKelvins(5),
+            TemperatureDelta.FromKelvins(5));
         Cycle = new TranscriticalVCRCWithEconomizer(evaporator, compressor, gasCooler, economizer);
     }
 
@@ -37,8 +37,8 @@ public class TestTranscriticalVCRCWithEconomizer
         Action action = () =>
             _ = new TranscriticalVCRCWithEconomizer(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.GasCooler,
-                new Economizer(Cycle.Economizer.Pressure,
-                    Cycle.Economizer.TemperatureDifference, TemperatureDelta.FromKelvins(50)));
+                new Economizer(Cycle.Economizer.TemperatureDifference,
+                    TemperatureDelta.FromKelvins(50)));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Wrong temperature difference at economizer 'hot' side!*");
     }
@@ -49,8 +49,8 @@ public class TestTranscriticalVCRCWithEconomizer
         Action action = () =>
             _ = new TranscriticalVCRCWithEconomizer(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.GasCooler,
-                new Economizer(Cycle.Economizer.Pressure,
-                    TemperatureDelta.FromKelvins(50), Cycle.Economizer.Superheat));
+                new Economizer(TemperatureDelta.FromKelvins(50),
+                    Cycle.Economizer.Superheat));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
     }
@@ -68,7 +68,7 @@ public class TestTranscriticalVCRCWithEconomizer
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint2s()
     {
-        Cycle.Point2s.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
         Cycle.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
     }
@@ -76,7 +76,7 @@ public class TestTranscriticalVCRCWithEconomizer
     [Test]
     public void TestPoint2()
     {
-        Cycle.Point2.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2.Enthalpy.Should().Be(
             Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
@@ -86,7 +86,7 @@ public class TestTranscriticalVCRCWithEconomizer
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3.Enthalpy.Should().Be(
             (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
              (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow).DecimalFractions *
@@ -125,7 +125,7 @@ public class TestTranscriticalVCRCWithEconomizer
     [Test]
     public void TestPoint6()
     {
-        Cycle.Point6.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point6.Enthalpy.Should().Be(Cycle.Point5.Enthalpy);
         Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -133,9 +133,9 @@ public class TestTranscriticalVCRCWithEconomizer
     [Test]
     public void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point7.Temperature.Should().Be(
-            Cycle.Point7.WithState(Input.Pressure(Cycle.Economizer.Pressure),
+            Cycle.Point7.WithState(Input.Pressure(Cycle.IntermediatePressure),
                 Input.Quality(TwoPhase.Dew.VaporQuality())).Temperature + Cycle.Economizer.Superheat);
         Cycle.Point7.Phase.Should().Be(Phases.Gas);
     }

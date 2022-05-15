@@ -24,12 +24,6 @@ public class VCRCWithEconomizer : AbstractVCRCWithEconomizer
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than condensing pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     Wrong temperature difference at economizer 'hot' side!
     /// </exception>
     /// <exception cref="ValidationException">

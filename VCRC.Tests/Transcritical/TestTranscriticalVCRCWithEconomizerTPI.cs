@@ -27,8 +27,7 @@ public class TestTranscriticalVCRCWithEconomizerTPI
             5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
         var compressor = new Compressor(80.Percent());
         var gasCooler = new GasCooler(refrigerantName, 40.DegreesCelsius());
-        var economizer = new EconomizerTPI(evaporator, gasCooler,
-            TemperatureDelta.FromKelvins(5));
+        var economizer = new EconomizerTPI(TemperatureDelta.FromKelvins(5));
         Cycle = new TranscriticalVCRCWithEconomizerTPI(evaporator, compressor, gasCooler, economizer);
     }
 
@@ -38,8 +37,7 @@ public class TestTranscriticalVCRCWithEconomizerTPI
         Action action = () =>
             _ = new TranscriticalVCRCWithEconomizerTPI(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.GasCooler,
-                new EconomizerTPI(Cycle.Economizer.Pressure,
-                    TemperatureDelta.FromKelvins(50)));
+                new EconomizerTPI(TemperatureDelta.FromKelvins(50)));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
     }
@@ -57,7 +55,7 @@ public class TestTranscriticalVCRCWithEconomizerTPI
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint2s()
     {
-        Cycle.Point2s.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
         Cycle.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
     }
@@ -65,7 +63,7 @@ public class TestTranscriticalVCRCWithEconomizerTPI
     [Test]
     public void TestPoint2()
     {
-        Cycle.Point2.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2.Enthalpy.Should().Be(
             Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
@@ -75,7 +73,7 @@ public class TestTranscriticalVCRCWithEconomizerTPI
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         Cycle.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -111,7 +109,7 @@ public class TestTranscriticalVCRCWithEconomizerTPI
     [Test]
     public void TestPoint6()
     {
-        Cycle.Point6.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point6.Enthalpy.Should().Be(Cycle.Point5.Enthalpy);
         Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -119,7 +117,7 @@ public class TestTranscriticalVCRCWithEconomizerTPI
     [Test]
     public void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point7.Enthalpy.Should().Be(
             ((Cycle.Point6.Enthalpy.JoulesPerKilogram *
               (Cycle.Point2.Enthalpy.JoulesPerKilogram - Cycle.Point3.Enthalpy.JoulesPerKilogram) +

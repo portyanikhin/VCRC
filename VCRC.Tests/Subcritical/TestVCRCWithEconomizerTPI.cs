@@ -28,23 +28,8 @@ public class TestVCRCWithEconomizerTPI
         var compressor = new Compressor(80.Percent());
         var condenser = new Condenser(refrigerantName,
             50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-        var economizer = new EconomizerTPI(evaporator, condenser,
-            TemperatureDelta.FromKelvins(5));
+        var economizer = new EconomizerTPI(TemperatureDelta.FromKelvins(5));
         Cycle = new VCRCWithEconomizerTPI(evaporator, compressor, condenser, economizer);
-    }
-
-    [TestCase(Bound.Lower, "Intermediate pressure should be greater than evaporating pressure!")]
-    [TestCase(Bound.Higher, "Intermediate pressure should be less than condensing pressure!")]
-    public void TestWrongIntermediatePressure(Bound bound, string message)
-    {
-        Action action = () =>
-            _ = new VCRCWithEconomizerTPI(
-                Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                new EconomizerTPI(bound is Bound.Lower
-                        ? Cycle.Evaporator.Pressure
-                        : Cycle.Condenser.Pressure,
-                    Cycle.Economizer.TemperatureDifference));
-        action.Should().Throw<ValidationException>().WithMessage($"*{message}*");
     }
 
     [Test]
@@ -53,8 +38,7 @@ public class TestVCRCWithEconomizerTPI
         Action action = () =>
             _ = new VCRCWithEconomizerTPI(
                 Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                new EconomizerTPI(Cycle.Economizer.Pressure,
-                    TemperatureDelta.FromKelvins(50)));
+                new EconomizerTPI(TemperatureDelta.FromKelvins(50)));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
     }
@@ -72,7 +56,7 @@ public class TestVCRCWithEconomizerTPI
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint2s()
     {
-        Cycle.Point2s.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
         Cycle.Point2s.Phase.Should().Be(Phases.Gas);
     }
@@ -80,7 +64,7 @@ public class TestVCRCWithEconomizerTPI
     [Test]
     public void TestPoint2()
     {
-        Cycle.Point2.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2.Enthalpy.Should().Be(
             Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
@@ -90,7 +74,7 @@ public class TestVCRCWithEconomizerTPI
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         Cycle.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -127,7 +111,7 @@ public class TestVCRCWithEconomizerTPI
     [Test]
     public void TestPoint6()
     {
-        Cycle.Point6.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point6.Enthalpy.Should().Be(Cycle.Point5.Enthalpy);
         Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -135,7 +119,7 @@ public class TestVCRCWithEconomizerTPI
     [Test]
     public void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point7.Enthalpy.Should().Be(
             ((Cycle.Point6.Enthalpy.JoulesPerKilogram *
               (Cycle.Point2.Enthalpy.JoulesPerKilogram - Cycle.Point3.Enthalpy.JoulesPerKilogram) +

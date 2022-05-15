@@ -13,13 +13,9 @@ public class TranscriticalVCRCWithCIC : AbstractVCRCWithCIC
     /// <summary>
     ///     Two-stage transcritical VCRC with complete intercooling.
     /// </summary>
-    /// <remarks>
-    ///     If an intermediate vessel is not specified, it will be constructed automatically.
-    /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="gasCooler">Gas cooler.</param>
-    /// <param name="intermediateVessel">Intermediate vessel (optional).</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
@@ -27,17 +23,10 @@ public class TranscriticalVCRCWithCIC : AbstractVCRCWithCIC
     ///     Refrigerant should not have a temperature glide!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than gas cooler pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the intermediate vessel inlet!
     /// </exception>
-    public TranscriticalVCRCWithCIC(Evaporator evaporator, Compressor compressor, GasCooler gasCooler,
-        IntermediateVessel? intermediateVessel = null) :
-        base(evaporator, compressor, gasCooler, intermediateVessel) =>
+    public TranscriticalVCRCWithCIC(Evaporator evaporator, Compressor compressor, GasCooler gasCooler) :
+        base(evaporator, compressor, gasCooler) =>
         GasCooler = gasCooler;
 
     /// <summary>

@@ -24,12 +24,6 @@ public class VCRCWithEconomizerTPI : AbstractVCRCWithEconomizerTPI
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than condensing pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the compressor injection circuit!
     /// </exception>
     /// <exception cref="ValidationException">

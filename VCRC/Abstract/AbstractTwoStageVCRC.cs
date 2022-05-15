@@ -1,6 +1,9 @@
-﻿using FluentValidation;
+﻿using System;
+using FluentValidation;
 using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.Units;
 using VCRC.Components;
 
 namespace VCRC.Abstract;
@@ -26,6 +29,13 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
         base(evaporator, compressor, heatEmitter)
     {
     }
+
+    /// <summary>
+    ///     Intermediate pressure.
+    /// </summary>
+    public Pressure IntermediatePressure =>
+        Math.Sqrt(Evaporator.Pressure.Pascals * HeatEmitter.Pressure.Pascals)
+            .Pascals().ToUnit(PressureUnit.Kilopascal);
 
     /// <summary>
     ///     Specific ratio of the mass flow rate of the first compression stage.

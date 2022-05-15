@@ -21,12 +21,6 @@ public class TranscriticalVCRCWithEconomizerTPI : AbstractVCRCWithEconomizerTPI
     ///     Only one refrigerant should be selected!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than gas cooler pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the compressor injection circuit!
     /// </exception>
     /// <exception cref="ValidationException">

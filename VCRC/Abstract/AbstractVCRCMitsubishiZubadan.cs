@@ -57,15 +57,6 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     ///     Wrong temperature difference at recuperator 'cold' side!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than condensing pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than gas cooler pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the compressor injection circuit!
     /// </exception>
     /// <exception cref="ValidationException">
@@ -81,13 +72,13 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
         Economizer = economizer;
         Point2 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Temperature(Point1.Temperature + Recuperator.Superheat));
-        Point3s = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point3s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Entropy(Point2.Entropy));
         var isentropicSpecificWork1 = Point3s.Enthalpy - Point2.Enthalpy;
         var specificWork1 = isentropicSpecificWork1 / Compressor.IsentropicEfficiency.DecimalFractions;
-        Point3 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point2.Enthalpy + specificWork1));
-        Point4 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point4 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point5s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Entropy(Point4.Entropy));
@@ -209,7 +200,7 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
                 .JoulesPerKilogram;
 
             return Bisection.FindRoot(
-                    ToSolve, Economizer.Pressure.Pascals, HeatEmitter.Pressure.Pascals, 1e-2)
+                    ToSolve, IntermediatePressure.Pascals, HeatEmitter.Pressure.Pascals, 1e-2)
                 .Pascals()
                 .ToUnit(PressureUnit.Kilopascal);
         }
@@ -314,7 +305,7 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
 
     private TemperatureDelta CalculateEconomizerTemperatureDifference(Ratio injectionQuality)
     {
-        Point10 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point10 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(injectionQuality));
         SecondStageSpecificMassFlow =
             FirstStageSpecificMassFlow *
@@ -323,7 +314,7 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
             Input.Enthalpy(Point6.Enthalpy));
         Point8 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
             Input.Quality(TwoPhase.Bubble.VaporQuality()));
-        Point9 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point9 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point8.Enthalpy));
         Point11 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
             Input.Enthalpy(Point8.Enthalpy - (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow) /

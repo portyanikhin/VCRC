@@ -13,13 +13,9 @@ public class VCRCWithCIC : AbstractVCRCWithCIC
     /// <summary>
     ///     Two-stage VCRC with complete intercooling.
     /// </summary>
-    /// <remarks>
-    ///     If an intermediate vessel is not specified, it will be constructed automatically.
-    /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
-    /// <param name="intermediateVessel">Intermediate vessel (optional).</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
@@ -30,17 +26,10 @@ public class VCRCWithCIC : AbstractVCRCWithCIC
     ///     Refrigerant should not have a temperature glide!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than condensing pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the intermediate vessel inlet!
     /// </exception>
-    public VCRCWithCIC(Evaporator evaporator, Compressor compressor, Condenser condenser,
-        IntermediateVessel? intermediateVessel = null) :
-        base(evaporator, compressor, condenser, intermediateVessel) =>
+    public VCRCWithCIC(Evaporator evaporator, Compressor compressor, Condenser condenser) :
+        base(evaporator, compressor, condenser) =>
         Condenser = condenser;
 
     /// <summary>

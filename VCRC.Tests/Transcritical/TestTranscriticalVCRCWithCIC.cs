@@ -59,7 +59,7 @@ public class TestTranscriticalVCRCWithCIC
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint2s()
     {
-        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
         Cycle.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
     }
@@ -67,7 +67,7 @@ public class TestTranscriticalVCRCWithCIC
     [Test]
     public void TestPoint2()
     {
-        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2.Enthalpy.Should().Be(
             Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
@@ -77,7 +77,7 @@ public class TestTranscriticalVCRCWithCIC
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         Cycle.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -113,7 +113,7 @@ public class TestTranscriticalVCRCWithCIC
     [Test]
     public void TestPoint6()
     {
-        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point6.Enthalpy.Should().Be(Cycle.Point5.Enthalpy);
         Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -121,7 +121,7 @@ public class TestTranscriticalVCRCWithCIC
     [Test]
     public void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point7.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
         Cycle.Point7.Phase.Should().Be(Phases.TwoPhase);
     }

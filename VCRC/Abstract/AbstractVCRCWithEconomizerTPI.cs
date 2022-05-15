@@ -30,15 +30,6 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than condensing pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than gas cooler pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the compressor injection circuit!
     /// </exception>
     /// <exception cref="ValidationException">
@@ -51,13 +42,13 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
         EconomizerTPI economizer) : base(evaporator, compressor, heatEmitter)
     {
         Economizer = economizer;
-        Point2s = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point2s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Entropy(Point1.Entropy));
         var isentropicSpecificWork1 = Point2s.Enthalpy - Point1.Enthalpy;
         var specificWork1 = isentropicSpecificWork1 / Compressor.IsentropicEfficiency.DecimalFractions;
-        Point2 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point2 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point1.Enthalpy + specificWork1));
-        Point3 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point4s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Entropy(Point3.Entropy));
@@ -69,11 +60,11 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
                     Input.Temperature(condenser.Temperature - condenser.Subcooling))
             : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
                 Input.Temperature(HeatEmitter.Temperature));
-        Point6 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point6 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point5.Enthalpy));
         Point8 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Temperature(Point6.Temperature + Economizer.TemperatureDifference));
-        Point7 = Refrigerant.WithState(Input.Pressure(Economizer.Pressure),
+        Point7 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(
                 ((Point6.Enthalpy.JoulesPerKilogram *
                   (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram) +

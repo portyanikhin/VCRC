@@ -27,8 +27,7 @@ public class TestVCRCMitsubishiZubadan
         var compressor = new Compressor(80.Percent());
         var condenser = new Condenser(refrigerantName,
             50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
-        var economizer = new EconomizerTPI(evaporator, condenser,
-            TemperatureDelta.FromKelvins(5));
+        var economizer = new EconomizerTPI(TemperatureDelta.FromKelvins(5));
         Cycle = new VCRCMitsubishiZubadan(evaporator, recuperator, compressor, condenser, economizer);
     }
 
@@ -38,8 +37,7 @@ public class TestVCRCMitsubishiZubadan
         Action action = () =>
             _ = new VCRCMitsubishiZubadan(
                 Cycle.Evaporator, Cycle.Recuperator, Cycle.Compressor, Cycle.Condenser,
-                new EconomizerTPI(Cycle.Economizer.Pressure,
-                    TemperatureDelta.FromKelvins(50)));
+                new EconomizerTPI(TemperatureDelta.FromKelvins(50)));
         action.Should().Throw<ArgumentException>().WithMessage("Solution not found!");
     }
 
@@ -65,7 +63,7 @@ public class TestVCRCMitsubishiZubadan
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint3s()
     {
-        Cycle.Point3s.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point3s.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3s.Entropy.Should().Be(Cycle.Point2.Entropy);
         Cycle.Point3s.Phase.Should().Be(Phases.Gas);
     }
@@ -73,7 +71,7 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3.Enthalpy.Should().Be(
             Cycle.Point2.Enthalpy + (Cycle.Point3s.Enthalpy - Cycle.Point2.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
@@ -83,7 +81,7 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestPoint4()
     {
-        Cycle.Point4.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point4.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point4.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         Cycle.Point4.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -120,7 +118,7 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().BeGreaterThan(Cycle.Economizer.Pressure);
+        Cycle.Point7.Pressure.Should().BeGreaterThan(Cycle.IntermediatePressure);
         Cycle.Point7.Pressure.Should().BeLessThan(Cycle.Condenser.Pressure);
         Cycle.Point7.Enthalpy.Should().Be(Cycle.Point6.Enthalpy);
         Cycle.Point7.Phase.Should().Be(Phases.TwoPhase);
@@ -140,7 +138,7 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestPoint9()
     {
-        Cycle.Point9.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point9.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point9.Enthalpy.Should().Be(Cycle.Point8.Enthalpy);
         Cycle.Point9.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -148,7 +146,7 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestPoint10()
     {
-        Cycle.Point10.Pressure.Should().Be(Cycle.Economizer.Pressure);
+        Cycle.Point10.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point10.Enthalpy.JoulesPerKilogram.Should().BeApproximately(
             (Cycle.Point4.Enthalpy - Cycle.FirstStageSpecificMassFlow /
                 (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow) *

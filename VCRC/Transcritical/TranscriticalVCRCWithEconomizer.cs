@@ -15,19 +15,10 @@ public class TranscriticalVCRCWithEconomizer : AbstractVCRCWithEconomizer
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="gasCooler"></param>
+    /// <param name="gasCooler">Gas cooler.</param>
     /// <param name="economizer">Economizer.</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Condensing temperature should be greater than evaporating temperature!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be greater than evaporating pressure!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Intermediate pressure should be less than gas cooler pressure!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Wrong temperature difference at economizer 'hot' side!

@@ -44,30 +44,6 @@ public class TestTranscriticalVCRCWithIIC
             .WithMessage("*Refrigerant should not have a temperature glide!*");
     }
 
-    [TestCase(Bound.Lower, "Intermediate pressure should be greater than evaporating pressure!")]
-    [TestCase(Bound.Higher, "Intermediate pressure should be less than gas cooler pressure!")]
-    public void TestWrongIntermediatePressure(Bound bound, string message)
-    {
-        Action action = () =>
-            _ = new TranscriticalVCRCWithIIC(
-                Cycle.Evaporator, Cycle.Compressor, Cycle.GasCooler,
-                new IntermediateVessel(bound is Bound.Lower
-                    ? Cycle.Evaporator.Pressure
-                    : Cycle.GasCooler.Pressure));
-        action.Should().Throw<ValidationException>().WithMessage($"*{message}*");
-    }
-
-    [Test]
-    public void TestWrongPhaseAtIntermediateVesselInlet()
-    {
-        Action action = () =>
-            _ = new TranscriticalVCRCWithIIC(
-                Cycle.Evaporator, Cycle.Compressor, Cycle.GasCooler,
-                new IntermediateVessel(Cycle.GasCooler.Pressure - 1.Pascals()));
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*There should be a two-phase refrigerant at the intermediate vessel inlet!*");
-    }
-
     [Test]
     public void TestSpecificMassFlows()
     {
@@ -80,7 +56,7 @@ public class TestTranscriticalVCRCWithIIC
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint2s()
     {
-        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point2s.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2s.Entropy.Should().Be(Cycle.Point1.Entropy);
         Cycle.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
     }
@@ -88,7 +64,7 @@ public class TestTranscriticalVCRCWithIIC
     [Test]
     public void TestPoint2()
     {
-        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point2.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point2.Enthalpy.Should().Be(
             Cycle.Point1.Enthalpy + (Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
@@ -98,7 +74,7 @@ public class TestTranscriticalVCRCWithIIC
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3.Enthalpy.Should().Be(
             (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
              (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow).DecimalFractions *
@@ -137,7 +113,7 @@ public class TestTranscriticalVCRCWithIIC
     [Test]
     public void TestPoint6()
     {
-        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point6.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point6.Enthalpy.Should().Be(Cycle.Point5.Enthalpy);
         Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -145,7 +121,7 @@ public class TestTranscriticalVCRCWithIIC
     [Test]
     public void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point7.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point7.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
         Cycle.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -153,7 +129,7 @@ public class TestTranscriticalVCRCWithIIC
     [Test]
     public void TestPoint8()
     {
-        Cycle.Point8.Pressure.Should().Be(Cycle.IntermediateVessel.Pressure);
+        Cycle.Point8.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point8.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
         Cycle.Point8.Phase.Should().Be(Phases.TwoPhase);
     }
