@@ -21,10 +21,7 @@ public class TranscriticalVCRCWithRecuperator : AbstractVCRCWithRecuperator
     ///     Only one refrigerant should be selected!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'hot' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'cold' side!
+    ///     Too high temperature difference at recuperator 'hot' side!
     /// </exception>
     public TranscriticalVCRCWithRecuperator(Evaporator evaporator, Recuperator recuperator, Compressor compressor,
         GasCooler gasCooler) : base(evaporator, recuperator, compressor, gasCooler) =>

@@ -30,25 +30,12 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'hot' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'cold' side!
+    ///     Too high temperature difference at recuperator 'hot' side!
     /// </exception>
     protected AbstractVCRCWithRecuperator(Evaporator evaporator, Recuperator recuperator, Compressor compressor,
         IHeatEmitter heatEmitter) : base(evaporator, compressor, heatEmitter)
     {
         Recuperator = recuperator;
-        Point2 = Recuperator.Superheat == TemperatureDelta.Zero
-            ? Point1.Clone()
-            : Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-                Input.Temperature(Point1.Temperature + Recuperator.Superheat));
-        Point3s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            Input.Entropy(Point2.Entropy));
-        IsentropicSpecificWork = Point3s.Enthalpy - Point2.Enthalpy;
-        SpecificWork = IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
-        Point3 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            Input.Enthalpy(Point2.Enthalpy + SpecificWork));
         Point4 = HeatEmitter is Condenser condenser
             ? condenser.Subcooling == TemperatureDelta.Zero
                 ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
@@ -57,6 +44,14 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
                     Input.Temperature(condenser.Temperature - condenser.Subcooling))
             : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
                 Input.Temperature(HeatEmitter.Temperature));
+        Point2 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+            Input.Temperature(Point4.Temperature - Recuperator.TemperatureDifference));
+        Point3s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+            Input.Entropy(Point2.Entropy));
+        IsentropicSpecificWork = Point3s.Enthalpy - Point2.Enthalpy;
+        SpecificWork = IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
+        Point3 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+            Input.Enthalpy(Point2.Enthalpy + SpecificWork));
         Point5 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Enthalpy(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy)));
         Point6 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),

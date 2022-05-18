@@ -34,60 +34,11 @@ public class TestVCRCWithRecuperator
     {
         Action action = () =>
             _ = new VCRCWithRecuperator(
-                new Evaporator(Cycle.Evaporator.RefrigerantName,
-                    Cycle.Evaporator.Temperature, TemperatureDelta.FromKelvins(50)),
-                Cycle.Recuperator, Cycle.Compressor, Cycle.Condenser);
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Wrong temperature difference at recuperator 'hot' side!*");
-    }
-
-    [Test]
-    public void TestWrongTemperatureDifferenceAtRecuperatorColdSide()
-    {
-        Action action = () =>
-            _ = new VCRCWithRecuperator(
-                Cycle.Evaporator, Cycle.Recuperator, Cycle.Compressor,
-                new Condenser(Cycle.Condenser.RefrigerantName,
-                    Cycle.Condenser.Temperature, TemperatureDelta.FromKelvins(50)));
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Wrong temperature difference at recuperator 'cold' side!*");
-    }
-
-    [Test]
-    public void TestZeroEvaporatorSuperheat()
-    {
-        var cycleZeroEvaporatorSuperheat =
-            new VCRCWithRecuperator(
-                new Evaporator(Cycle.Evaporator.RefrigerantName,
-                    Cycle.Evaporator.Temperature, TemperatureDelta.Zero),
-                Cycle.Recuperator, Cycle.Compressor, Cycle.Condenser);
-        cycleZeroEvaporatorSuperheat.Point1.Pressure.Should().Be(
-            cycleZeroEvaporatorSuperheat.Evaporator.Pressure);
-        cycleZeroEvaporatorSuperheat.Point1.Phase.Should().Be(Phases.TwoPhase);
-    }
-
-    [Test]
-    public void TestZeroRecuperatorSuperheat()
-    {
-        var cycleZeroRecuperatorSuperheat =
-            new VCRCWithRecuperator(Cycle.Evaporator,
-                new Recuperator(TemperatureDelta.Zero),
+                Cycle.Evaporator,
+                new Recuperator(TemperatureDelta.FromKelvins(49)),
                 Cycle.Compressor, Cycle.Condenser);
-        cycleZeroRecuperatorSuperheat.Point2
-            .Should().Be(cycleZeroRecuperatorSuperheat.Point1);
-    }
-
-    [Test]
-    public void TestZeroSubcooling()
-    {
-        var cycleWithZeroSubcooling =
-            new VCRCWithRecuperator(
-                Cycle.Evaporator, Cycle.Recuperator, Cycle.Compressor,
-                new Condenser(Cycle.Condenser.RefrigerantName,
-                    Cycle.Condenser.Temperature, TemperatureDelta.Zero));
-        cycleWithZeroSubcooling.Point4.Pressure.Should().Be(
-            cycleWithZeroSubcooling.Condenser.Pressure);
-        cycleWithZeroSubcooling.Point4.Phase.Should().Be(Phases.TwoPhase);
+        action.Should().Throw<ValidationException>()
+            .WithMessage("*Too high temperature difference at recuperator 'hot' side!*");
     }
 
     [Test]
@@ -104,7 +55,7 @@ public class TestVCRCWithRecuperator
     {
         Cycle.Point2.Pressure.Should().Be(Cycle.Evaporator.Pressure);
         Cycle.Point2.Temperature.Should().Be(
-            Cycle.Point1.Temperature + Cycle.Recuperator.Superheat);
+            Cycle.Point4.Temperature - Cycle.Recuperator.TemperatureDifference);
         Cycle.Point2.Phase.Should().Be(Phases.Gas);
     }
 
@@ -159,27 +110,27 @@ public class TestVCRCWithRecuperator
             Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
         const double tolerance = 1e-10;
         result.ThermodynamicPerfection.Percent
-            .Should().BeApproximately(21.45824801978035, tolerance);
+            .Should().BeApproximately(20.993802466135218, tolerance);
         result.MinSpecificWorkRatio.Percent
-            .Should().BeApproximately(21.45824801978035, tolerance);
+            .Should().BeApproximately(20.99380246613521, tolerance);
         result.CompressorEnergyLossRatio.Percent
             .Should().BeApproximately(20, tolerance);
         result.CondenserEnergyLossRatio.Percent
-            .Should().BeApproximately(27.58536859968224, tolerance);
+            .Should().BeApproximately(33.09413385138175, tolerance);
         result.GasCoolerEnergyLossRatio.Percent
             .Should().Be(0);
         result.ExpansionValvesEnergyLossRatio.Percent
-            .Should().BeApproximately(12.110197168311025, tolerance);
+            .Should().BeApproximately(6.553482247175089, tolerance);
         result.EvaporatorEnergyLossRatio.Percent
-            .Should().BeApproximately(17.946008453548735, tolerance);
+            .Should().BeApproximately(17.57977933186524, tolerance);
         result.RecuperatorEnergyLossRatio.Percent
-            .Should().BeApproximately(0.9001777586776314, tolerance);
+            .Should().BeApproximately(1.778802103442707, tolerance);
         result.EconomizerEnergyLossRatio.Percent
             .Should().Be(0);
         result.MixingEnergyLossRatio.Percent
             .Should().Be(0);
         result.AnalysisRelativeError.Percent
-            .Should().BeApproximately(1.3514576635545213e-14, tolerance);
+            .Should().BeApproximately(1.1934956545759833e-14, tolerance);
         result.Sum().Percent
             .Should().BeApproximately(100, tolerance);
     }

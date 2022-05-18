@@ -9,12 +9,12 @@ namespace VCRC.Tests.Components;
 
 public static class TestRecuperator
 {
-    [TestCase(-1)]
-    [TestCase(51)]
+    [TestCase(0)]
+    [TestCase(50)]
     public static void TestWrongSuperheat(double superheat)
     {
         Action action = () => _ = new Recuperator(superheat.Kelvins());
         action.Should().Throw<ValidationException>()
-            .WithMessage("*Superheat in the recuperator should be in [0;50] K!*");
+            .WithMessage("*Temperature difference at recuperator 'hot' side should be in (0;50) K!*");
     }
 }

@@ -24,10 +24,7 @@ public class VCRCWithRecuperator : AbstractVCRCWithRecuperator
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'hot' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'cold' side!
+    ///     Too high temperature difference at recuperator 'hot' side!
     /// </exception>
     public VCRCWithRecuperator(Evaporator evaporator, Recuperator recuperator, Compressor compressor,
         Condenser condenser) : base(evaporator, recuperator, compressor, condenser) =>

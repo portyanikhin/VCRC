@@ -8,8 +8,8 @@ internal class RecuperatorValidator : AbstractValidator<Recuperator>
 {
     internal RecuperatorValidator()
     {
-        RuleFor(recuperator => recuperator.Superheat)
-            .InclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())
-            .WithMessage("Superheat in the recuperator should be in [0;50] K!");
+        RuleFor(recuperator => recuperator.TemperatureDifference)
+            .ExclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())
+            .WithMessage("Temperature difference at recuperator 'hot' side should be in (0;50) K!");
     }
 }

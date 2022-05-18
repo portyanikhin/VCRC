@@ -13,18 +13,19 @@ public record Recuperator
     /// <summary>
     ///     Recuperator as a VCRC component.
     /// </summary>
-    /// <param name="superheat">Superheat in the recuperator.</param>
+    /// <param name="temperatureDifference">Temperature difference at recuperator "hot" side.</param>
     /// <exception cref="ValidationException">
-    ///     Superheat in the recuperator should be in [0;50] K!
+    ///     Temperature difference at recuperator 'hot' side should be in (0;50) K!
     /// </exception>
-    public Recuperator(TemperatureDelta superheat)
+    public Recuperator(TemperatureDelta temperatureDifference)
     {
-        Superheat = superheat.ToUnit(TemperatureDeltaUnit.Kelvin);
+        TemperatureDifference =
+            temperatureDifference.ToUnit(TemperatureDeltaUnit.Kelvin);
         new RecuperatorValidator().ValidateAndThrow(this);
     }
 
     /// <summary>
-    ///     Superheat in the recuperator.
+    ///     Temperature difference at recuperator "hot" side.
     /// </summary>
-    public TemperatureDelta Superheat { get; }
+    public TemperatureDelta TemperatureDifference { get; }
 }
