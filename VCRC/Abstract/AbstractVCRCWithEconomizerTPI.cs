@@ -44,10 +44,8 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
         Economizer = economizer;
         Point2s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Entropy(Point1.Entropy));
-        var isentropicSpecificWork1 = Point2s.Enthalpy - Point1.Enthalpy;
-        var specificWork1 = isentropicSpecificWork1 / Compressor.IsentropicEfficiency.DecimalFractions;
         Point2 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Enthalpy(Point1.Enthalpy + specificWork1));
+            Input.Enthalpy(Point1.Enthalpy + FirstStageSpecificWork));
         Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point4s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
@@ -70,19 +68,9 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
         new AbstractVCRCWithEconomizerTPIValidator().ValidateAndThrow(this);
         Point9 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point8.Enthalpy));
-        SecondStageSpecificMassFlow =
-            FirstStageSpecificMassFlow *
-            (1 + (Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point7.Enthalpy));
-        var isentropicSpecificWork2 =
-            SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
-        var specificWork2 = isentropicSpecificWork2 / Compressor.IsentropicEfficiency.DecimalFractions;
         Point4 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            Input.Enthalpy(Point3.Enthalpy + specificWork2 / SecondStageSpecificMassFlow.DecimalFractions));
-        IsentropicSpecificWork = isentropicSpecificWork1 + isentropicSpecificWork2;
-        SpecificWork = specificWork1 + specificWork2;
-        SpecificCoolingCapacity = Point1.Enthalpy - Point9.Enthalpy;
-        SpecificHeatingCapacity =
-            SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+            Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
+                SecondStageSpecificMassFlow.DecimalFractions));
     }
 
     /// <summary>
@@ -146,6 +134,22 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
     ///     Point 9 – second EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point9 { get; }
+
+    public sealed override Ratio SecondStageSpecificMassFlow =>
+        FirstStageSpecificMassFlow *
+        (1 + (Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point7.Enthalpy));
+
+    protected sealed override SpecificEnergy FirstStageIsentropicSpecificWork =>
+        Point2s.Enthalpy - Point1.Enthalpy;
+
+    protected sealed override SpecificEnergy SecondStageIsentropicSpecificWork =>
+        SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
+
+    public sealed override SpecificEnergy SpecificCoolingCapacity =>
+        Point1.Enthalpy - Point9.Enthalpy;
+
+    public sealed override SpecificEnergy SpecificHeatingCapacity =>
+        SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
     {

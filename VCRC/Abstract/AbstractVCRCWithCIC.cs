@@ -16,8 +16,6 @@ namespace VCRC.Abstract;
 /// </summary>
 public abstract class AbstractVCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalysable
 {
-    private Ratio _barbotageSpecificMassFlow;
-
     /// <summary>
     ///     Two-stage VCRC with complete intercooling base class.
     /// </summary>
@@ -39,10 +37,8 @@ public abstract class AbstractVCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalys
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
         Point2s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Entropy(Point1.Entropy));
-        var isentropicSpecificWork1 = Point2s.Enthalpy - Point1.Enthalpy;
-        var specificWork1 = isentropicSpecificWork1 / Compressor.IsentropicEfficiency.DecimalFractions;
         Point2 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Enthalpy(Point1.Enthalpy + specificWork1));
+            Input.Enthalpy(Point1.Enthalpy + FirstStageSpecificWork));
         Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point4s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
@@ -54,22 +50,9 @@ public abstract class AbstractVCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalys
             Input.Quality(TwoPhase.Bubble.VaporQuality()));
         Point8 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point7.Enthalpy));
-        _barbotageSpecificMassFlow =
-            FirstStageSpecificMassFlow *
-            ((Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point7.Enthalpy));
-        SecondStageSpecificMassFlow =
-            (FirstStageSpecificMassFlow + _barbotageSpecificMassFlow) /
-            (1 - Point6.Quality!.Value.DecimalFractions);
-        var isentropicSpecificWork2 =
-            SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
-        var specificWork2 = isentropicSpecificWork2 / Compressor.IsentropicEfficiency.DecimalFractions;
         Point4 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            Input.Enthalpy(Point3.Enthalpy + specificWork2 / SecondStageSpecificMassFlow.DecimalFractions));
-        IsentropicSpecificWork = isentropicSpecificWork1 + isentropicSpecificWork2;
-        SpecificWork = specificWork1 + specificWork2;
-        SpecificCoolingCapacity = Point1.Enthalpy - Point8.Enthalpy;
-        SpecificHeatingCapacity =
-            SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+            Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
+                SecondStageSpecificMassFlow.DecimalFractions));
     }
 
     /// <summary>
@@ -124,6 +107,26 @@ public abstract class AbstractVCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalys
     /// </summary>
     public Refrigerant Point8 { get; }
 
+    private Ratio BarbotageSpecificMassFlow =>
+        FirstStageSpecificMassFlow *
+        ((Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point7.Enthalpy));
+
+    public sealed override Ratio SecondStageSpecificMassFlow =>
+        (FirstStageSpecificMassFlow + BarbotageSpecificMassFlow) /
+        (1 - Point6.Quality!.Value.DecimalFractions);
+
+    protected sealed override SpecificEnergy FirstStageIsentropicSpecificWork =>
+        Point2s.Enthalpy - Point1.Enthalpy;
+
+    protected sealed override SpecificEnergy SecondStageIsentropicSpecificWork =>
+        SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
+
+    public sealed override SpecificEnergy SpecificCoolingCapacity =>
+        Point1.Enthalpy - Point8.Enthalpy;
+
+    public sealed override SpecificEnergy SpecificHeatingCapacity =>
+        SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
     {
         var (coldSource, hotSource) =
@@ -152,10 +155,10 @@ public abstract class AbstractVCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalys
             .JoulesPerKilogram();
         var mixingEnergyLoss =
             (hotSource.Kelvins *
-             ((FirstStageSpecificMassFlow + _barbotageSpecificMassFlow).DecimalFractions *
+             ((FirstStageSpecificMassFlow + BarbotageSpecificMassFlow).DecimalFractions *
               Point3.Entropy.JoulesPerKilogramKelvin -
               (FirstStageSpecificMassFlow.DecimalFractions * Point2.Entropy +
-               _barbotageSpecificMassFlow.DecimalFractions * Point7.Entropy)
+               BarbotageSpecificMassFlow.DecimalFractions * Point7.Entropy)
               .JoulesPerKilogramKelvin))
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =

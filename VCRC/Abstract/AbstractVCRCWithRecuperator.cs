@@ -41,16 +41,12 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
             Input.Temperature(Point4.Temperature - Recuperator.TemperatureDifference));
         Point3s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Entropy(Point2.Entropy));
-        IsentropicSpecificWork = Point3s.Enthalpy - Point2.Enthalpy;
-        SpecificWork = IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
         Point3 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Enthalpy(Point2.Enthalpy + SpecificWork));
         Point5 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Enthalpy(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy)));
         Point6 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point5.Enthalpy));
-        SpecificCoolingCapacity = Point1.Enthalpy - Point6.Enthalpy;
-        SpecificHeatingCapacity = Point3.Enthalpy - Point4.Enthalpy;
         new AbstractVCRCWithRecuperatorValidator().ValidateAndThrow(this);
     }
 
@@ -94,6 +90,15 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
     ///     Point 6 – EV outlet / evaporator inlet.
     /// </summary>
     public Refrigerant Point6 { get; }
+
+    public sealed override SpecificEnergy IsentropicSpecificWork =>
+        Point3s.Enthalpy - Point2.Enthalpy;
+
+    public sealed override SpecificEnergy SpecificCoolingCapacity =>
+        Point1.Enthalpy - Point6.Enthalpy;
+
+    public sealed override SpecificEnergy SpecificHeatingCapacity =>
+        Point3.Enthalpy - Point4.Enthalpy;
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
     {

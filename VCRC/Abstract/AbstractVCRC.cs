@@ -68,32 +68,33 @@ public abstract class AbstractVCRC
     internal Refrigerant Point1 { get; }
 
     /// <summary>
-    ///     Specific work of isentropic compression (by default, kJ/kg).
+    ///     Specific work of isentropic compression.
     /// </summary>
-    public SpecificEnergy IsentropicSpecificWork { get; protected init; }
+    public abstract SpecificEnergy IsentropicSpecificWork { get; }
 
     /// <summary>
-    ///     Specific work of real compression (by default, kJ/kg).
+    ///     Specific work of real compression.
     /// </summary>
-    public SpecificEnergy SpecificWork { get; protected init; }
+    public SpecificEnergy SpecificWork =>
+        IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
 
     /// <summary>
-    ///     Specific cooling capacity of the cycle (by default, kJ/kg).
+    ///     Specific cooling capacity of the cycle.
     /// </summary>
-    public SpecificEnergy SpecificCoolingCapacity { get; protected init; }
+    public abstract SpecificEnergy SpecificCoolingCapacity { get; }
 
     /// <summary>
-    ///     Specific heating capacity of the cycle (by default, kJ/kg).
+    ///     Specific heating capacity of the cycle.
     /// </summary>
-    public SpecificEnergy SpecificHeatingCapacity { get; protected init; }
+    public abstract SpecificEnergy SpecificHeatingCapacity { get; }
 
     /// <summary>
-    ///     Energy efficiency ratio, aka cooling coefficient (dimensionless).
+    ///     Energy efficiency ratio, aka cooling coefficient.
     /// </summary>
     public double EER => SpecificCoolingCapacity / SpecificWork;
 
     /// <summary>
-    ///     Coefficient of performance, aka heating coefficient (dimensionless).
+    ///     Coefficient of performance, aka heating coefficient.
     /// </summary>
     public double COP => SpecificHeatingCapacity / SpecificWork;
 }

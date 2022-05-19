@@ -30,6 +30,16 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     {
     }
 
+    protected abstract SpecificEnergy FirstStageIsentropicSpecificWork { get; }
+
+    protected abstract SpecificEnergy SecondStageIsentropicSpecificWork { get; }
+
+    protected SpecificEnergy FirstStageSpecificWork =>
+        FirstStageIsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
+
+    protected SpecificEnergy SecondStageSpecificWork =>
+        SecondStageIsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
+
     /// <summary>
     ///     Intermediate pressure.
     /// </summary>
@@ -45,5 +55,8 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     /// <summary>
     ///     Specific ratio of the mass flow rate of the second compression stage.
     /// </summary>
-    public Ratio SecondStageSpecificMassFlow { get; protected set; }
+    public abstract Ratio SecondStageSpecificMassFlow { get; }
+
+    public sealed override SpecificEnergy IsentropicSpecificWork =>
+        FirstStageIsentropicSpecificWork + SecondStageIsentropicSpecificWork;
 }
