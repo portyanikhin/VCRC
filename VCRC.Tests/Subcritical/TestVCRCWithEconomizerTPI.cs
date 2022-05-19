@@ -149,6 +149,30 @@ public class TestVCRCWithEconomizerTPI
     }
 
     [Test]
+    public void TestIsentropicSpecificWork() =>
+        Cycle.IsentropicSpecificWork.Should().Be(
+            Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy +
+            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy));
+
+    [Test]
+    public void TestSpecificWork() =>
+        Cycle.SpecificWork.Should().Be(
+            Cycle.IsentropicSpecificWork /
+            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+
+    [Test]
+    public void TestSpecificCoolingCapacity() =>
+        Cycle.SpecificCoolingCapacity.Should().Be(
+            Cycle.Point1.Enthalpy - Cycle.Point9.Enthalpy);
+
+    [Test]
+    public void TestSpecificHeatingCapacity() =>
+        Cycle.SpecificHeatingCapacity.Should().Be(
+            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            (Cycle.Point4.Enthalpy - Cycle.Point5.Enthalpy));
+
+    [Test]
     public void TestEntropyAnalysis()
     {
         var result =

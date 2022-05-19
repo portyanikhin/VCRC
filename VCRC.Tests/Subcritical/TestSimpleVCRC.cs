@@ -128,7 +128,23 @@ public class TestSimpleVCRC
     [Test]
     public void TestIsentropicSpecificWork() =>
         Cycle.IsentropicSpecificWork.Should().Be(
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions * Cycle.SpecificWork);
+            Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy);
+
+    [Test]
+    public void TestSpecificWork() =>
+        Cycle.SpecificWork.Should().Be(
+            Cycle.IsentropicSpecificWork /
+            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+
+    [Test]
+    public void TestSpecificCoolingCapacity() =>
+        Cycle.SpecificCoolingCapacity.Should().Be(
+            Cycle.Point1.Enthalpy - Cycle.Point4.Enthalpy);
+
+    [Test]
+    public void TestSpecificHeatingCapacity() =>
+        Cycle.SpecificHeatingCapacity.Should().Be(
+            Cycle.Point2.Enthalpy - Cycle.Point3.Enthalpy);
 
     [Test]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
