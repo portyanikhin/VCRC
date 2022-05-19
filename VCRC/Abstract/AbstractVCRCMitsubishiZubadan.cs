@@ -67,14 +67,7 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
         Economizer = economizer;
         Point4 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point6 = HeatEmitter is Condenser condenser
-            ? condenser.Subcooling == TemperatureDelta.Zero
-                ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Quality(TwoPhase.Bubble.VaporQuality()))
-                : Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Temperature(condenser.Temperature - condenser.Subcooling))
-            : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-                Input.Temperature(HeatEmitter.Temperature));
+        Point6 = HeatEmitterOutlet.Clone();
         Point7 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
             Input.Enthalpy(Point6.Enthalpy));
         Point8 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),

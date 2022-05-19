@@ -52,14 +52,7 @@ public abstract class AbstractVCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEnt
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point4s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Entropy(Point3.Entropy));
-        Point5 = HeatEmitter is Condenser condenser
-            ? condenser.Subcooling == TemperatureDelta.Zero
-                ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Quality(TwoPhase.Bubble.VaporQuality()))
-                : Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Temperature(condenser.Temperature - condenser.Subcooling))
-            : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-                Input.Temperature(HeatEmitter.Temperature));
+        Point5 = HeatEmitterOutlet.Clone();
         Point6 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point5.Enthalpy));
         Point8 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),

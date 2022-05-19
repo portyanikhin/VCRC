@@ -36,14 +36,7 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
         IHeatEmitter heatEmitter) : base(evaporator, compressor, heatEmitter)
     {
         Recuperator = recuperator;
-        Point4 = HeatEmitter is Condenser condenser
-            ? condenser.Subcooling == TemperatureDelta.Zero
-                ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Quality(TwoPhase.Bubble.VaporQuality()))
-                : Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Temperature(condenser.Temperature - condenser.Subcooling))
-            : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-                Input.Temperature(HeatEmitter.Temperature));
+        Point4 = HeatEmitterOutlet.Clone();
         Point2 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Temperature(Point4.Temperature - Recuperator.TemperatureDifference));
         Point3s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),

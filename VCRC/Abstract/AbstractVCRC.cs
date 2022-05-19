@@ -42,6 +42,16 @@ public abstract class AbstractVCRC
 
     protected Refrigerant Refrigerant { get; }
 
+    protected Refrigerant HeatEmitterOutlet =>
+        HeatEmitter is Condenser condenser
+            ? condenser.Subcooling == TemperatureDelta.Zero
+                ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
+                    Input.Quality(TwoPhase.Bubble.VaporQuality()))
+                : Refrigerant.WithState(Input.Pressure(condenser.Pressure),
+                    Input.Temperature(condenser.Temperature - condenser.Subcooling))
+            : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+                Input.Temperature(HeatEmitter.Temperature));
+
     /// <summary>
     ///     Evaporator as a VCRC component.
     /// </summary>

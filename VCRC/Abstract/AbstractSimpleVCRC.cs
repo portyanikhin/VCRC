@@ -36,14 +36,7 @@ public abstract class AbstractSimpleVCRC : AbstractVCRC, IEntropyAnalysable
         SpecificWork = IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
         Point2 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Enthalpy(Point1.Enthalpy + SpecificWork));
-        Point3 = HeatEmitter is Condenser condenser
-            ? condenser.Subcooling == TemperatureDelta.Zero
-                ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Quality(TwoPhase.Bubble.VaporQuality()))
-                : Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Temperature(condenser.Temperature - condenser.Subcooling))
-            : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-                Input.Temperature(HeatEmitter.Temperature));
+        Point3 = HeatEmitterOutlet.Clone();
         Point4 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point3.Enthalpy));
         SpecificCoolingCapacity = Point1.Enthalpy - Point4.Enthalpy;
