@@ -5,7 +5,6 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
 using VCRC.Components;
-using VCRC.Extensions;
 using VCRC.Fluids;
 
 namespace VCRC.Abstract;
@@ -34,7 +33,6 @@ public abstract class AbstractSimpleVCRC : AbstractVCRC, IEntropyAnalysable
             Input.Entropy(Point1.Entropy));
         Point2 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Enthalpy(Point1.Enthalpy + SpecificWork));
-        Point3 = HeatEmitterOutlet.Clone();
         Point4 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point3.Enthalpy));
     }
@@ -58,7 +56,7 @@ public abstract class AbstractSimpleVCRC : AbstractVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 3 – condenser or gas cooler outlet / EV inlet.
     /// </summary>
-    internal Refrigerant Point3 { get; }
+    internal Refrigerant Point3 => HeatEmitterOutlet;
 
     /// <summary>
     ///     Point 4 – EV outlet / evaporator inlet.

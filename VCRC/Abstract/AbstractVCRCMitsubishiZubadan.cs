@@ -67,7 +67,6 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
         Economizer = economizer;
         Point4 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point6 = HeatEmitterOutlet.Clone();
         Point7 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
             Input.Enthalpy(Point6.Enthalpy));
         Point8 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
@@ -145,7 +144,7 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     /// <summary>
     ///     Point 6 – condenser or gas cooler outlet / first EV inlet.
     /// </summary>
-    internal Refrigerant Point6 { get; }
+    internal Refrigerant Point6 => HeatEmitterOutlet;
 
     /// <summary>
     ///     Point 7 – first EV outlet / recuperator "hot" inlet.

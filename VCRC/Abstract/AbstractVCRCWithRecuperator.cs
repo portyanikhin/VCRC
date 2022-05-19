@@ -6,7 +6,6 @@ using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
 using VCRC.Abstract.Validators;
 using VCRC.Components;
-using VCRC.Extensions;
 using VCRC.Fluids;
 
 namespace VCRC.Abstract;
@@ -36,7 +35,6 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
         IHeatEmitter heatEmitter) : base(evaporator, compressor, heatEmitter)
     {
         Recuperator = recuperator;
-        Point4 = HeatEmitterOutlet.Clone();
         Point2 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Temperature(Point4.Temperature - Recuperator.TemperatureDifference));
         Point3s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
@@ -79,7 +77,7 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
     /// <summary>
     ///     Point 4 – condenser or gas cooler outlet / recuperator "hot" inlet.
     /// </summary>
-    internal Refrigerant Point4 { get; }
+    internal Refrigerant Point4 => HeatEmitterOutlet;
 
     /// <summary>
     ///     Point 5 – recuperator "hot" outlet / EV inlet.

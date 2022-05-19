@@ -43,7 +43,6 @@ public abstract class AbstractVCRCWithEconomizer : AbstractTwoStageVCRC, IEntrop
             Input.Entropy(Point1.Entropy));
         Point2 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point1.Enthalpy + FirstStageSpecificWork));
-        Point5 = HeatEmitterOutlet.Clone();
         Point6 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point5.Enthalpy));
         var dewPointAtIntermediatePressure =
@@ -110,7 +109,7 @@ public abstract class AbstractVCRCWithEconomizer : AbstractTwoStageVCRC, IEntrop
     /// <summary>
     ///     Point 5 – condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
     /// </summary>
-    internal Refrigerant Point5 { get; }
+    internal Refrigerant Point5 => HeatEmitterOutlet;
 
     /// <summary>
     ///     Point 6 – first EV outlet / economizer "cold" inlet.

@@ -36,14 +36,7 @@ public abstract class AbstractVCRC
                 Input.Quality(TwoPhase.Dew.VaporQuality()))
             : Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
                 Input.Temperature(Evaporator.Temperature + Evaporator.Superheat));
-    }
-
-    internal IHeatEmitter HeatEmitter { get; }
-
-    protected Refrigerant Refrigerant { get; }
-
-    protected Refrigerant HeatEmitterOutlet =>
-        HeatEmitter is Condenser condenser
+        HeatEmitterOutlet = HeatEmitter is Condenser condenser
             ? condenser.Subcooling == TemperatureDelta.Zero
                 ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
                     Input.Quality(TwoPhase.Bubble.VaporQuality()))
@@ -51,6 +44,13 @@ public abstract class AbstractVCRC
                     Input.Temperature(condenser.Temperature - condenser.Subcooling))
             : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
                 Input.Temperature(HeatEmitter.Temperature));
+    }
+
+    internal IHeatEmitter HeatEmitter { get; }
+
+    protected Refrigerant Refrigerant { get; }
+
+    protected Refrigerant HeatEmitterOutlet { get; }
 
     /// <summary>
     ///     Evaporator as a VCRC component.
