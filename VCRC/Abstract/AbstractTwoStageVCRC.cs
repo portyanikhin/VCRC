@@ -44,8 +44,7 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     ///     Intermediate pressure.
     /// </summary>
     public Pressure IntermediatePressure =>
-        Math.Sqrt(Evaporator.Pressure.Pascals * HeatEmitter.Pressure.Pascals)
-            .Pascals().ToUnit(PressureUnit.Kilopascal);
+        CalculateIntermediatePressure(Evaporator.Pressure, HeatEmitter.Pressure);
 
     /// <summary>
     ///     Specific ratio of the mass flow rate of the first compression stage.
@@ -59,4 +58,16 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         FirstStageIsentropicSpecificWork + SecondStageIsentropicSpecificWork;
+
+    protected Pressure CalculateIntermediatePressure(Pressure low, Pressure high)
+    {
+        var result = GeometricMean(low, high);
+        return result < Refrigerant.CriticalPressure
+            ? result
+            : GeometricMean(low, Refrigerant.CriticalPressure);
+    }
+
+    private static Pressure GeometricMean(Pressure low, Pressure high) =>
+        Math.Sqrt(low.Pascals * high.Pascals)
+            .Pascals().ToUnit(PressureUnit.Kilopascal);
 }

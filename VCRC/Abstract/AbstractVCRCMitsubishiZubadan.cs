@@ -5,7 +5,6 @@ using MathNet.Numerics;
 using MathNet.Numerics.RootFinding;
 using SharpProp;
 using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
@@ -91,8 +90,7 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     ///     Absolute recuperator high pressure.
     /// </summary>
     public Pressure RecuperatorHighPressure =>
-        Math.Sqrt(IntermediatePressure.Pascals * HeatEmitter.Pressure.Pascals)
-            .Pascals().ToUnit(PressureUnit.Kilopascal);
+        CalculateIntermediatePressure(IntermediatePressure, HeatEmitter.Pressure);
 
     /// <summary>
     ///     Recuperator as a VCRC component.
