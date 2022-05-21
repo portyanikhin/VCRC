@@ -226,7 +226,8 @@ public class TestVCRCMitsubishiZubadan
     {
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
-        Cycle.EER.Should().Be(3.9432252988643284);
+        Cycle.EER.Should().BeApproximately(
+            3.9432252988643284, Tolerance);
     }
 
     [Test]
@@ -234,7 +235,8 @@ public class TestVCRCMitsubishiZubadan
     {
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
-        Cycle.COP.Should().Be(4.943215704748534);
+        Cycle.COP.Should().BeApproximately(
+            4.943215704748534, Tolerance);
     }
 
     [Test]

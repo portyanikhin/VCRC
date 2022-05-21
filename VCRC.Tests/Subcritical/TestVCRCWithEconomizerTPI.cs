@@ -196,7 +196,8 @@ public class TestVCRCWithEconomizerTPI
     {
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
-        Cycle.EER.Should().Be(4.136618479109468);
+        Cycle.EER.Should().BeApproximately(
+            4.136618479109468, Tolerance);
     }
 
     [Test]
@@ -204,7 +205,8 @@ public class TestVCRCWithEconomizerTPI
     {
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
-        Cycle.COP.Should().Be(5.13661847910946);
+        Cycle.COP.Should().BeApproximately(
+            5.13661847910946, Tolerance);
     }
 
     [Test]

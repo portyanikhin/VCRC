@@ -183,7 +183,8 @@ public class TestVCRCWithCompleteIntercooling
     {
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
-        Cycle.EER.Should().Be(4.221027395372898);
+        Cycle.EER.Should().BeApproximately(
+            4.221027395372898, Tolerance);
     }
 
     [Test]
@@ -191,7 +192,8 @@ public class TestVCRCWithCompleteIntercooling
     {
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
-        Cycle.COP.Should().Be(5.2210273953729);
+        Cycle.COP.Should().BeApproximately(
+            5.2210273953729, Tolerance);
     }
 
     [Test]

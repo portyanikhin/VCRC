@@ -141,7 +141,8 @@ public class TestVCRCWithRecuperator
     {
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
-        Cycle.EER.Should().Be(3.9826071771107285);
+        Cycle.EER.Should().BeApproximately(
+            3.9826071771107285, Tolerance);
     }
 
     [Test]
@@ -149,7 +150,8 @@ public class TestVCRCWithRecuperator
     {
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
-        Cycle.COP.Should().Be(4.982607177110728);
+        Cycle.COP.Should().BeApproximately(
+            4.982607177110728, Tolerance);
     }
 
     [Test]

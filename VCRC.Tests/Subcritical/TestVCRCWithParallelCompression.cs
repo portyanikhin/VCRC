@@ -193,7 +193,8 @@ public class TestVCRCWithParallelCompression
     {
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
-        Cycle.EER.Should().Be(4.27018024062883);
+        Cycle.EER.Should().BeApproximately(
+            4.27018024062883, Tolerance);
     }
 
     [Test]
@@ -201,7 +202,8 @@ public class TestVCRCWithParallelCompression
     {
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
-        Cycle.COP.Should().Be(5.27018024062883);
+        Cycle.COP.Should().BeApproximately(
+            5.27018024062883, Tolerance);
     }
 
     [Test]
