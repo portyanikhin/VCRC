@@ -1,10 +1,8 @@
 ﻿using EnumsNET;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
-using VCRC.Fluids;
-using VCRC.Fluids.Attributes;
 
-namespace VCRC.Extensions;
+namespace VCRC;
 
 public static class TwoPhaseExtensions
 {

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace VCRC.Abstract.Validators;
+namespace VCRC;
 
-internal class AbstractVCRCWithEconomizerTPIValidator : AbstractValidator<AbstractVCRCWithEconomizerTPI>
+internal class VCRCWithEconomizerTPIValidator : AbstractValidator<VCRCWithEconomizerTPI>
 {
-    internal AbstractVCRCWithEconomizerTPIValidator()
+    internal VCRCWithEconomizerTPIValidator()
     {
         RuleFor(vcrc => vcrc.Point7.Quality)
             .Must(quality => quality?.DecimalFractions is > 0 and < 1)

@@ -3,7 +3,6 @@ using FluentAssertions;
 using FluentValidation;
 using NUnit.Framework;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
-using VCRC.Components;
 
 namespace VCRC.Tests.Components;
 

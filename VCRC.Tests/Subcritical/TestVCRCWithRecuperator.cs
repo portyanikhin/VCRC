@@ -7,26 +7,27 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
-using VCRC.Components;
-using VCRC.Subcritical;
 
 namespace VCRC.Tests.Subcritical;
 
 public class TestVCRCWithRecuperator
 {
+    private const double Tolerance = 1e-10;
     private VCRCWithRecuperator Cycle { get; set; } = null!;
+    private EntropyAnalysisResult AnalysisResult { get; set; } = null!;
 
     [OneTimeSetUp]
     public void SetUp()
     {
-        const FluidsList refrigerantName = FluidsList.R32;
-        var evaporator = new Evaporator(refrigerantName,
-            5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
+        var evaporator = new Evaporator(FluidsList.R134a, (-5).DegreesCelsius(),
+            TemperatureDelta.FromKelvins(5));
         var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
         var compressor = new Compressor(80.Percent());
-        var condenser = new Condenser(refrigerantName,
-            50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+        var condenser = new Condenser(FluidsList.R134a, 40.DegreesCelsius(),
+            TemperatureDelta.FromKelvins(3));
         Cycle = new VCRCWithRecuperator(evaporator, recuperator, compressor, condenser);
+        AnalysisResult = Cycle.EntropyAnalysis(
+            5.DegreesCelsius(), 30.DegreesCelsius());
     }
 
     [Test]
@@ -36,7 +37,7 @@ public class TestVCRCWithRecuperator
             _ = new VCRCWithRecuperator(
                 Cycle.Evaporator,
                 new Recuperator(TemperatureDelta.FromKelvins(49)),
-                Cycle.Compressor, Cycle.Condenser);
+                Cycle.Compressor, Cycle.Condenser!);
         action.Should().Throw<ValidationException>()
             .WithMessage("*Too high temperature difference at recuperator 'hot' side!*");
     }
@@ -63,33 +64,33 @@ public class TestVCRCWithRecuperator
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void TestPoint3s()
     {
-        Cycle.Point3s.Pressure.Should().Be(Cycle.Condenser.Pressure);
+        Cycle.Point3s.Pressure.Should().Be(Cycle.Condenser!.Pressure);
         Cycle.Point3s.Entropy.Should().Be(Cycle.Point2.Entropy);
-        Cycle.Point3s.Phase.Should().Be(Phases.SupercriticalGas);
+        Cycle.Point3s.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
     public void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point3.Enthalpy.Should().Be(Cycle.Point2.Enthalpy + Cycle.SpecificWork);
-        Cycle.Point3.Phase.Should().Be(Phases.SupercriticalGas);
-        Cycle.Point3.Temperature.Should().BeGreaterThan(Cycle.Point3.CriticalTemperature);
+        Cycle.Point3.Pressure.Should().Be(Cycle.Condenser!.Pressure);
+        Cycle.Point3.Enthalpy.Should().Be(
+            Cycle.Point2.Enthalpy + Cycle.SpecificWork);
+        Cycle.Point3.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
     public void TestPoint4()
     {
-        Cycle.Point4.Pressure.Should().Be(Cycle.Condenser.Pressure);
+        Cycle.Point4.Pressure.Should().Be(Cycle.Condenser!.Pressure);
         Cycle.Point4.Temperature.Should().Be(
-            Cycle.Condenser.Temperature - Cycle.Condenser.Subcooling);
+            Cycle.Condenser!.Temperature - Cycle.Condenser!.Subcooling);
         Cycle.Point4.Phase.Should().Be(Phases.Liquid);
     }
 
     [Test]
     public void TestPoint5()
     {
-        Cycle.Point5.Pressure.Should().Be(Cycle.Condenser.Pressure);
+        Cycle.Point5.Pressure.Should().Be(Cycle.Condenser!.Pressure);
         Cycle.Point5.Enthalpy.Should().Be(
             Cycle.Point4.Enthalpy - (Cycle.Point2.Enthalpy - Cycle.Point1.Enthalpy));
         Cycle.Point5.Phase.Should().Be(Phases.Liquid);
@@ -102,6 +103,17 @@ public class TestVCRCWithRecuperator
         Cycle.Point6.Enthalpy.Should().Be(Cycle.Point5.Enthalpy);
         Cycle.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
+
+    [Test]
+    public void TestHeatEmitter()
+    {
+        Cycle.Condenser.Should().NotBeNull();
+        Cycle.GasCooler.Should().BeNull();
+    }
+
+    [Test]
+    public void TestIsTranscritical() =>
+        Cycle.IsTranscritical.Should().BeFalse();
 
     [Test]
     public void TestIsentropicSpecificWork() =>
@@ -125,34 +137,74 @@ public class TestVCRCWithRecuperator
             Cycle.Point3.Enthalpy - Cycle.Point4.Enthalpy);
 
     [Test]
-    public void TestEntropyAnalysis()
+    public void TestEER()
     {
-        var result =
-            Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
-        const double tolerance = 1e-10;
-        result.ThermodynamicPerfection.Percent
-            .Should().BeApproximately(20.993802466135218, tolerance);
-        result.MinSpecificWorkRatio.Percent
-            .Should().BeApproximately(20.99380246613521, tolerance);
-        result.CompressorEnergyLossRatio.Percent
-            .Should().BeApproximately(20, tolerance);
-        result.CondenserEnergyLossRatio.Percent
-            .Should().BeApproximately(33.09413385138175, tolerance);
-        result.GasCoolerEnergyLossRatio.Percent
-            .Should().Be(0);
-        result.ExpansionValvesEnergyLossRatio.Percent
-            .Should().BeApproximately(6.553482247175089, tolerance);
-        result.EvaporatorEnergyLossRatio.Percent
-            .Should().BeApproximately(17.57977933186524, tolerance);
-        result.RecuperatorEnergyLossRatio.Percent
-            .Should().BeApproximately(1.778802103442707, tolerance);
-        result.EconomizerEnergyLossRatio.Percent
-            .Should().Be(0);
-        result.MixingEnergyLossRatio.Percent
-            .Should().Be(0);
-        result.AnalysisRelativeError.Percent
-            .Should().BeApproximately(1.1934956545759833e-14, tolerance);
-        result.Sum().Percent
-            .Should().BeApproximately(100, tolerance);
+        Cycle.EER.Should().Be(
+            Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
+        Cycle.EER.Should().Be(3.9826071771107285);
+    }
+
+    [Test]
+    public void TestCOP()
+    {
+        Cycle.COP.Should().Be(
+            Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
+        Cycle.COP.Should().Be(4.982607177110728);
+    }
+
+    [Test]
+    public void TestThermodynamicPerfection() =>
+        AnalysisResult.ThermodynamicPerfection.Percent
+            .Should().BeApproximately(35.79549862583794, Tolerance);
+
+    [Test]
+    public void TestMinSpecificWorkRatio() =>
+        AnalysisResult.MinSpecificWorkRatio.Percent
+            .Should().BeApproximately(35.795498625837915, Tolerance);
+
+    [Test]
+    public void TestCompressorEnergyLossRatio() =>
+        AnalysisResult.CompressorEnergyLossRatio.Percent
+            .Should().BeApproximately(20, Tolerance);
+
+    [Test]
+    public void TestCondenserEnergyLossRatio() =>
+        AnalysisResult.CondenserEnergyLossRatio.Percent
+            .Should().BeApproximately(20.967411629845405, Tolerance);
+
+    [Test]
+    public void TestGasCoolerEnergyLossRatio() =>
+        AnalysisResult.GasCoolerEnergyLossRatio.Percent.Should().Be(0);
+
+    [Test]
+    public void TestExpansionValvesEnergyLossRatio() =>
+        AnalysisResult.ExpansionValvesEnergyLossRatio.Percent
+            .Should().BeApproximately(4.618136999812967, Tolerance);
+
+    [Test]
+    public void TestEvaporatorEnergyLossRatio() =>
+        AnalysisResult.EvaporatorEnergyLossRatio.Percent
+            .Should().BeApproximately(16.084450772102564, Tolerance);
+
+    [Test]
+    public void TestRecuperatorEnergyLossRatio() =>
+        AnalysisResult.RecuperatorEnergyLossRatio.Percent
+            .Should().BeApproximately(2.5345019724011415, Tolerance);
+
+    [Test]
+    public void TestEconomizerEnergyLossRatio() =>
+        AnalysisResult.EconomizerEnergyLossRatio.Percent.Should().Be(0);
+
+    [Test]
+    public void TestMixingEnergyLossRatio() =>
+        AnalysisResult.MixingEnergyLossRatio.Percent.Should().Be(0);
+
+    [Test]
+    public void TestAnalysisRelativeError()
+    {
+        AnalysisResult.AnalysisRelativeError.Percent
+            .Should().BeApproximately(6.027004022562044e-14, Tolerance);
+        AnalysisResult.Sum().Percent
+            .Should().BeApproximately(100, Tolerance);
     }
 }

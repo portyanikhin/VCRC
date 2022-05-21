@@ -4,22 +4,18 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
-using VCRC.Abstract.Validators;
-using VCRC.Components;
-using VCRC.Fluids;
 
-namespace VCRC.Abstract;
+namespace VCRC;
 
 /// <summary>
-///     Single-stage VCRC with recuperator base class.
+///     Simple single-stage VCRC.
 /// </summary>
-public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
+public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
 {
     /// <summary>
-    ///     Single-stage VCRC with recuperator base class.
+    ///     Simple single-stage VCRC.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
-    /// <param name="recuperator">Recuperator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatEmitter">Condenser or gas cooler.</param>
     /// <exception cref="ValidationException">
@@ -28,106 +24,77 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Too high temperature difference at recuperator 'hot' side!
-    /// </exception>
-    protected AbstractVCRCWithRecuperator(Evaporator evaporator, Recuperator recuperator, Compressor compressor,
-        IHeatEmitter heatEmitter) : base(evaporator, compressor, heatEmitter)
+    public SimpleVCRC(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
+        base(evaporator, compressor, heatEmitter)
     {
-        Recuperator = recuperator;
-        Point2 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Temperature(Point4.Temperature - Recuperator.TemperatureDifference));
-        Point3s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            Input.Entropy(Point2.Entropy));
-        Point3 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            Input.Enthalpy(Point2.Enthalpy + SpecificWork));
-        Point5 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            Input.Enthalpy(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy)));
-        Point6 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point5.Enthalpy));
-        new AbstractVCRCWithRecuperatorValidator().ValidateAndThrow(this);
+        Point2s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+            Input.Entropy(Point1.Entropy));
+        Point2 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+            Input.Enthalpy(Point1.Enthalpy + SpecificWork));
+        Point4 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+            Input.Enthalpy(Point3.Enthalpy));
     }
 
     /// <summary>
-    ///     Recuperator as a VCRC component.
-    /// </summary>
-    public Recuperator Recuperator { get; }
-
-    /// <summary>
-    ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
+    ///     Point 1 – evaporator outlet / compression stage suction.
     /// </summary>
     public new Refrigerant Point1 => base.Point1;
 
     /// <summary>
-    ///     Point 2 – recuperator "cold" outlet / compression stage suction.
+    ///     Point 2s – isentropic compression stage discharge.
+    /// </summary>
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public Refrigerant Point2s { get; }
+
+    /// <summary>
+    ///     Point 2 – compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
     public Refrigerant Point2 { get; }
 
     /// <summary>
-    ///     Point 3s – isentropic compression stage discharge.
+    ///     Point 3 – condenser or gas cooler outlet / EV inlet.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point3s { get; }
+    public Refrigerant Point3 => HeatEmitterOutlet;
 
     /// <summary>
-    ///     Point 3 – compression stage discharge / condenser or gas cooler inlet.
+    ///     Point 4 – EV outlet / evaporator inlet.
     /// </summary>
-    internal Refrigerant Point3 { get; }
-
-    /// <summary>
-    ///     Point 4 – condenser or gas cooler outlet / recuperator "hot" inlet.
-    /// </summary>
-    internal Refrigerant Point4 => HeatEmitterOutlet;
-
-    /// <summary>
-    ///     Point 5 – recuperator "hot" outlet / EV inlet.
-    /// </summary>
-    public Refrigerant Point5 { get; }
-
-    /// <summary>
-    ///     Point 6 – EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point6 { get; }
+    public Refrigerant Point4 { get; }
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
-        Point3s.Enthalpy - Point2.Enthalpy;
+        Point2s.Enthalpy - Point1.Enthalpy;
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
-        Point1.Enthalpy - Point6.Enthalpy;
+        Point1.Enthalpy - Point4.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        Point3.Enthalpy - Point4.Enthalpy;
+        Point2.Enthalpy - Point3.Enthalpy;
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
     {
         var (coldSource, hotSource) =
             IEntropyAnalysable.SourceTemperatures(
-                indoor, outdoor, Point1.Temperature, Point4.Temperature);
+                indoor, outdoor, Point1.Temperature, Point3.Temperature);
         var minSpecificWork = SpecificCoolingCapacity *
             (hotSource - coldSource).Kelvins / coldSource.Kelvins;
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork)
             .ToUnit(RatioUnit.Percent);
         var heatEmitterEnergyLoss =
-            Point3s.Enthalpy - Point4.Enthalpy -
-            (hotSource.Kelvins * (Point3s.Entropy - Point4.Entropy).JoulesPerKilogramKelvin)
+            Point2s.Enthalpy - Point3.Enthalpy -
+            (hotSource.Kelvins * (Point2s.Entropy - Point3.Entropy).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
         var expansionValvesEnergyLoss =
-            (hotSource.Kelvins * (Point6.Entropy - Point5.Entropy).JoulesPerKilogramKelvin)
+            (hotSource.Kelvins * (Point4.Entropy - Point3.Entropy).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
         var evaporatorEnergyLoss =
             (hotSource.Kelvins *
-             ((Point1.Entropy - Point6.Entropy).JoulesPerKilogramKelvin -
-              (Point1.Enthalpy - Point6.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
-            .JoulesPerKilogram();
-        var recuperatorEnergyLoss =
-            (hotSource.Kelvins *
-             (Point2.Entropy - Point1.Entropy -
-              (Point4.Entropy - Point5.Entropy)).JoulesPerKilogramKelvin)
+             ((Point1.Entropy - Point4.Entropy).JoulesPerKilogramKelvin -
+              (Point1.Enthalpy - Point4.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
             minSpecificWork + heatEmitterEnergyLoss +
-            expansionValvesEnergyLoss + evaporatorEnergyLoss + recuperatorEnergyLoss;
+            expansionValvesEnergyLoss + evaporatorEnergyLoss;
         var compressorEnergyLoss =
             calculatedIsentropicSpecificWork *
             (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
@@ -148,9 +115,6 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
         var evaporatorEnergyLossRatio = Ratio
             .FromDecimalFractions(evaporatorEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var recuperatorEnergyLossRatio = Ratio
-            .FromDecimalFractions(recuperatorEnergyLoss / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
         var analysisRelativeError = Ratio
             .FromDecimalFractions(
                 (calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
@@ -164,7 +128,7 @@ public abstract class AbstractVCRCWithRecuperator : AbstractVCRC, IEntropyAnalys
             HeatEmitter is GasCooler ? heatEmitterEnergyLossRatio : Ratio.Zero,
             expansionValvesEnergyLossRatio,
             evaporatorEnergyLossRatio,
-            recuperatorEnergyLossRatio,
+            Ratio.Zero,
             Ratio.Zero,
             Ratio.Zero,
             analysisRelativeError);

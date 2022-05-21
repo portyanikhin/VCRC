@@ -2,9 +2,8 @@
 using FluentValidation;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
-using VCRC.Fluids;
 
-namespace VCRC.Components.Validators;
+namespace VCRC;
 
 internal class EvaporatorValidator : AbstractValidator<Evaporator>
 {

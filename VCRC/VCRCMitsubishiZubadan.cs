@@ -8,30 +8,26 @@ using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
-using VCRC.Abstract.Validators;
-using VCRC.Components;
-using VCRC.Extensions;
-using VCRC.Fluids;
 
-namespace VCRC.Abstract;
+namespace VCRC;
 
 /// <summary>
-///     Mitsubishi Zubadan VCRC base class.
+///     Mitsubishi Zubadan VCRC (subcritical only).
 /// </summary>
 /// <remarks>
 ///     Two-stage VCRC with economizer, recuperator and two-phase injection to the compressor.
 /// </remarks>
-public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
+public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
 {
     /// <summary>
-    ///     Mitsubishi Zubadan VCRC base class.
+    ///     Mitsubishi Zubadan VCRC (subcritical only).
     /// </summary>
     /// <remarks>
     ///     Two-stage VCRC with economizer, recuperator and two-phase injection to the compressor.
     /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="heatEmitter">Condenser or gas cooler.</param>
+    /// <param name="condenser">Condenser.</param>
     /// <param name="economizer">Economizer.</param>
     /// <exception cref="ArgumentException">
     ///     Solution not found!
@@ -60,10 +56,10 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     /// <exception cref="ValidationException">
     ///     Too high temperature difference at economizer 'cold' side!
     /// </exception>
-    protected AbstractVCRCMitsubishiZubadan(Evaporator evaporator, Compressor compressor,
-        IHeatEmitter heatEmitter, EconomizerTPI economizer) : base(evaporator, compressor, heatEmitter)
+    public VCRCMitsubishiZubadan(Evaporator evaporator, Compressor compressor,
+        Condenser condenser, EconomizerTPI economizer) : base(evaporator, compressor, condenser)
     {
-        Economizer = economizer;
+        (Condenser, Economizer) = (condenser, economizer);
         Point4 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
         Point7 = Refrigerant.WithState(Input.Pressure(RecuperatorHighPressure),
@@ -77,7 +73,7 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
         Point12 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point11.Enthalpy));
         CalculateInjectionQuality(); // Also calculates Point2, Point3 and Point10
-        new AbstractVCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
+        new VCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
         Point5s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
             Input.Entropy(Point4.Entropy));
         Point5 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
@@ -87,10 +83,9 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     }
 
     /// <summary>
-    ///     Absolute recuperator high pressure.
+    ///     Condenser as a subcritical VCRC component.
     /// </summary>
-    public Pressure RecuperatorHighPressure =>
-        CalculateIntermediatePressure(IntermediatePressure, HeatEmitter.Pressure);
+    public new Condenser Condenser { get; }
 
     /// <summary>
     ///     Recuperator as a VCRC component.
@@ -101,6 +96,12 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     ///     Economizer as a VCRC component.
     /// </summary>
     public EconomizerTPI Economizer { get; }
+
+    /// <summary>
+    ///     Absolute recuperator high pressure.
+    /// </summary>
+    public Pressure RecuperatorHighPressure =>
+        CalculateIntermediatePressure(IntermediatePressure, HeatEmitter.Pressure);
 
     /// <summary>
     ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
@@ -137,12 +138,12 @@ public abstract class AbstractVCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEnt
     /// <summary>
     ///     Point 5 – second compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
-    internal Refrigerant Point5 { get; }
+    public Refrigerant Point5 { get; }
 
     /// <summary>
     ///     Point 6 – condenser or gas cooler outlet / first EV inlet.
     /// </summary>
-    internal Refrigerant Point6 => HeatEmitterOutlet;
+    public Refrigerant Point6 => HeatEmitterOutlet;
 
     /// <summary>
     ///     Point 7 – first EV outlet / recuperator "hot" inlet.

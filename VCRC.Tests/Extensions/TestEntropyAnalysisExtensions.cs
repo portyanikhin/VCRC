@@ -7,10 +7,6 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
-using VCRC.Abstract;
-using VCRC.Components;
-using VCRC.Extensions;
-using VCRC.Subcritical;
 
 namespace VCRC.Tests.Extensions;
 

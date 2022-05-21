@@ -1,6 +1,6 @@
 ﻿using UnitsNet;
 
-namespace VCRC.Abstract;
+namespace VCRC;
 
 /// <summary>
 ///     Result of the VCRC entropy analysis.

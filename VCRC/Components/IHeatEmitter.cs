@@ -1,7 +1,7 @@
 ﻿using SharpProp;
 using UnitsNet;
 
-namespace VCRC.Components;
+namespace VCRC;
 
 /// <summary>
 ///     Heat emitter (condenser or gas cooler).

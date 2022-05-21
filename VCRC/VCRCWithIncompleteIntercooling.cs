@@ -4,20 +4,16 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 using UnitsNet.Units;
-using VCRC.Components;
-using VCRC.Extensions;
-using VCRC.Fluids;
-using VCRC.Fluids.Validators;
 
-namespace VCRC.Abstract;
+namespace VCRC;
 
 /// <summary>
-///     Two-stage VCRC with incomplete intercooling base class.
+///     Two-stage VCRC with incomplete intercooling.
 /// </summary>
-public abstract class AbstractVCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalysable
+public class VCRCWithIncompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalysable
 {
     /// <summary>
-    ///     Two-stage VCRC with incomplete intercooling base class.
+    ///     Two-stage VCRC with incomplete intercooling.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
@@ -31,7 +27,7 @@ public abstract class AbstractVCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalys
     /// <exception cref="ValidationException">
     ///     Refrigerant should not have a temperature glide!
     /// </exception>
-    protected AbstractVCRCWithIIC(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
+    public VCRCWithIncompleteIntercooling(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
         base(evaporator, compressor, heatEmitter)
     {
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
@@ -89,12 +85,12 @@ public abstract class AbstractVCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalys
     /// <summary>
     ///     Point 4 – second compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
-    internal Refrigerant Point4 { get; }
+    public Refrigerant Point4 { get; }
 
     /// <summary>
     ///     Point 5 – condenser or gas cooler outlet / first EV inlet.
     /// </summary>
-    internal Refrigerant Point5 => HeatEmitterOutlet;
+    public Refrigerant Point5 => HeatEmitterOutlet;
 
     /// <summary>
     ///     Point 6 – first EV outlet / intermediate vessel inlet.

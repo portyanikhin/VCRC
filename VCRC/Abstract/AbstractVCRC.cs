@@ -1,12 +1,8 @@
 ﻿using FluentValidation;
 using SharpProp;
 using UnitsNet;
-using VCRC.Abstract.Validators;
-using VCRC.Components;
-using VCRC.Extensions;
-using VCRC.Fluids;
 
-namespace VCRC.Abstract;
+namespace VCRC;
 
 /// <summary>
 ///     VCRC base class.
@@ -30,20 +26,19 @@ public abstract class AbstractVCRC
         (Evaporator, Compressor, HeatEmitter) =
             (evaporator, compressor, heatEmitter);
         new AbstractVCRCValidator().ValidateAndThrow(this);
+        (Condenser, GasCooler) =
+            (HeatEmitter as Condenser, HeatEmitter as GasCooler);
         Refrigerant = new Refrigerant(Evaporator.RefrigerantName);
-        Point1 = Evaporator.Superheat == TemperatureDelta.Zero
-            ? Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-                Input.Quality(TwoPhase.Dew.VaporQuality()))
-            : Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-                Input.Temperature(Evaporator.Temperature + Evaporator.Superheat));
-        HeatEmitterOutlet = HeatEmitter is Condenser condenser
-            ? condenser.Subcooling == TemperatureDelta.Zero
-                ? Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Quality(TwoPhase.Bubble.VaporQuality()))
-                : Refrigerant.WithState(Input.Pressure(condenser.Pressure),
-                    Input.Temperature(condenser.Temperature - condenser.Subcooling))
-            : Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-                Input.Temperature(HeatEmitter.Temperature));
+        HeatEmitterOutlet = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+            HeatEmitter is Condenser condenser
+                ? condenser.Subcooling == TemperatureDelta.Zero
+                    ? Input.Quality(TwoPhase.Bubble.VaporQuality())
+                    : Input.Temperature(condenser.Temperature - condenser.Subcooling)
+                : Input.Temperature(HeatEmitter.Temperature));
+        Point1 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
+            Evaporator.Superheat == TemperatureDelta.Zero
+                ? Input.Quality(TwoPhase.Dew.VaporQuality())
+                : Input.Temperature(Evaporator.Temperature + Evaporator.Superheat));
     }
 
     internal IHeatEmitter HeatEmitter { get; }
@@ -61,6 +56,22 @@ public abstract class AbstractVCRC
     ///     Compressor as a VCRC component.
     /// </summary>
     public Compressor Compressor { get; }
+
+    /// <summary>
+    ///     Condenser as a subcritical VCRC component.
+    /// </summary>
+    public Condenser? Condenser { get; }
+
+    /// <summary>
+    ///     Gas cooler as a transcritical VCRC component.
+    /// </summary>
+    public GasCooler? GasCooler { get; }
+
+    /// <summary>
+    ///     <c>true</c> if transcritical VCRC,
+    ///     <c>false</c> if subcritical VCRC.
+    /// </summary>
+    public bool IsTranscritical => GasCooler is not null;
 
     /// <summary>
     ///     Point 1 – evaporator outlet.

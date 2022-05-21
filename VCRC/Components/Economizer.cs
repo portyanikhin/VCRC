@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 using UnitsNet;
 using UnitsNet.Units;
-using VCRC.Components.Validators;
 
-namespace VCRC.Components;
+namespace VCRC;
 
 /// <summary>
 ///     Economizer as a VCRC component.
@@ -16,7 +15,7 @@ public record Economizer : EconomizerTPI
     /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
     /// <param name="superheat">Superheat in the economizer.</param>
     /// <exception cref="ValidationException">
-    ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
+    ///     Temperature difference at the economizer 'cold' side should be in (0;50) K!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Superheat in the economizer should be in [0;50] K!

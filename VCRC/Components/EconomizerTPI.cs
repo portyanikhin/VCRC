@@ -1,9 +1,8 @@
 ﻿using FluentValidation;
 using UnitsNet;
 using UnitsNet.Units;
-using VCRC.Components.Validators;
 
-namespace VCRC.Components;
+namespace VCRC;
 
 /// <summary>
 ///     Economizer as a component of VCRC with two-phase injection to the compressor.
@@ -15,7 +14,7 @@ public record EconomizerTPI
     /// </summary>
     /// <param name="temperatureDifference">Temperature difference at economizer "cold" side.</param>
     /// <exception cref="ValidationException">
-    ///     Temperature difference at the economizer 'cold' side should be in [0;50] K!
+    ///     Temperature difference at the economizer 'cold' side should be in (0;50) K!
     /// </exception>
     public EconomizerTPI(TemperatureDelta temperatureDifference)
     {

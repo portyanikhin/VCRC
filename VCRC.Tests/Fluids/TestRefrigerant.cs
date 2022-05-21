@@ -3,7 +3,6 @@ using FluentAssertions;
 using FluentValidation;
 using NUnit.Framework;
 using SharpProp;
-using VCRC.Fluids;
 
 namespace VCRC.Tests.Fluids;
 

@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace VCRC.Abstract.Validators;
+namespace VCRC;
 
-internal class AbstractVCRCWithEconomizerValidator : AbstractValidator<AbstractVCRCWithEconomizer>
+internal class VCRCWithEconomizerValidator : AbstractValidator<VCRCWithEconomizer>
 {
-    internal AbstractVCRCWithEconomizerValidator()
+    internal VCRCWithEconomizerValidator()
     {
         RuleFor(vcrc => vcrc.Point7.Temperature)
             .LessThan(vcrc => vcrc.Point5.Temperature)

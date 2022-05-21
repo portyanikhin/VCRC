@@ -7,7 +7,6 @@ using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToTemperature;
-using VCRC.Components;
 
 namespace VCRC.Tests.Components;
 

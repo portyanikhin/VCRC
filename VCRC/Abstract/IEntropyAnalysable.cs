@@ -1,7 +1,7 @@
 ﻿using System;
 using UnitsNet;
 
-namespace VCRC.Abstract;
+namespace VCRC;
 
 public interface IEntropyAnalysable
 {

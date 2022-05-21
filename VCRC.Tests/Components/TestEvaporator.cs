@@ -6,9 +6,6 @@ using NUnit.Framework;
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToTemperature;
-using VCRC.Components;
-using VCRC.Extensions;
-using VCRC.Fluids;
 
 namespace VCRC.Tests.Components;
 

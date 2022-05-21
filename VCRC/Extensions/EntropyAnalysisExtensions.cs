@@ -3,9 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
-using VCRC.Abstract;
 
-namespace VCRC.Extensions;
+namespace VCRC;
 
 public static class EntropyAnalysisExtensions
 {

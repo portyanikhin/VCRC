@@ -1,7 +1,6 @@
 ﻿using Force.DeepCloner;
-using VCRC.Fluids;
 
-namespace VCRC.Extensions;
+namespace VCRC;
 
 public static class CloneExtensions
 {

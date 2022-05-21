@@ -3,8 +3,6 @@ using NUnit.Framework;
 using SharpProp;
 using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToTemperature;
-using VCRC.Extensions;
-using VCRC.Fluids;
 
 namespace VCRC.Tests.Extensions;
 

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace VCRC.Fluids.Attributes;
+namespace VCRC;
 
 /// <summary>
 ///     Vapor quality of the two-phase points.

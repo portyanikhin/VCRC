@@ -2,7 +2,7 @@
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
-namespace VCRC.Components.Validators;
+namespace VCRC;
 
 internal class RecuperatorValidator : AbstractValidator<Recuperator>
 {

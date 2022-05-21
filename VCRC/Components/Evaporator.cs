@@ -2,11 +2,8 @@
 using SharpProp;
 using UnitsNet;
 using UnitsNet.Units;
-using VCRC.Components.Validators;
-using VCRC.Extensions;
-using VCRC.Fluids;
 
-namespace VCRC.Components;
+namespace VCRC;
 
 /// <summary>
 ///     Evaporator as a VCRC component.

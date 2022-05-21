@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 
-namespace VCRC.Fluids.Validators;
+namespace VCRC;
 
 internal class RefrigerantWithoutGlideValidator : AbstractValidator<Refrigerant>
 {

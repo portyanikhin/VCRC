@@ -1,10 +1,10 @@
 ﻿using FluentValidation;
 
-namespace VCRC.Abstract.Validators;
+namespace VCRC;
 
-internal class AbstractVCRCMitsubishiZubadanValidator : AbstractValidator<AbstractVCRCMitsubishiZubadan>
+internal class VCRCMitsubishiZubadanValidator : AbstractValidator<VCRCMitsubishiZubadan>
 {
-    internal AbstractVCRCMitsubishiZubadanValidator()
+    internal VCRCMitsubishiZubadanValidator()
     {
         RuleFor(vcrc => vcrc.Point7.Quality)
             .Must(quality => quality?.DecimalFractions is > 0 and < 1)

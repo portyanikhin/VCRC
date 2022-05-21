@@ -4,10 +4,8 @@ using FluentValidation;
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
-using VCRC.Extensions;
-using VCRC.Fluids.Validators;
 
-namespace VCRC.Fluids;
+namespace VCRC;
 
 /// <summary>
 ///     VCRC working fluid.

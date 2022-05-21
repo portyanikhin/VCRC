@@ -1,7 +1,6 @@
 ﻿using FluentValidation;
-using VCRC.Components;
 
-namespace VCRC.Abstract.Validators;
+namespace VCRC;
 
 internal class AbstractVCRCValidator : AbstractValidator<AbstractVCRC>
 {
