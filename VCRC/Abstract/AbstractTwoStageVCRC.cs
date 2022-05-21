@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToPressure;
@@ -54,6 +55,7 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     /// <summary>
     ///     Specific ratio of the mass flow rate of the second compression stage.
     /// </summary>
+    [SuppressMessage("ReSharper", "UnusedMemberInSuper.Global")]
     public abstract Ratio SecondStageSpecificMassFlow { get; }
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
