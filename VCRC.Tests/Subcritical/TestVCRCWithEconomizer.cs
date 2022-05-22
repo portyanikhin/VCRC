@@ -19,16 +19,16 @@ public class TestVCRCWithEconomizer
     [OneTimeSetUp]
     public void SetUp()
     {
-        var evaporator = new Evaporator(FluidsList.R134a, (-5).DegreesCelsius(),
-            TemperatureDelta.FromKelvins(5));
+        var evaporator = new Evaporator(FluidsList.R32, 5.DegreesCelsius(),
+            TemperatureDelta.FromKelvins(8));
         var compressor = new Compressor(80.Percent());
-        var condenser = new Condenser(FluidsList.R134a, 40.DegreesCelsius(),
+        var condenser = new Condenser(FluidsList.R32, 45.DegreesCelsius(),
             TemperatureDelta.FromKelvins(3));
         var economizer = new Economizer(TemperatureDelta.FromKelvins(5),
             TemperatureDelta.FromKelvins(5));
         Cycle = new VCRCWithEconomizer(evaporator, compressor, condenser, economizer);
         AnalysisResult = Cycle.EntropyAnalysis(
-            5.DegreesCelsius(), 30.DegreesCelsius());
+            18.DegreesCelsius(), 35.DegreesCelsius());
     }
 
     [Test]
@@ -100,7 +100,7 @@ public class TestVCRCWithEconomizer
     {
         Cycle.Point4s.Pressure.Should().Be(Cycle.Condenser!.Pressure);
         Cycle.Point4s.Entropy.Should().Be(Cycle.Point3.Entropy);
-        Cycle.Point4s.Phase.Should().Be(Phases.Gas);
+        Cycle.Point4s.Phase.Should().Be(Phases.SupercriticalGas);
     }
 
     [Test]
@@ -111,7 +111,7 @@ public class TestVCRCWithEconomizer
             Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
         Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
-        Cycle.Point4.Phase.Should().Be(Phases.Gas);
+        Cycle.Point4.Phase.Should().Be(Phases.SupercriticalGas);
     }
 
     [Test]
@@ -161,7 +161,7 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestHeatEmitter()
     {
-        Cycle.Condenser!.Should().NotBeNull();
+        Cycle.Condenser.Should().NotBeNull();
         Cycle.GasCooler.Should().BeNull();
     }
 
@@ -208,7 +208,7 @@ public class TestVCRCWithEconomizer
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
         Cycle.EER.Should().BeApproximately(
-            4.143835798667029, Tolerance);
+            4.511109316237719, Tolerance);
     }
 
     [Test]
@@ -217,18 +217,18 @@ public class TestVCRCWithEconomizer
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
         Cycle.COP.Should().BeApproximately(
-            5.14383579866703, Tolerance);
+            5.511109316237718, Tolerance);
     }
 
     [Test]
     public void TestThermodynamicPerfection() =>
         AnalysisResult.ThermodynamicPerfection.Percent
-            .Should().BeApproximately(37.24461440470097, Tolerance);
+            .Should().BeApproximately(26.339982268947697, Tolerance);
 
     [Test]
     public void TestMinSpecificWorkRatio() =>
         AnalysisResult.MinSpecificWorkRatio.Percent
-            .Should().BeApproximately(37.30775720783136, Tolerance);
+            .Should().BeApproximately(26.213423177542623, Tolerance);
 
     [Test]
     public void TestCompressorEnergyLossRatio() =>
@@ -238,7 +238,7 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestCondenserEnergyLossRatio() =>
         AnalysisResult.CondenserEnergyLossRatio.Percent
-            .Should().BeApproximately(16.816858147697612, Tolerance);
+            .Should().BeApproximately(23.01216380485239, Tolerance);
 
     [Test]
     public void TestGasCoolerEnergyLossRatio() =>
@@ -247,12 +247,12 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestExpansionValvesEnergyLossRatio() =>
         AnalysisResult.ExpansionValvesEnergyLossRatio.Percent
-            .Should().BeApproximately(6.479391060790364, Tolerance);
+            .Should().BeApproximately(6.888699877347386, Tolerance);
 
     [Test]
     public void TestEvaporatorEnergyLossRatio() =>
         AnalysisResult.EvaporatorEnergyLossRatio.Percent
-            .Should().BeApproximately(16.76126076854396, Tolerance);
+            .Should().BeApproximately(21.956407482133088, Tolerance);
 
     [Test]
     public void TestRecuperatorEnergyLossRatio() =>
@@ -261,18 +261,18 @@ public class TestVCRCWithEconomizer
     [Test]
     public void TestEconomizerEnergyLossRatio() =>
         AnalysisResult.EconomizerEnergyLossRatio.Percent
-            .Should().BeApproximately(2.610089758880345, Tolerance);
+            .Should().BeApproximately(1.7587100360640768, Tolerance);
 
     [Test]
     public void TestMixingEnergyLossRatio() =>
         AnalysisResult.MixingEnergyLossRatio.Percent
-            .Should().BeApproximately(0.024643056256362053, Tolerance);
+            .Should().BeApproximately(0.1705956220604388, Tolerance);
 
     [Test]
     public void TestAnalysisRelativeError()
     {
         AnalysisResult.AnalysisRelativeError.Percent
-            .Should().BeApproximately(0.16924845623564164, Tolerance);
+            .Should().BeApproximately(0.4828026105094935, Tolerance);
         AnalysisResult.Sum().Percent
             .Should().BeApproximately(100, Tolerance);
     }

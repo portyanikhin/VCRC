@@ -18,15 +18,15 @@ public class TestVCRCMitsubishiZubadan
     [OneTimeSetUp]
     public void SetUp()
     {
-        var evaporator = new Evaporator(FluidsList.R134a, (-5).DegreesCelsius(),
-            TemperatureDelta.FromKelvins(5));
+        var evaporator = new Evaporator(FluidsList.R32, 5.DegreesCelsius(),
+            TemperatureDelta.FromKelvins(8));
         var compressor = new Compressor(80.Percent());
-        var condenser = new Condenser(FluidsList.R134a, 40.DegreesCelsius(),
+        var condenser = new Condenser(FluidsList.R32, 45.DegreesCelsius(),
             TemperatureDelta.FromKelvins(3));
         var economizer = new EconomizerTPI(TemperatureDelta.FromKelvins(5));
         Cycle = new VCRCMitsubishiZubadan(evaporator, compressor, condenser, economizer);
         AnalysisResult = Cycle.EntropyAnalysis(
-            5.DegreesCelsius(), 30.DegreesCelsius());
+            18.DegreesCelsius(), 35.DegreesCelsius());
     }
 
     [Test]
@@ -227,7 +227,7 @@ public class TestVCRCMitsubishiZubadan
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
         Cycle.EER.Should().BeApproximately(
-            3.9432252988643284, Tolerance);
+            4.380342435725647, Tolerance);
     }
 
     [Test]
@@ -236,18 +236,18 @@ public class TestVCRCMitsubishiZubadan
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
         Cycle.COP.Should().BeApproximately(
-            4.943215704748534, Tolerance);
+            5.380333104312685, Tolerance);
     }
 
     [Test]
     public void TestThermodynamicPerfection() =>
         AnalysisResult.ThermodynamicPerfection.Percent
-            .Should().BeApproximately(35.44153603149675, Tolerance);
+            .Should().BeApproximately(25.57644561474704, Tolerance);
 
     [Test]
     public void TestMinSpecificWorkRatio() =>
         AnalysisResult.MinSpecificWorkRatio.Percent
-            .Should().BeApproximately(35.23458342910726, Tolerance);
+            .Should().BeApproximately(25.27093000190046, Tolerance);
 
     [Test]
     public void TestCompressorEnergyLossRatio() =>
@@ -257,7 +257,7 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestCondenserEnergyLossRatio() =>
         AnalysisResult.CondenserEnergyLossRatio.Percent
-            .Should().BeApproximately(15.329612769133288, Tolerance);
+            .Should().BeApproximately(17.402320942172274, Tolerance);
 
     [Test]
     public void TestGasCoolerEnergyLossRatio() =>
@@ -266,33 +266,33 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestExpansionValvesEnergyLossRatio() =>
         AnalysisResult.ExpansionValvesEnergyLossRatio.Percent
-            .Should().BeApproximately(6.647311850055269, Tolerance);
+            .Should().BeApproximately(7.442291905240232, Tolerance);
 
     [Test]
     public void TestEvaporatorEnergyLossRatio() =>
         AnalysisResult.EvaporatorEnergyLossRatio.Percent
-            .Should().BeApproximately(15.829860915247613, Tolerance);
+            .Should().BeApproximately(21.16669887701517, Tolerance);
 
     [Test]
     public void TestRecuperatorEnergyLossRatio() =>
         AnalysisResult.RecuperatorEnergyLossRatio.Percent
-            .Should().BeApproximately(2.467668114444201, Tolerance);
+            .Should().BeApproximately(1.3431046427670745, Tolerance);
 
     [Test]
     public void TestEconomizerEnergyLossRatio() =>
         AnalysisResult.EconomizerEnergyLossRatio.Percent
-            .Should().BeApproximately(0.6376968932478836, Tolerance);
+            .Should().BeApproximately(0.44158251658286674, Tolerance);
 
     [Test]
     public void TestMixingEnergyLossRatio() =>
         AnalysisResult.MixingEnergyLossRatio.Percent
-            .Should().BeApproximately(3.853266028764484, Tolerance);
+            .Should().BeApproximately(6.9330711143219235, Tolerance);
 
     [Test]
     public void TestAnalysisRelativeError()
     {
         AnalysisResult.AnalysisRelativeError.Percent
-            .Should().BeApproximately(0.5873564613184244, Tolerance);
+            .Should().BeApproximately(1.208960702370679, Tolerance);
         AnalysisResult.Sum().Percent
             .Should().BeApproximately(100, Tolerance);
     }
