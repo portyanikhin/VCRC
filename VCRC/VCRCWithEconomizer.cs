@@ -2,8 +2,6 @@
 using FluentValidation;
 using SharpProp;
 using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-using UnitsNet.Units;
 
 namespace VCRC;
 
@@ -143,94 +141,16 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
         SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
 
-    public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor)
-    {
-        var (coldSource, hotSource) =
-            IEntropyAnalysable.SourceTemperatures(
-                indoor, outdoor, Point1.Temperature, Point5.Temperature);
-        var minSpecificWork = SpecificCoolingCapacity *
-            (hotSource - coldSource).Kelvins / coldSource.Kelvins;
-        var thermodynamicPerfection = Ratio
-            .FromDecimalFractions(minSpecificWork / SpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var heatReleaserEnergyLoss =
-            SecondStageSpecificMassFlow.DecimalFractions *
-            (Point4s.Enthalpy - Point5.Enthalpy -
-             (hotSource.Kelvins * (Point4s.Entropy - Point5.Entropy).JoulesPerKilogramKelvin)
-             .JoulesPerKilogram());
-        var expansionValvesEnergyLoss =
-            (hotSource.Kelvins *
-             ((SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-              (Point6.Entropy - Point5.Entropy) +
-              FirstStageSpecificMassFlow.DecimalFractions * (Point9.Entropy - Point8.Entropy))
-             .JoulesPerKilogramKelvin)
-            .JoulesPerKilogram();
-        var evaporatorEnergyLoss =
-            (FirstStageSpecificMassFlow.DecimalFractions * hotSource.Kelvins *
-             ((Point1.Entropy - Point9.Entropy).JoulesPerKilogramKelvin -
-              (Point1.Enthalpy - Point9.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
-            .JoulesPerKilogram();
-        var economizerEnergyLoss =
-            (hotSource.Kelvins *
-             ((SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-              (Point7.Entropy - Point6.Entropy) -
-              FirstStageSpecificMassFlow.DecimalFractions *
-              (Point5.Entropy - Point8.Entropy))
-             .JoulesPerKilogramKelvin)
-            .JoulesPerKilogram();
-        var mixingEnergyLoss =
-            (hotSource.Kelvins *
-             (SecondStageSpecificMassFlow.DecimalFractions * Point3.Entropy -
-              (FirstStageSpecificMassFlow.DecimalFractions * Point2.Entropy +
-               (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow)
-               .DecimalFractions * Point7.Entropy)).JoulesPerKilogramKelvin)
-            .JoulesPerKilogram();
-        var calculatedIsentropicSpecificWork =
-            minSpecificWork + heatReleaserEnergyLoss +
-            expansionValvesEnergyLoss + evaporatorEnergyLoss +
-            economizerEnergyLoss + mixingEnergyLoss;
-        var compressorEnergyLoss =
-            calculatedIsentropicSpecificWork *
-            (1.0 / Compressor.IsentropicEfficiency.DecimalFractions - 1);
-        var calculatedSpecificWork =
-            calculatedIsentropicSpecificWork + compressorEnergyLoss;
-        var minSpecificWorkRatio = Ratio
-            .FromDecimalFractions(minSpecificWork / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var compressorEnergyLossRatio = Ratio
-            .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var heatReleaserEnergyLossRatio = Ratio
-            .FromDecimalFractions(heatReleaserEnergyLoss / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var expansionValvesEnergyLossRatio = Ratio
-            .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var evaporatorEnergyLossRatio = Ratio
-            .FromDecimalFractions(evaporatorEnergyLoss / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var economizerEnergyLossRatio = Ratio
-            .FromDecimalFractions(economizerEnergyLoss / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var mixingEnergyLossRatio = Ratio
-            .FromDecimalFractions(mixingEnergyLoss / calculatedSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        var analysisRelativeError = Ratio
-            .FromDecimalFractions(
-                (calculatedIsentropicSpecificWork - IsentropicSpecificWork).Abs() /
-                IsentropicSpecificWork)
-            .ToUnit(RatioUnit.Percent);
-        return new EntropyAnalysisResult(
-            thermodynamicPerfection,
-            minSpecificWorkRatio,
-            compressorEnergyLossRatio,
-            HeatReleaser is Condenser ? heatReleaserEnergyLossRatio : Ratio.Zero,
-            HeatReleaser is GasCooler ? heatReleaserEnergyLossRatio : Ratio.Zero,
-            expansionValvesEnergyLossRatio,
-            evaporatorEnergyLossRatio,
-            Ratio.Zero,
-            economizerEnergyLossRatio,
-            mixingEnergyLossRatio,
-            analysisRelativeError);
-    }
+    public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
+        new EntropyAnalyzer(
+                this, indoor, outdoor,
+                new EvaporatorInfo(FirstStageSpecificMassFlow, Point9, Point1),
+                new HeatReleaserInfo(HeatReleaser, SecondStageSpecificMassFlow, Point4s, Point5),
+                new EVInfo(SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point5, Point6),
+                new EVInfo(FirstStageSpecificMassFlow, Point8, Point9), null, null,
+                new EconomizerInfo(SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point6, Point7,
+                    FirstStageSpecificMassFlow, Point5, Point8),
+                new MixingInfo(Point3, FirstStageSpecificMassFlow, Point2,
+                    SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point7))
+            .Result;
 }

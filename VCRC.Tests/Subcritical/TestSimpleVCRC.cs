@@ -65,7 +65,7 @@ public class TestSimpleVCRC
         IEntropyAnalysable vcrc = Cycle;
         Action action = () =>
             vcrc.EntropyAnalysis(indoor.DegreesCelsius(), outdoor.DegreesCelsius());
-        action.Should().Throw<ArgumentException>().WithMessage(message);
+        action.Should().Throw<ValidationException>().WithMessage($"*{message}*");
     }
 
     [Test]

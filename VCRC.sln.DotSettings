@@ -2,6 +2,7 @@
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=CIC/@EntryIndexedValue">CIC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=COP/@EntryIndexedValue">COP</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=EER/@EntryIndexedValue">EER</s:String>
+	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=EV/@EntryIndexedValue">EV</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=IIC/@EntryIndexedValue">IIC</s:String>
 	<s:String x:Key="/Default/CodeStyle/Naming/CSharpNaming/Abbreviations/=TPI/@EntryIndexedValue">TPI</s:String>
 	<s:Boolean x:Key="/Default/UserDictionary/Words/=barbotage/@EntryIndexedValue">True</s:Boolean>
