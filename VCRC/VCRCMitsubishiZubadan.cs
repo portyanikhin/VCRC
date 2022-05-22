@@ -74,9 +74,9 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
             Input.Enthalpy(Point11.Enthalpy));
         CalculateInjectionQuality(); // Also calculates Point2, Point3 and Point10
         new VCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
-        Point5s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point5s = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Entropy(Point4.Entropy));
-        Point5 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point5 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Enthalpy(Point4.Enthalpy + SecondStageSpecificWork /
                 SecondStageSpecificMassFlow.DecimalFractions));
         Recuperator = new Recuperator(Point7.Temperature - Point2!.Temperature);
@@ -101,7 +101,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Absolute recuperator high pressure.
     /// </summary>
     public Pressure RecuperatorHighPressure =>
-        CalculateIntermediatePressure(IntermediatePressure, HeatEmitter.Pressure);
+        CalculateIntermediatePressure(IntermediatePressure, HeatReleaser.Pressure);
 
     /// <summary>
     ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
@@ -143,7 +143,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 6 – condenser or gas cooler outlet / first EV inlet.
     /// </summary>
-    public Refrigerant Point6 => HeatEmitterOutlet;
+    public Refrigerant Point6 => HeatReleaserOutlet;
 
     /// <summary>
     ///     Point 7 – first EV outlet / recuperator "hot" inlet.
@@ -201,7 +201,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLoss =
+        var condenserEnergyLoss =
             SecondStageSpecificMassFlow.DecimalFractions *
             (Point5s.Enthalpy - Point6.Enthalpy -
              (hotSource.Kelvins * (Point5s.Entropy - Point6.Entropy).JoulesPerKilogramKelvin)
@@ -241,7 +241,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
                .DecimalFractions * Point10.Entropy)).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
-            minSpecificWork + heatEmitterEnergyLoss +
+            minSpecificWork + condenserEnergyLoss +
             expansionValvesEnergyLoss + evaporatorEnergyLoss +
             recuperatorEnergyLoss + economizerEnergyLoss + mixingEnergyLoss;
         var compressorEnergyLoss =
@@ -255,8 +255,8 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
         var compressorEnergyLossRatio = Ratio
             .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLossRatio = Ratio
-            .FromDecimalFractions(heatEmitterEnergyLoss / calculatedSpecificWork)
+        var condenserEnergyLossRatio = Ratio
+            .FromDecimalFractions(condenserEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
         var expansionValvesEnergyLossRatio = Ratio
             .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork)
@@ -282,8 +282,8 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
             thermodynamicPerfection,
             minSpecificWorkRatio,
             compressorEnergyLossRatio,
-            HeatEmitter is Condenser ? heatEmitterEnergyLossRatio : Ratio.Zero,
-            HeatEmitter is GasCooler ? heatEmitterEnergyLossRatio : Ratio.Zero,
+            condenserEnergyLossRatio,
+            Ratio.Zero,
             expansionValvesEnergyLossRatio,
             evaporatorEnergyLossRatio,
             recuperatorEnergyLossRatio,

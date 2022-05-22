@@ -17,7 +17,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="heatEmitter">Condenser or gas cooler.</param>
+    /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <param name="economizer">Economizer.</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
@@ -34,8 +34,8 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <exception cref="ValidationException">
     ///     Too high temperature difference at economizer 'cold' side!
     /// </exception>
-    public VCRCWithEconomizerTPI(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter,
-        EconomizerTPI economizer) : base(evaporator, compressor, heatEmitter)
+    public VCRCWithEconomizerTPI(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser,
+        EconomizerTPI economizer) : base(evaporator, compressor, heatReleaser)
     {
         Economizer = economizer;
         Point2s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
@@ -44,11 +44,11 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
             Input.Enthalpy(Point1.Enthalpy + FirstStageSpecificWork));
         Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point4s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point4s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Entropy(Point3.Entropy));
         Point6 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point5.Enthalpy));
-        Point8 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point8 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Temperature(Point6.Temperature + Economizer.TemperatureDifference));
         Point7 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(
@@ -63,7 +63,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         new VCRCWithEconomizerTPIValidator().ValidateAndThrow(this);
         Point9 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point8.Enthalpy));
-        Point4 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point4 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
                 SecondStageSpecificMassFlow.DecimalFractions));
     }
@@ -108,7 +108,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 5 – condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
     /// </summary>
-    public Refrigerant Point5 => HeatEmitterOutlet;
+    public Refrigerant Point5 => HeatReleaserOutlet;
 
     /// <summary>
     ///     Point 6 – first EV outlet / economizer "cold" inlet.
@@ -156,7 +156,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLoss =
+        var heatReleaserEnergyLoss =
             SecondStageSpecificMassFlow.DecimalFractions *
             (Point4s.Enthalpy - Point5.Enthalpy -
              (hotSource.Kelvins * (Point4s.Entropy - Point5.Entropy).JoulesPerKilogramKelvin)
@@ -189,7 +189,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
                .DecimalFractions * Point7.Entropy)).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
-            minSpecificWork + heatEmitterEnergyLoss +
+            minSpecificWork + heatReleaserEnergyLoss +
             expansionValvesEnergyLoss + evaporatorEnergyLoss +
             economizerEnergyLoss + mixingEnergyLoss;
         var compressorEnergyLoss =
@@ -203,8 +203,8 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         var compressorEnergyLossRatio = Ratio
             .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLossRatio = Ratio
-            .FromDecimalFractions(heatEmitterEnergyLoss / calculatedSpecificWork)
+        var heatReleaserEnergyLossRatio = Ratio
+            .FromDecimalFractions(heatReleaserEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
         var expansionValvesEnergyLossRatio = Ratio
             .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork)
@@ -227,8 +227,8 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
             thermodynamicPerfection,
             minSpecificWorkRatio,
             compressorEnergyLossRatio,
-            HeatEmitter is Condenser ? heatEmitterEnergyLossRatio : Ratio.Zero,
-            HeatEmitter is GasCooler ? heatEmitterEnergyLossRatio : Ratio.Zero,
+            HeatReleaser is Condenser ? heatReleaserEnergyLossRatio : Ratio.Zero,
+            HeatReleaser is GasCooler ? heatReleaserEnergyLossRatio : Ratio.Zero,
             expansionValvesEnergyLossRatio,
             evaporatorEnergyLossRatio,
             Ratio.Zero,

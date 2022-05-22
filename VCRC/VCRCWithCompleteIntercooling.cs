@@ -17,7 +17,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="heatEmitter">Condenser or gas cooler.</param>
+    /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
@@ -27,8 +27,8 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
     /// <exception cref="ValidationException">
     ///     Refrigerant should not have a temperature glide!
     /// </exception>
-    public VCRCWithCompleteIntercooling(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
-        base(evaporator, compressor, heatEmitter)
+    public VCRCWithCompleteIntercooling(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser) :
+        base(evaporator, compressor, heatReleaser)
     {
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
         Point2s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
@@ -37,7 +37,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
             Input.Enthalpy(Point1.Enthalpy + FirstStageSpecificWork));
         Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point4s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point4s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Entropy(Point3.Entropy));
         Point6 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(Point5.Enthalpy));
@@ -45,7 +45,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
             Input.Quality(TwoPhase.Bubble.VaporQuality()));
         Point8 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point7.Enthalpy));
-        Point4 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point4 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
                 SecondStageSpecificMassFlow.DecimalFractions));
     }
@@ -85,7 +85,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
     /// <summary>
     ///     Point 5 – condenser or gas cooler outlet / first EV inlet.
     /// </summary>
-    public Refrigerant Point5 => HeatEmitterOutlet;
+    public Refrigerant Point5 => HeatReleaserOutlet;
 
     /// <summary>
     ///     Point 6 – first EV outlet / intermediate vessel inlet.
@@ -132,7 +132,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLoss =
+        var heatReleaserEnergyLoss =
             SecondStageSpecificMassFlow.DecimalFractions *
             (Point4s.Enthalpy - Point5.Enthalpy -
              (hotSource.Kelvins * (Point4s.Entropy - Point5.Entropy).JoulesPerKilogramKelvin)
@@ -157,7 +157,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
               .JoulesPerKilogramKelvin))
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
-            minSpecificWork + heatEmitterEnergyLoss +
+            minSpecificWork + heatReleaserEnergyLoss +
             expansionValvesEnergyLoss + evaporatorEnergyLoss + mixingEnergyLoss;
         var compressorEnergyLoss =
             calculatedIsentropicSpecificWork *
@@ -170,8 +170,8 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
         var compressorEnergyLossRatio = Ratio
             .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLossRatio = Ratio
-            .FromDecimalFractions(heatEmitterEnergyLoss / calculatedSpecificWork)
+        var heatReleaserEnergyLossRatio = Ratio
+            .FromDecimalFractions(heatReleaserEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
         var expansionValvesEnergyLossRatio = Ratio
             .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork)
@@ -191,8 +191,8 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
             thermodynamicPerfection,
             minSpecificWorkRatio,
             compressorEnergyLossRatio,
-            HeatEmitter is Condenser ? heatEmitterEnergyLossRatio : Ratio.Zero,
-            HeatEmitter is GasCooler ? heatEmitterEnergyLossRatio : Ratio.Zero,
+            HeatReleaser is Condenser ? heatReleaserEnergyLossRatio : Ratio.Zero,
+            HeatReleaser is GasCooler ? heatReleaserEnergyLossRatio : Ratio.Zero,
             expansionValvesEnergyLossRatio,
             evaporatorEnergyLossRatio,
             Ratio.Zero,

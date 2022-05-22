@@ -18,15 +18,15 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="heatEmitter">Condenser or gas cooler.</param>
+    /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    protected AbstractTwoStageVCRC(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
-        base(evaporator, compressor, heatEmitter)
+    protected AbstractTwoStageVCRC(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser) :
+        base(evaporator, compressor, heatReleaser)
     {
     }
 
@@ -44,7 +44,7 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     ///     Intermediate pressure.
     /// </summary>
     public Pressure IntermediatePressure =>
-        CalculateIntermediatePressure(Evaporator.Pressure, HeatEmitter.Pressure);
+        CalculateIntermediatePressure(Evaporator.Pressure, HeatReleaser.Pressure);
 
     /// <summary>
     ///     Specific ratio of the mass flow rate of the first compression stage.

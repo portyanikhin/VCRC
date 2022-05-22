@@ -11,7 +11,7 @@ namespace VCRC;
 /// <summary>
 ///     Gas cooler as a transcritical VCRC component.
 /// </summary>
-public record GasCooler : IHeatEmitter
+public record GasCooler : IHeatReleaser
 {
     /// <summary>
     ///     Gas cooler as a transcritical VCRC component.

@@ -14,38 +14,38 @@ public abstract class AbstractVCRC
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="heatEmitter">Condenser or gas cooler.</param>
+    /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    protected AbstractVCRC(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter)
+    protected AbstractVCRC(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser)
     {
-        (Evaporator, Compressor, HeatEmitter) =
-            (evaporator, compressor, heatEmitter);
+        (Evaporator, Compressor, HeatReleaser) =
+            (evaporator, compressor, heatReleaser);
         new AbstractVCRCValidator().ValidateAndThrow(this);
         (Condenser, GasCooler) =
-            (HeatEmitter as Condenser, HeatEmitter as GasCooler);
+            (HeatReleaser as Condenser, HeatReleaser as GasCooler);
         Refrigerant = new Refrigerant(Evaporator.RefrigerantName);
-        HeatEmitterOutlet = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
-            HeatEmitter is Condenser condenser
+        HeatReleaserOutlet = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
+            HeatReleaser is Condenser condenser
                 ? condenser.Subcooling == TemperatureDelta.Zero
                     ? Input.Quality(TwoPhase.Bubble.VaporQuality())
                     : Input.Temperature(condenser.Temperature - condenser.Subcooling)
-                : Input.Temperature(HeatEmitter.Temperature));
+                : Input.Temperature(HeatReleaser.Temperature));
         Point1 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Evaporator.Superheat == TemperatureDelta.Zero
                 ? Input.Quality(TwoPhase.Dew.VaporQuality())
                 : Input.Temperature(Evaporator.Temperature + Evaporator.Superheat));
     }
 
-    internal IHeatEmitter HeatEmitter { get; }
+    internal IHeatReleaser HeatReleaser { get; }
 
     protected Refrigerant Refrigerant { get; }
 
-    protected Refrigerant HeatEmitterOutlet { get; }
+    protected Refrigerant HeatReleaserOutlet { get; }
 
     /// <summary>
     ///     Evaporator as a VCRC component.

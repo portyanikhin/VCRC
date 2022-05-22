@@ -8,7 +8,7 @@ namespace VCRC;
 /// <summary>
 ///     Condenser as a VCRC component.
 /// </summary>
-public record Condenser : IHeatEmitter
+public record Condenser : IHeatReleaser
 {
     /// <summary>
     ///     Condenser as a VCRC component.

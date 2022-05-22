@@ -4,9 +4,9 @@ using UnitsNet;
 namespace VCRC;
 
 /// <summary>
-///     Heat emitter (condenser or gas cooler).
+///     Heat releaser (condenser or gas cooler).
 /// </summary>
-public interface IHeatEmitter
+public interface IHeatReleaser
 {
     /// <summary>
     ///     Selected refrigerant name.

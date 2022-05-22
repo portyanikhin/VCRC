@@ -17,19 +17,19 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
-    /// <param name="heatEmitter">Condenser or gas cooler.</param>
+    /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    public SimpleVCRC(Evaporator evaporator, Compressor compressor, IHeatEmitter heatEmitter) :
-        base(evaporator, compressor, heatEmitter)
+    public SimpleVCRC(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser) :
+        base(evaporator, compressor, heatReleaser)
     {
-        Point2s = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point2s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Entropy(Point1.Entropy));
-        Point2 = Refrigerant.WithState(Input.Pressure(HeatEmitter.Pressure),
+        Point2 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Enthalpy(Point1.Enthalpy + SpecificWork));
         Point4 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
             Input.Enthalpy(Point3.Enthalpy));
@@ -54,7 +54,7 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 3 – condenser or gas cooler outlet / EV inlet.
     /// </summary>
-    public Refrigerant Point3 => HeatEmitterOutlet;
+    public Refrigerant Point3 => HeatReleaserOutlet;
 
     /// <summary>
     ///     Point 4 – EV outlet / evaporator inlet.
@@ -80,7 +80,7 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
         var thermodynamicPerfection = Ratio
             .FromDecimalFractions(minSpecificWork / SpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLoss =
+        var heatReleaserEnergyLoss =
             Point2s.Enthalpy - Point3.Enthalpy -
             (hotSource.Kelvins * (Point2s.Entropy - Point3.Entropy).JoulesPerKilogramKelvin)
             .JoulesPerKilogram();
@@ -93,7 +93,7 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
               (Point1.Enthalpy - Point4.Enthalpy).JoulesPerKilogram / coldSource.Kelvins))
             .JoulesPerKilogram();
         var calculatedIsentropicSpecificWork =
-            minSpecificWork + heatEmitterEnergyLoss +
+            minSpecificWork + heatReleaserEnergyLoss +
             expansionValvesEnergyLoss + evaporatorEnergyLoss;
         var compressorEnergyLoss =
             calculatedIsentropicSpecificWork *
@@ -106,8 +106,8 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
         var compressorEnergyLossRatio = Ratio
             .FromDecimalFractions(compressorEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
-        var heatEmitterEnergyLossRatio = Ratio
-            .FromDecimalFractions(heatEmitterEnergyLoss / calculatedSpecificWork)
+        var heatReleaserEnergyLossRatio = Ratio
+            .FromDecimalFractions(heatReleaserEnergyLoss / calculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
         var expansionValvesEnergyLossRatio = Ratio
             .FromDecimalFractions(expansionValvesEnergyLoss / calculatedSpecificWork)
@@ -124,8 +124,8 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
             thermodynamicPerfection,
             minSpecificWorkRatio,
             compressorEnergyLossRatio,
-            HeatEmitter is Condenser ? heatEmitterEnergyLossRatio : Ratio.Zero,
-            HeatEmitter is GasCooler ? heatEmitterEnergyLossRatio : Ratio.Zero,
+            HeatReleaser is Condenser ? heatReleaserEnergyLossRatio : Ratio.Zero,
+            HeatReleaser is GasCooler ? heatReleaserEnergyLossRatio : Ratio.Zero,
             expansionValvesEnergyLossRatio,
             evaporatorEnergyLossRatio,
             Ratio.Zero,
