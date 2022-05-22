@@ -96,9 +96,10 @@ public class TestVCRCWithIncompleteIntercooling
     public void TestPoint4()
     {
         Cycle.Point4.Pressure.Should().Be(Cycle.GasCooler!.Pressure);
-        Cycle.Point4.Enthalpy.Should().Be(
-            Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+        Cycle.Point4.Enthalpy.KilojoulesPerKilogram.Should().BeApproximately(
+            (Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
+                Cycle.Compressor.IsentropicEfficiency.DecimalFractions)
+            .KilojoulesPerKilogram, Tolerance);
         Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
         Cycle.Point4.Phase.Should().Be(Phases.Supercritical);
     }
