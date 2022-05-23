@@ -78,7 +78,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
             Input.Entropy(Point4.Entropy));
         Point5 = Refrigerant.WithState(Input.Pressure(Condenser.Pressure),
             Input.Enthalpy(Point4.Enthalpy + SecondStageSpecificWork /
-                SecondStageSpecificMassFlow.DecimalFractions));
+                HeatReleaserSpecificMassFlow.DecimalFractions));
         Recuperator = new Recuperator(Point7.Temperature - Point2!.Temperature);
     }
 
@@ -175,35 +175,35 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// </summary>
     public Refrigerant Point12 { get; }
 
-    public sealed override Ratio SecondStageSpecificMassFlow =>
-        FirstStageSpecificMassFlow *
+    public sealed override Ratio HeatReleaserSpecificMassFlow =>
+        EvaporatorSpecificMassFlow *
         (1 + (Point8.Enthalpy - Point11.Enthalpy) / (Point10.Enthalpy - Point9.Enthalpy));
 
     protected sealed override SpecificEnergy FirstStageIsentropicSpecificWork =>
         Point3s.Enthalpy - Point2.Enthalpy;
 
     protected sealed override SpecificEnergy SecondStageIsentropicSpecificWork =>
-        SecondStageSpecificMassFlow.DecimalFractions * (Point5s.Enthalpy - Point4.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point5s.Enthalpy - Point4.Enthalpy);
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
         Point1.Enthalpy - Point12.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        SecondStageSpecificMassFlow.DecimalFractions * (Point5.Enthalpy - Point6.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point5.Enthalpy - Point6.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(this, indoor, outdoor,
-                new EvaporatorInfo(FirstStageSpecificMassFlow, Point12, Point1),
-                new HeatReleaserInfo(HeatReleaser, SecondStageSpecificMassFlow, Point5s, Point6),
-                new EVInfo(SecondStageSpecificMassFlow, Point6, Point7),
-                new EVInfo(SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point8, Point9),
-                new EVInfo(FirstStageSpecificMassFlow, Point11, Point12),
-                new RecuperatorInfo(FirstStageSpecificMassFlow, Point1, Point2,
-                    SecondStageSpecificMassFlow, Point7, Point8),
-                new EconomizerInfo(SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point9, Point10,
-                    FirstStageSpecificMassFlow, Point8, Point11),
-                new MixingInfo(Point4, FirstStageSpecificMassFlow, Point3,
-                    SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point10))
+                new EvaporatorInfo(EvaporatorSpecificMassFlow, Point12, Point1),
+                new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point5s, Point6),
+                new EVInfo(HeatReleaserSpecificMassFlow, Point6, Point7),
+                new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point8, Point9),
+                new EVInfo(EvaporatorSpecificMassFlow, Point11, Point12),
+                new RecuperatorInfo(EvaporatorSpecificMassFlow, Point1, Point2,
+                    HeatReleaserSpecificMassFlow, Point7, Point8),
+                new EconomizerInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point9, Point10,
+                    EvaporatorSpecificMassFlow, Point8, Point11),
+                new MixingInfo(Point4, EvaporatorSpecificMassFlow, Point3,
+                    HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point10))
             .Result;
 
     private void CalculateInjectionQuality()
@@ -215,15 +215,15 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
             Point2 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
                 Input.Enthalpy(
                     Point1.Enthalpy +
-                    SecondStageSpecificMassFlow / FirstStageSpecificMassFlow *
+                    HeatReleaserSpecificMassFlow / EvaporatorSpecificMassFlow *
                     (Point7.Enthalpy - Point8.Enthalpy)));
             Point3s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
                 Input.Entropy(Point2.Entropy));
             Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
                 Input.Enthalpy(Point2.Enthalpy + FirstStageSpecificWork));
             return (Point10.Enthalpy -
-                    (Point4.Enthalpy - FirstStageSpecificMassFlow /
-                        (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow) *
+                    (Point4.Enthalpy - EvaporatorSpecificMassFlow /
+                        (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow) *
                         (Point3.Enthalpy - Point4.Enthalpy)))
                 .JoulesPerKilogram;
         }

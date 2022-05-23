@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToPressure;
-using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.Units;
 
 namespace VCRC;
@@ -45,17 +43,6 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     /// </summary>
     public Pressure IntermediatePressure =>
         CalculateIntermediatePressure(Evaporator.Pressure, HeatReleaser.Pressure);
-
-    /// <summary>
-    ///     Specific ratio of the mass flow rate of the first compression stage.
-    /// </summary>
-    public Ratio FirstStageSpecificMassFlow { get; } = 100.Percent();
-
-    /// <summary>
-    ///     Specific ratio of the mass flow rate of the second compression stage.
-    /// </summary>
-    [SuppressMessage("ReSharper", "UnusedMemberInSuper.Global")]
-    public abstract Ratio SecondStageSpecificMassFlow { get; }
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         FirstStageIsentropicSpecificWork + SecondStageIsentropicSpecificWork;

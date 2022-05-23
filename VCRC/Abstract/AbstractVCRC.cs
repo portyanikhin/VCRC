@@ -1,6 +1,8 @@
-﻿using FluentValidation;
+﻿using System.Diagnostics.CodeAnalysis;
+using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
 
 namespace VCRC;
 
@@ -77,6 +79,17 @@ public abstract class AbstractVCRC
     ///     Point 1 – evaporator outlet.
     /// </summary>
     internal Refrigerant Point1 { get; }
+
+    /// <summary>
+    ///     Specific mass flow rate of the evaporator.
+    /// </summary>
+    public Ratio EvaporatorSpecificMassFlow { get; } = 100.Percent();
+
+    /// <summary>
+    ///     Specific mass flow rate of the condenser or gas cooler.
+    /// </summary>
+    [SuppressMessage("ReSharper", "UnusedMemberInSuper.Global")]
+    public abstract Ratio HeatReleaserSpecificMassFlow { get; }
 
     /// <summary>
     ///     Specific work of isentropic compression.

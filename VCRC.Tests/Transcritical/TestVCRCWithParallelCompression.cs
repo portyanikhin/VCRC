@@ -93,9 +93,10 @@ public class TestVCRCWithParallelCompression
     public void TestPoint4()
     {
         Cycle.Point4.Pressure.Should().Be(Cycle.GasCooler!.Pressure);
-        Cycle.Point4.Enthalpy.Should().Be(
-            Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+        Cycle.Point4.Enthalpy.KilojoulesPerKilogram.Should().BeApproximately(
+            (Cycle.Point3.Enthalpy + (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy) /
+                Cycle.Compressor.IsentropicEfficiency.DecimalFractions).KilojoulesPerKilogram,
+            Tolerance);
         Cycle.Point4.Enthalpy.Should().BeGreaterThan(Cycle.Point4s.Enthalpy);
         Cycle.Point4.Phase.Should().Be(Phases.Supercritical);
     }
@@ -105,9 +106,9 @@ public class TestVCRCWithParallelCompression
     {
         Cycle.Point5.Pressure.Should().Be(Cycle.GasCooler!.Pressure);
         Cycle.Point5.Enthalpy.Should().Be(
-            (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
-             Cycle.SecondStageSpecificMassFlow.DecimalFractions * Cycle.Point4.Enthalpy) /
-            (Cycle.FirstStageSpecificMassFlow + Cycle.SecondStageSpecificMassFlow).DecimalFractions);
+            (Cycle.EvaporatorSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
+             (Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow).DecimalFractions
+             * Cycle.Point4.Enthalpy) / Cycle.HeatReleaserSpecificMassFlow.DecimalFractions);
         Cycle.Point5.Phase.Should().Be(Phases.Supercritical);
     }
 
@@ -157,18 +158,18 @@ public class TestVCRCWithParallelCompression
     [Test]
     public void TestSpecificMassFlows()
     {
-        Cycle.FirstStageSpecificMassFlow.Should().Be(100.Percent());
-        Cycle.SecondStageSpecificMassFlow.Should().Be(
-            Cycle.FirstStageSpecificMassFlow *
-            Cycle.Point7.Quality!.Value.DecimalFractions
-            / (1 - Cycle.Point7.Quality!.Value.DecimalFractions));
+        Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
+        Cycle.HeatReleaserSpecificMassFlow.Should().Be(
+            Cycle.EvaporatorSpecificMassFlow *
+            (1 + Cycle.Point7.Quality!.Value.DecimalFractions /
+                (1 - Cycle.Point7.Quality!.Value.DecimalFractions)));
     }
 
     [Test]
     public void TestIsentropicSpecificWork() =>
         Cycle.IsentropicSpecificWork.Should().Be(
             Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy +
-            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            (Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow).DecimalFractions *
             (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy));
 
     [Test]
@@ -185,7 +186,7 @@ public class TestVCRCWithParallelCompression
     [Test]
     public void TestSpecificHeatingCapacity() =>
         Cycle.SpecificHeatingCapacity.Should().Be(
-            (Cycle.FirstStageSpecificMassFlow + Cycle.SecondStageSpecificMassFlow).DecimalFractions *
+            Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point5.Enthalpy - Cycle.Point6.Enthalpy));
 
     [Test]

@@ -147,9 +147,9 @@ public class TestVCRCWithCompleteIntercooling
     [Test]
     public void TestSpecificMassFlows()
     {
-        Cycle.FirstStageSpecificMassFlow.Should().Be(100.Percent());
-        Cycle.SecondStageSpecificMassFlow.Percent.Should().BeApproximately(
-            (Cycle.FirstStageSpecificMassFlow *
+        Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
+        Cycle.HeatReleaserSpecificMassFlow.Percent.Should().BeApproximately(
+            (Cycle.EvaporatorSpecificMassFlow *
              (1 + (Cycle.Point2.Enthalpy - Cycle.Point3.Enthalpy) /
                  (Cycle.Point3.Enthalpy - Cycle.Point7.Enthalpy)) /
              (1 - Cycle.Point6.Quality!.Value.DecimalFractions)).Percent,
@@ -160,7 +160,7 @@ public class TestVCRCWithCompleteIntercooling
     public void TestIsentropicSpecificWork() =>
         Cycle.IsentropicSpecificWork.Should().Be(
             Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy +
-            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy));
 
     [Test]
@@ -177,7 +177,7 @@ public class TestVCRCWithCompleteIntercooling
     [Test]
     public void TestSpecificHeatingCapacity() =>
         Cycle.SpecificHeatingCapacity.Should().Be(
-            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point4.Enthalpy - Cycle.Point5.Enthalpy));
 
     [Test]

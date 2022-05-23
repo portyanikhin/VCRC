@@ -60,6 +60,8 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     /// </summary>
     public Refrigerant Point4 { get; }
 
+    public sealed override Ratio HeatReleaserSpecificMassFlow { get; } = 100.Percent();
+
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy;
 
@@ -72,8 +74,8 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(
                 this, indoor, outdoor,
-                new EvaporatorInfo(100.Percent(), Point4, Point1),
-                new HeatReleaserInfo(HeatReleaser, 100.Percent(), Point2s, Point3),
-                new EVInfo(100.Percent(), Point3, Point4))
+                new EvaporatorInfo(EvaporatorSpecificMassFlow, Point4, Point1),
+                new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point2s, Point3),
+                new EVInfo(HeatReleaserSpecificMassFlow, Point3, Point4))
             .Result;
 }

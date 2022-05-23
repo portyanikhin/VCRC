@@ -45,7 +45,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
             Input.Enthalpy(Point7.Enthalpy));
         Point4 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
-                SecondStageSpecificMassFlow.DecimalFractions));
+                HeatReleaserSpecificMassFlow.DecimalFractions));
     }
 
     /// <summary>
@@ -101,33 +101,33 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
     public Refrigerant Point8 { get; }
 
     private Ratio BarbotageSpecificMassFlow =>
-        FirstStageSpecificMassFlow *
+        EvaporatorSpecificMassFlow *
         ((Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point7.Enthalpy));
 
-    public sealed override Ratio SecondStageSpecificMassFlow =>
-        (FirstStageSpecificMassFlow + BarbotageSpecificMassFlow) /
+    public sealed override Ratio HeatReleaserSpecificMassFlow =>
+        (EvaporatorSpecificMassFlow + BarbotageSpecificMassFlow) /
         (1 - Point6.Quality!.Value.DecimalFractions);
 
     protected sealed override SpecificEnergy FirstStageIsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy;
 
     protected sealed override SpecificEnergy SecondStageIsentropicSpecificWork =>
-        SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
         Point1.Enthalpy - Point8.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(
                 this, indoor, outdoor,
-                new EvaporatorInfo(FirstStageSpecificMassFlow, Point8, Point1),
-                new HeatReleaserInfo(HeatReleaser, SecondStageSpecificMassFlow, Point4s, Point5),
-                new EVInfo(SecondStageSpecificMassFlow, Point5, Point6),
-                new EVInfo(FirstStageSpecificMassFlow, Point7, Point8), null, null, null,
-                new MixingInfo(Point3, FirstStageSpecificMassFlow, Point2,
+                new EvaporatorInfo(EvaporatorSpecificMassFlow, Point8, Point1),
+                new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point4s, Point5),
+                new EVInfo(HeatReleaserSpecificMassFlow, Point5, Point6),
+                new EVInfo(EvaporatorSpecificMassFlow, Point7, Point8), null, null, null,
+                new MixingInfo(Point3, EvaporatorSpecificMassFlow, Point2,
                     BarbotageSpecificMassFlow, Point7))
             .Result;
 }

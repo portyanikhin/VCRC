@@ -54,7 +54,7 @@ public class TestVCRCMitsubishiZubadan
         Cycle.Point2.Pressure.Should().Be(Cycle.Evaporator.Pressure);
         Cycle.Point2.Enthalpy.Should().Be(
             Cycle.Point1.Enthalpy +
-            Cycle.SecondStageSpecificMassFlow / Cycle.FirstStageSpecificMassFlow *
+            Cycle.HeatReleaserSpecificMassFlow / Cycle.EvaporatorSpecificMassFlow *
             (Cycle.Point7.Enthalpy - Cycle.Point8.Enthalpy));
         Cycle.Point2.Phase.Should().Be(Phases.Gas);
     }
@@ -146,8 +146,8 @@ public class TestVCRCMitsubishiZubadan
     {
         Cycle.Point10.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point10.Enthalpy.JoulesPerKilogram.Should().BeApproximately(
-            (Cycle.Point4.Enthalpy - Cycle.FirstStageSpecificMassFlow /
-                (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow) *
+            (Cycle.Point4.Enthalpy - Cycle.EvaporatorSpecificMassFlow /
+                (Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow) *
                 (Cycle.Point3.Enthalpy - Cycle.Point4.Enthalpy)).JoulesPerKilogram, 10);
         Cycle.Point10.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -157,8 +157,8 @@ public class TestVCRCMitsubishiZubadan
     {
         Cycle.Point11.Pressure.Should().Be(Cycle.Point8.Pressure);
         Cycle.Point11.Enthalpy.Should().Be(
-            Cycle.Point8.Enthalpy - (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow) /
-            Cycle.FirstStageSpecificMassFlow * (Cycle.Point10.Enthalpy - Cycle.Point9.Enthalpy));
+            Cycle.Point8.Enthalpy - (Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow) /
+            Cycle.EvaporatorSpecificMassFlow * (Cycle.Point10.Enthalpy - Cycle.Point9.Enthalpy));
         Cycle.Point11.Temperature.Kelvins.Should()
             .BeApproximately((Cycle.Point9.Temperature + Cycle.Economizer.TemperatureDifference).Kelvins, 1e-3);
         Cycle.Point11.Phase.Should().Be(Phases.Liquid);
@@ -191,9 +191,9 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestSpecificMassFlows()
     {
-        Cycle.FirstStageSpecificMassFlow.Should().Be(100.Percent());
-        Cycle.SecondStageSpecificMassFlow.Percent.Should().BeApproximately(
-            (Cycle.FirstStageSpecificMassFlow * (1 + (Cycle.Point3.Enthalpy - Cycle.Point4.Enthalpy) /
+        Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
+        Cycle.HeatReleaserSpecificMassFlow.Percent.Should().BeApproximately(
+            (Cycle.EvaporatorSpecificMassFlow * (1 + (Cycle.Point3.Enthalpy - Cycle.Point4.Enthalpy) /
                 (Cycle.Point4.Enthalpy - Cycle.Point10.Enthalpy))).Percent, 1e-3);
     }
 
@@ -201,7 +201,7 @@ public class TestVCRCMitsubishiZubadan
     public void TestIsentropicSpecificWork() =>
         Cycle.IsentropicSpecificWork.Should().Be(
             Cycle.Point3s.Enthalpy - Cycle.Point2.Enthalpy +
-            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point5s.Enthalpy - Cycle.Point4.Enthalpy));
 
     [Test]
@@ -218,7 +218,7 @@ public class TestVCRCMitsubishiZubadan
     [Test]
     public void TestSpecificHeatingCapacity() =>
         Cycle.SpecificHeatingCapacity.Should().Be(
-            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point5.Enthalpy - Cycle.Point6.Enthalpy));
 
     [Test]

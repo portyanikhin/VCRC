@@ -53,14 +53,14 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
             Input.Enthalpy(Point8.Enthalpy));
         Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
             Input.Enthalpy(
-                (FirstStageSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
-                 (SecondStageSpecificMassFlow - FirstStageSpecificMassFlow).DecimalFractions *
-                 Point7.Enthalpy) / SecondStageSpecificMassFlow.DecimalFractions));
+                (EvaporatorSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
+                 (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow).DecimalFractions *
+                 Point7.Enthalpy) / HeatReleaserSpecificMassFlow.DecimalFractions));
         Point4s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Entropy(Point3.Entropy));
         Point4 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
             Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
-                SecondStageSpecificMassFlow.DecimalFractions));
+                HeatReleaserSpecificMassFlow.DecimalFractions));
     }
 
     /// <summary>
@@ -125,32 +125,32 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
     /// </summary>
     public Refrigerant Point9 { get; }
 
-    public sealed override Ratio SecondStageSpecificMassFlow =>
-        FirstStageSpecificMassFlow *
+    public sealed override Ratio HeatReleaserSpecificMassFlow =>
+        EvaporatorSpecificMassFlow *
         (1 + (Point5.Enthalpy - Point8.Enthalpy) / (Point7.Enthalpy - Point6.Enthalpy));
 
     protected sealed override SpecificEnergy FirstStageIsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy;
 
     protected sealed override SpecificEnergy SecondStageIsentropicSpecificWork =>
-        SecondStageSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
         Point1.Enthalpy - Point9.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        SecondStageSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(
                 this, indoor, outdoor,
-                new EvaporatorInfo(FirstStageSpecificMassFlow, Point9, Point1),
-                new HeatReleaserInfo(HeatReleaser, SecondStageSpecificMassFlow, Point4s, Point5),
-                new EVInfo(SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point5, Point6),
-                new EVInfo(FirstStageSpecificMassFlow, Point8, Point9), null, null,
-                new EconomizerInfo(SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point6, Point7,
-                    FirstStageSpecificMassFlow, Point5, Point8),
-                new MixingInfo(Point3, FirstStageSpecificMassFlow, Point2,
-                    SecondStageSpecificMassFlow - FirstStageSpecificMassFlow, Point7))
+                new EvaporatorInfo(EvaporatorSpecificMassFlow, Point9, Point1),
+                new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point4s, Point5),
+                new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point5, Point6),
+                new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null,
+                new EconomizerInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point6, Point7,
+                    EvaporatorSpecificMassFlow, Point5, Point8),
+                new MixingInfo(Point3, EvaporatorSpecificMassFlow, Point2,
+                    HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point7))
             .Result;
 }

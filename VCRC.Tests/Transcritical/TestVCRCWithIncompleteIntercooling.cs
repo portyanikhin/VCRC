@@ -77,9 +77,9 @@ public class TestVCRCWithIncompleteIntercooling
     {
         Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point3.Enthalpy.Should().Be(
-            (Cycle.FirstStageSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
-             (Cycle.SecondStageSpecificMassFlow - Cycle.FirstStageSpecificMassFlow).DecimalFractions *
-             Cycle.Point7.Enthalpy) / Cycle.SecondStageSpecificMassFlow.DecimalFractions);
+            (Cycle.EvaporatorSpecificMassFlow.DecimalFractions * Cycle.Point2.Enthalpy +
+             (Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow).DecimalFractions *
+             Cycle.Point7.Enthalpy) / Cycle.HeatReleaserSpecificMassFlow.DecimalFractions);
         Cycle.Point3.Phase.Should().Be(Phases.SupercriticalGas);
     }
 
@@ -158,16 +158,16 @@ public class TestVCRCWithIncompleteIntercooling
     [Test]
     public void TestSpecificMassFlows()
     {
-        Cycle.FirstStageSpecificMassFlow.Should().Be(100.Percent());
-        Cycle.SecondStageSpecificMassFlow.Should().Be(
-            Cycle.FirstStageSpecificMassFlow / (1 - Cycle.Point6.Quality!.Value.DecimalFractions));
+        Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
+        Cycle.HeatReleaserSpecificMassFlow.Should().Be(
+            Cycle.EvaporatorSpecificMassFlow / (1 - Cycle.Point6.Quality!.Value.DecimalFractions));
     }
 
     [Test]
     public void TestIsentropicSpecificWork() =>
         Cycle.IsentropicSpecificWork.Should().Be(
             Cycle.Point2s.Enthalpy - Cycle.Point1.Enthalpy +
-            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point4s.Enthalpy - Cycle.Point3.Enthalpy));
 
     [Test]
@@ -184,7 +184,7 @@ public class TestVCRCWithIncompleteIntercooling
     [Test]
     public void TestSpecificHeatingCapacity() =>
         Cycle.SpecificHeatingCapacity.Should().Be(
-            Cycle.SecondStageSpecificMassFlow.DecimalFractions *
+            Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point4.Enthalpy - Cycle.Point5.Enthalpy));
 
     [Test]
