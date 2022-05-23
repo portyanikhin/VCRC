@@ -13,7 +13,8 @@ namespace VCRC;
 ///     Mitsubishi Zubadan VCRC (subcritical only).
 /// </summary>
 /// <remarks>
-///     Two-stage VCRC with economizer, recuperator and two-phase injection to the compressor.
+///     Two-stage subcritical VCRC with
+///     economizer, recuperator and two-phase injection to the compressor.
 /// </remarks>
 public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
 {
@@ -21,7 +22,8 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Mitsubishi Zubadan VCRC (subcritical only).
     /// </summary>
     /// <remarks>
-    ///     Two-stage VCRC with economizer, recuperator and two-phase injection to the compressor.
+    ///     Two-stage subcritical VCRC with
+    ///     economizer, recuperator and two-phase injection to the compressor.
     /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
@@ -134,12 +136,12 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     public Refrigerant Point5s { get; }
 
     /// <summary>
-    ///     Point 5 – second compression stage discharge / condenser or gas cooler inlet.
+    ///     Point 5 – second compression stage discharge / condenser inlet.
     /// </summary>
     public Refrigerant Point5 { get; }
 
     /// <summary>
-    ///     Point 6 – condenser or gas cooler outlet / first EV inlet.
+    ///     Point 6 – condenser outlet / first EV inlet.
     /// </summary>
     public Refrigerant Point6 => HeatReleaserOutlet;
 
