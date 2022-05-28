@@ -12,7 +12,7 @@ public record Ejector
     /// <summary>
     ///     Ejector as a VCRC component.
     /// </summary>
-    /// <param name="isentropicEfficiency">
+    /// <param name="efficiency">
     ///     Isentropic efficiency of the nozzle, suction section and diffuser.
     /// </param>
     /// <exception cref="ValidationException">
@@ -24,17 +24,16 @@ public record Ejector
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the diffuser should be in (0;100) %!
     /// </exception>
-    public Ejector(Ratio isentropicEfficiency) :
-        this(isentropicEfficiency, isentropicEfficiency, isentropicEfficiency)
+    public Ejector(Ratio efficiency) : this(efficiency, efficiency, efficiency)
     {
     }
 
     /// <summary>
     ///     Ejector as a VCRC component.
     /// </summary>
-    /// <param name="nozzleIsentropicEfficiency">Isentropic efficiency of the nozzle.</param>
-    /// <param name="suctionIsentropicEfficiency">Isentropic efficiency of the suction section.</param>
-    /// <param name="diffuserIsentropicEfficiency">Isentropic efficiency of the diffuser.</param>
+    /// <param name="nozzleEfficiency">Isentropic efficiency of the nozzle.</param>
+    /// <param name="suctionEfficiency">Isentropic efficiency of the suction section.</param>
+    /// <param name="diffuserEfficiency">Isentropic efficiency of the diffuser.</param>
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the nozzle should be in (0;100) %!
     /// </exception>
@@ -44,30 +43,27 @@ public record Ejector
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the diffuser should be in (0;100) %!
     /// </exception>
-    public Ejector(Ratio nozzleIsentropicEfficiency, Ratio suctionIsentropicEfficiency,
-        Ratio diffuserIsentropicEfficiency)
+    public Ejector(Ratio nozzleEfficiency, Ratio suctionEfficiency, Ratio diffuserEfficiency)
     {
-        (NozzleIsentropicEfficiency,
-                SuctionIsentropicEfficiency,
-                DiffuserIsentropicEfficiency) =
-            (nozzleIsentropicEfficiency.ToUnit(RatioUnit.Percent),
-                suctionIsentropicEfficiency.ToUnit(RatioUnit.Percent),
-                diffuserIsentropicEfficiency.ToUnit(RatioUnit.Percent));
+        (NozzleEfficiency, SuctionEfficiency, DiffuserEfficiency) =
+            (nozzleEfficiency.ToUnit(RatioUnit.Percent),
+                suctionEfficiency.ToUnit(RatioUnit.Percent),
+                diffuserEfficiency.ToUnit(RatioUnit.Percent));
         new EjectorValidator().ValidateAndThrow(this);
     }
 
     /// <summary>
     ///     Isentropic efficiency of the nozzle.
     /// </summary>
-    public Ratio NozzleIsentropicEfficiency { get; }
+    public Ratio NozzleEfficiency { get; }
 
     /// <summary>
     ///     Isentropic efficiency of the suction section.
     /// </summary>
-    public Ratio SuctionIsentropicEfficiency { get; }
+    public Ratio SuctionEfficiency { get; }
 
     /// <summary>
     ///     Isentropic efficiency of the diffuser.
     /// </summary>
-    public Ratio DiffuserIsentropicEfficiency { get; }
+    public Ratio DiffuserEfficiency { get; }
 }

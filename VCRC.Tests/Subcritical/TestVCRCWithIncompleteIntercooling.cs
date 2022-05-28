@@ -67,7 +67,7 @@ public static class TestVCRCWithIncompleteIntercooling
     {
         Cycle.Point2.Should().Be(
             Cycle.Point1.CompressionTo(Cycle.IntermediatePressure,
-                Compressor.IsentropicEfficiency));
+                Compressor.Efficiency));
         Cycle.Point2.Phase.Should().Be(Phases.Gas);
     }
 
@@ -94,7 +94,7 @@ public static class TestVCRCWithIncompleteIntercooling
     {
         Cycle.Point4.Should().Be(
             Cycle.Point3.CompressionTo(Condenser.Pressure,
-                Compressor.IsentropicEfficiency));
+                Compressor.Efficiency));
         Cycle.Point4.Phase.Should().Be(Phases.SupercriticalGas);
     }
 
@@ -171,7 +171,7 @@ public static class TestVCRCWithIncompleteIntercooling
     public static void TestSpecificWork() =>
         Cycle.SpecificWork.Should().Be(
             Cycle.IsentropicSpecificWork /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+            Cycle.Compressor.Efficiency.DecimalFractions);
 
     [Test]
     public static void TestSpecificCoolingCapacity() =>

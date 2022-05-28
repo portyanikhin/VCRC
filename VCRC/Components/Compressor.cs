@@ -12,18 +12,18 @@ public record Compressor
     /// <summary>
     ///     Compressor as a VCRC component.
     /// </summary>
-    /// <param name="isentropicEfficiency">Isentropic efficiency of the compressor.</param>
+    /// <param name="efficiency">Isentropic efficiency of the compressor.</param>
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the compressor should be in (0;100) %!
     /// </exception>
-    public Compressor(Ratio isentropicEfficiency)
+    public Compressor(Ratio efficiency)
     {
-        IsentropicEfficiency = isentropicEfficiency.ToUnit(RatioUnit.Percent);
+        Efficiency = efficiency.ToUnit(RatioUnit.Percent);
         new CompressorValidator().ValidateAndThrow(this);
     }
 
     /// <summary>
     ///     Isentropic efficiency of the compressor.
     /// </summary>
-    public Ratio IsentropicEfficiency { get; }
+    public Ratio Efficiency { get; }
 }

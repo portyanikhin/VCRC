@@ -77,7 +77,7 @@ public static class TestVCRCMitsubishiZubadan
     {
         Cycle.Point3.Should().Be(
             Cycle.Point2.CompressionTo(Cycle.IntermediatePressure,
-                Compressor.IsentropicEfficiency));
+                Compressor.Efficiency));
         Cycle.Point3.Phase.Should().Be(Phases.Gas);
     }
 
@@ -103,7 +103,7 @@ public static class TestVCRCMitsubishiZubadan
     {
         Cycle.Point5.Should().Be(
             Cycle.Point4.CompressionTo(Condenser.Pressure,
-                Compressor.IsentropicEfficiency));
+                Compressor.Efficiency));
         Cycle.Point5.Phase.Should().Be(Phases.Gas);
     }
 
@@ -207,7 +207,7 @@ public static class TestVCRCMitsubishiZubadan
     public static void TestSpecificWork() =>
         Cycle.SpecificWork.Should().Be(
             Cycle.IsentropicSpecificWork /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+            Cycle.Compressor.Efficiency.DecimalFractions);
 
     [Test]
     public static void TestSpecificCoolingCapacity() =>

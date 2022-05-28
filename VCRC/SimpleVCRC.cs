@@ -26,7 +26,7 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
         base(evaporator, compressor, heatReleaser)
     {
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point4 = Point3.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 

@@ -68,7 +68,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
         CalculateInjectionQuality(); // Also calculates Point2, Point3 and Point10
         new VCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
         Point5s = Point4.IsentropicCompressionTo(Condenser.Pressure);
-        Point5 = Point4.CompressionTo(Condenser.Pressure, Compressor.IsentropicEfficiency);
+        Point5 = Point4.CompressionTo(Condenser.Pressure, Compressor.Efficiency);
         Recuperator = new Recuperator(Point7.Temperature - Point2!.Temperature);
     }
 
@@ -205,7 +205,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
                 HeatReleaserSpecificMassFlow / EvaporatorSpecificMassFlow *
                 (Point7.Enthalpy - Point8.Enthalpy));
             Point3s = Point2.IsentropicCompressionTo(IntermediatePressure);
-            Point3 = Point2.CompressionTo(IntermediatePressure, Compressor.IsentropicEfficiency);
+            Point3 = Point2.CompressionTo(IntermediatePressure, Compressor.Efficiency);
             return (Point10.Enthalpy -
                     (Point4.Enthalpy - EvaporatorSpecificMassFlow /
                         (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow) *

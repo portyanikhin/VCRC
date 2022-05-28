@@ -82,7 +82,7 @@ public abstract class AbstractVCRC
     ///     Specific work of real compression.
     /// </summary>
     public SpecificEnergy SpecificWork =>
-        IsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
+        IsentropicSpecificWork / Compressor.Efficiency.DecimalFractions;
 
     /// <summary>
     ///     Specific cooling capacity of the cycle.

@@ -33,7 +33,7 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
         new VCRCWithRecuperatorValidator().ValidateAndThrow(this);
         Point2 = Point1.HeatingTo(Point4.Temperature - Recuperator.TemperatureDifference);
         Point3s = Point2.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point3 = Point2.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point3 = Point2.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point5 = Point4.CoolingTo(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy));
         Point6 = Point5.IsenthalpicExpansionTo(Evaporator.Pressure);
     }

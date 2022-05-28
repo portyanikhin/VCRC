@@ -29,13 +29,13 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
     {
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
         Point2s = Point1.IsentropicCompressionTo(IntermediatePressure);
-        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.IsentropicEfficiency);
+        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.Efficiency);
         Point3 = Refrigerant.DewPointAt(IntermediatePressure);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
         Point7 = Refrigerant.BubblePointAt(IntermediatePressure);
         Point8 = Point7.IsenthalpicExpansionTo(Evaporator.Pressure);
-        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
     }
 
     /// <summary>

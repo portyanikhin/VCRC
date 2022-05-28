@@ -63,7 +63,7 @@ public static class TestSimpleVCRC
     {
         Cycle.Point2.Should().Be(
             Cycle.Point1.CompressionTo(GasCooler.Pressure,
-                Compressor.IsentropicEfficiency));
+                Compressor.Efficiency));
         Cycle.Point2.Phase.Should().Be(Phases.Supercritical);
     }
 
@@ -104,7 +104,7 @@ public static class TestSimpleVCRC
     public static void TestSpecificWork() =>
         Cycle.SpecificWork.Should().Be(
             Cycle.IsentropicSpecificWork /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
+            Cycle.Compressor.Efficiency.DecimalFractions);
 
     [Test]
     public static void TestSpecificCoolingCapacity() =>

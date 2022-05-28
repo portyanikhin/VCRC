@@ -85,7 +85,7 @@ internal class EntropyAnalyzer
 
     private SpecificEnergy CompressorEnergyLoss =>
         CalculatedIsentropicSpecificWork *
-        (1.0 / Cycle.Compressor.IsentropicEfficiency.DecimalFractions - 1);
+        (1.0 / Cycle.Compressor.Efficiency.DecimalFractions - 1);
 
     private SpecificEnergy CalculatedSpecificWork =>
         CalculatedIsentropicSpecificWork + CompressorEnergyLoss;

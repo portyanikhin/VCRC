@@ -33,7 +33,7 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
     {
         Economizer = economizer;
         Point2s = Point1.IsentropicCompressionTo(IntermediatePressure);
-        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.IsentropicEfficiency);
+        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.Efficiency);
         Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
         Point7 = Economizer.Superheat == TemperatureDelta.Zero
             ? Refrigerant.DewPointAt(IntermediatePressure)
@@ -46,7 +46,7 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
         Point3 = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2,
             HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point7);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
     }
 
     /// <summary>

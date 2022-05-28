@@ -29,11 +29,11 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
     {
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point3 = Refrigerant.DewPointAt(IntermediatePressure);
         Point7 = Point6.IsenthalpicExpansionTo(IntermediatePressure);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point5s = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2s,
             HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point4s);
         Point5 = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2,

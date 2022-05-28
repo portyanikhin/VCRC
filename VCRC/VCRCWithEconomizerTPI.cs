@@ -37,7 +37,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     {
         Economizer = economizer;
         Point2s = Point1.IsentropicCompressionTo(IntermediatePressure);
-        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.IsentropicEfficiency);
+        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.Efficiency);
         Point3 = Refrigerant.DewPointAt(IntermediatePressure);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
@@ -55,7 +55,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
             .JoulesPerKilogram());
         validator.ValidateAndThrow(this);
         Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
-        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
     }
 
     /// <summary>
