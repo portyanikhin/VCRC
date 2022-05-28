@@ -92,7 +92,8 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
 
     private Ratio BarbotageSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
-        ((Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point7.Enthalpy));
+        ((Point2.Enthalpy - Point3.Enthalpy) /
+         (Point3.Enthalpy - Point7.Enthalpy));
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         (EvaporatorSpecificMassFlow + BarbotageSpecificMassFlow) /
@@ -107,7 +108,8 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
         Point1.Enthalpy - Point8.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions *
+        (Point4.Enthalpy - Point5.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(

@@ -119,7 +119,8 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
         Point1.Enthalpy - Point9.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        HeatReleaserSpecificMassFlow.DecimalFractions * (Point5.Enthalpy - Point6.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions *
+        (Point5.Enthalpy - Point6.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(

@@ -167,7 +167,8 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
-        (1 + (Point8.Enthalpy - Point11.Enthalpy) / (Point10.Enthalpy - Point9.Enthalpy));
+        (1 + (Point8.Enthalpy - Point11.Enthalpy) /
+            (Point10.Enthalpy - Point9.Enthalpy));
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         Point3s.Enthalpy - Point2.Enthalpy +
@@ -178,7 +179,8 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
         Point1.Enthalpy - Point12.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        HeatReleaserSpecificMassFlow.DecimalFractions * (Point5.Enthalpy - Point6.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions *
+        (Point5.Enthalpy - Point6.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(this, indoor, outdoor,

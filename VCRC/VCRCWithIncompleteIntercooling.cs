@@ -98,7 +98,8 @@ public class VCRCWithIncompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnal
     public Refrigerant Point9 { get; }
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
-        EvaporatorSpecificMassFlow / (1 - Point6.Quality!.Value.DecimalFractions);
+        EvaporatorSpecificMassFlow /
+        (1 - Point6.Quality!.Value.DecimalFractions);
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy +
@@ -109,7 +110,8 @@ public class VCRCWithIncompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnal
         Point1.Enthalpy - Point9.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions *
+        (Point4.Enthalpy - Point5.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(

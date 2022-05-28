@@ -113,7 +113,8 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
-        (1 + (Point5.Enthalpy - Point8.Enthalpy) / (Point7.Enthalpy - Point6.Enthalpy));
+        (1 + (Point5.Enthalpy - Point8.Enthalpy) /
+            (Point7.Enthalpy - Point6.Enthalpy));
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy +
@@ -124,7 +125,8 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
         Point1.Enthalpy - Point9.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4.Enthalpy - Point5.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions *
+        (Point4.Enthalpy - Point5.Enthalpy);
 
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(
