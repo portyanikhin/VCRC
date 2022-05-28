@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
-using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 
@@ -31,23 +30,11 @@ public abstract class AbstractVCRC
         (Condenser, GasCooler) =
             (HeatReleaser as Condenser, HeatReleaser as GasCooler);
         Refrigerant = new Refrigerant(Evaporator.RefrigerantName);
-        HeatReleaserOutlet = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            HeatReleaser is Condenser condenser
-                ? condenser.Subcooling == TemperatureDelta.Zero
-                    ? Input.Quality(TwoPhase.Bubble.VaporQuality())
-                    : Input.Temperature(condenser.Temperature - condenser.Subcooling)
-                : Input.Temperature(HeatReleaser.Temperature));
-        Point1 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Evaporator.Superheat == TemperatureDelta.Zero
-                ? Input.Quality(TwoPhase.Dew.VaporQuality())
-                : Input.Temperature(Evaporator.Temperature + Evaporator.Superheat));
     }
 
     internal IHeatReleaser HeatReleaser { get; }
 
     protected Refrigerant Refrigerant { get; }
-
-    protected Refrigerant HeatReleaserOutlet { get; }
 
     /// <summary>
     ///     Evaporator as a VCRC component.
@@ -74,11 +61,6 @@ public abstract class AbstractVCRC
     ///     <c>false</c> if subcritical VCRC.
     /// </summary>
     public bool IsTranscritical => GasCooler is not null;
-
-    /// <summary>
-    ///     Point 1 – evaporator outlet.
-    /// </summary>
-    internal Refrigerant Point1 { get; }
 
     /// <summary>
     ///     Specific mass flow rate of the evaporator.

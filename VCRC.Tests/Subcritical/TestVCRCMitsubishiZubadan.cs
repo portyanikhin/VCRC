@@ -9,140 +9,141 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Subcritical;
 
-public class TestVCRCMitsubishiZubadan
+public static class TestVCRCMitsubishiZubadan
 {
     private const double Tolerance = 1e-10;
-    private VCRCMitsubishiZubadan Cycle { get; set; } = null!;
-    private EntropyAnalysisResult AnalysisResult { get; set; } = null!;
 
-    [OneTimeSetUp]
-    public void SetUp()
-    {
-        var evaporator = new Evaporator(FluidsList.R32, 5.DegreesCelsius(),
-            TemperatureDelta.FromKelvins(8));
-        var compressor = new Compressor(80.Percent());
-        var condenser = new Condenser(FluidsList.R32, 45.DegreesCelsius(),
-            TemperatureDelta.FromKelvins(3));
-        var economizer = new EconomizerTPI(TemperatureDelta.FromKelvins(5));
-        Cycle = new VCRCMitsubishiZubadan(evaporator, compressor, condenser, economizer);
-        AnalysisResult = Cycle.EntropyAnalysis(
-            18.DegreesCelsius(), 35.DegreesCelsius());
-    }
+    private static readonly Refrigerant Refrigerant = new(FluidsList.R32);
+
+    private static readonly Evaporator Evaporator =
+        new(Refrigerant.Name, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
+
+    private static readonly Compressor Compressor = new(80.Percent());
+
+    private static readonly Condenser Condenser =
+        new(Refrigerant.Name, 45.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+
+    private static readonly EconomizerTPI Economizer = new(TemperatureDelta.FromKelvins(5));
+
+    private static readonly VCRCMitsubishiZubadan Cycle =
+        new(Evaporator, Compressor, Condenser, Economizer);
+
+    private static readonly EntropyAnalysisResult AnalysisResult =
+        Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
 
     [Test]
-    public void TestSolutionNotFound()
+    public static void TestSolutionNotFound()
     {
         Action action = () =>
             _ = new VCRCMitsubishiZubadan(
-                Cycle.Evaporator, Cycle.Compressor, Cycle.Condenser,
-                new EconomizerTPI(TemperatureDelta.FromKelvins(49)));
+                Evaporator, Compressor,
+                new Condenser(Refrigerant.Name, Condenser.Temperature,
+                    TemperatureDelta.FromKelvins(50)),
+                Economizer);
         action.Should().Throw<ArgumentException>().WithMessage("Solution not found!");
     }
 
     [Test]
-    public void TestPoint1()
+    public static void TestPoint1()
     {
-        Cycle.Point1.Pressure.Should().Be(Cycle.Evaporator.Pressure);
-        Cycle.Point1.Temperature.Should().Be(
-            Cycle.Evaporator.Temperature + Cycle.Evaporator.Superheat);
+        Cycle.Point1.Should().Be(
+            Refrigerant.DewPointAt(Evaporator.Temperature)
+                .HeatingTo(Evaporator.Temperature + Evaporator.Superheat));
         Cycle.Point1.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
-    public void TestPoint2()
+    public static void TestPoint2()
     {
-        Cycle.Point2.Pressure.Should().Be(Cycle.Evaporator.Pressure);
-        Cycle.Point2.Enthalpy.Should().Be(
-            Cycle.Point1.Enthalpy +
-            Cycle.HeatReleaserSpecificMassFlow / Cycle.EvaporatorSpecificMassFlow *
-            (Cycle.Point7.Enthalpy - Cycle.Point8.Enthalpy));
+        Cycle.Point2.Should().Be(
+            Cycle.Point1.HeatingTo(
+                Cycle.Point1.Enthalpy +
+                Cycle.HeatReleaserSpecificMassFlow / Cycle.EvaporatorSpecificMassFlow *
+                (Cycle.Point7.Enthalpy - Cycle.Point8.Enthalpy)));
         Cycle.Point2.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public void TestPoint3s()
+    public static void TestPoint3s()
     {
-        Cycle.Point3s.Pressure.Should().Be(Cycle.IntermediatePressure);
-        Cycle.Point3s.Entropy.Should().Be(Cycle.Point2.Entropy);
+        Cycle.Point3s.Should().Be(
+            Cycle.Point2.IsentropicCompressionTo(Cycle.IntermediatePressure));
         Cycle.Point3s.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
-    public void TestPoint3()
+    public static void TestPoint3()
     {
-        Cycle.Point3.Pressure.Should().Be(Cycle.IntermediatePressure);
-        Cycle.Point3.Enthalpy.JoulesPerKilogram.Should().BeApproximately(
-            (Cycle.Point2.Enthalpy + (Cycle.Point3s.Enthalpy - Cycle.Point2.Enthalpy) /
-                Cycle.Compressor.IsentropicEfficiency.DecimalFractions).JoulesPerKilogram, Tolerance);
+        Cycle.Point3.Should().Be(
+            Cycle.Point2.CompressionTo(Cycle.IntermediatePressure,
+                Compressor.IsentropicEfficiency));
         Cycle.Point3.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
-    public void TestPoint4()
+    public static void TestPoint4()
     {
-        Cycle.Point4.Pressure.Should().Be(Cycle.IntermediatePressure);
-        Cycle.Point4.Quality.Should().Be(TwoPhase.Dew.VaporQuality());
+        Cycle.Point4.Should().Be(
+            Refrigerant.DewPointAt(Cycle.IntermediatePressure));
         Cycle.Point4.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public void TestPoint5s()
+    public static void TestPoint5s()
     {
-        Cycle.Point5s.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point5s.Entropy.Should().Be(Cycle.Point4.Entropy);
+        Cycle.Point5s.Should().Be(
+            Cycle.Point4.IsentropicCompressionTo(Condenser.Pressure));
         Cycle.Point5s.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
-    public void TestPoint5()
+    public static void TestPoint5()
     {
-        Cycle.Point5.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point5.Enthalpy.Should().Be(
-            Cycle.Point4.Enthalpy + (Cycle.Point5s.Enthalpy - Cycle.Point4.Enthalpy) /
-            Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
-        Cycle.Point5.Enthalpy.Should().BeGreaterThan(Cycle.Point5s.Enthalpy);
+        Cycle.Point5.Should().Be(
+            Cycle.Point4.CompressionTo(Condenser.Pressure,
+                Compressor.IsentropicEfficiency));
         Cycle.Point5.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]
-    public void TestPoint6()
+    public static void TestPoint6()
     {
-        Cycle.Point6.Pressure.Should().Be(Cycle.Condenser.Pressure);
-        Cycle.Point6.Temperature.Should().Be(
-            Cycle.Condenser.Temperature - Cycle.Condenser.Subcooling);
+        Cycle.Point6.Should().Be(
+            Refrigerant.BubblePointAt(Condenser.Temperature)
+                .CoolingTo(Condenser.Temperature - Condenser.Subcooling));
         Cycle.Point6.Phase.Should().Be(Phases.Liquid);
     }
 
     [Test]
-    public void TestPoint7()
+    public static void TestPoint7()
     {
-        Cycle.Point7.Pressure.Should().Be(Cycle.RecuperatorHighPressure);
+        Cycle.Point7.Should().Be(
+            Cycle.Point6.IsenthalpicExpansionTo(Cycle.RecuperatorHighPressure));
         Cycle.RecuperatorHighPressure.Should().BeGreaterThan(Cycle.IntermediatePressure);
-        Cycle.RecuperatorHighPressure.Should().BeLessThan(Cycle.Condenser.Pressure);
-        Cycle.Point7.Enthalpy.Should().Be(Cycle.Point6.Enthalpy);
+        Cycle.RecuperatorHighPressure.Should().BeLessThan(Condenser.Pressure);
         Cycle.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
-    public void TestPoint8()
+    public static void TestPoint8()
     {
-        Cycle.Point8.Pressure.Should().Be(Cycle.RecuperatorHighPressure);
-        Cycle.Point8.Quality.Should().Be(TwoPhase.Bubble.VaporQuality());
+        Cycle.Point8.Should().Be(
+            Refrigerant.BubblePointAt(Cycle.RecuperatorHighPressure));
         Cycle.Point8.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
-    public void TestPoint9()
+    public static void TestPoint9()
     {
-        Cycle.Point9.Pressure.Should().Be(Cycle.IntermediatePressure);
-        Cycle.Point9.Enthalpy.Should().Be(Cycle.Point8.Enthalpy);
+        Cycle.Point9.Should().Be(
+            Cycle.Point8.IsenthalpicExpansionTo(Cycle.IntermediatePressure));
         Cycle.Point9.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
-    public void TestPoint10()
+    public static void TestPoint10()
     {
         Cycle.Point10.Pressure.Should().Be(Cycle.IntermediatePressure);
         Cycle.Point10.Enthalpy.JoulesPerKilogram.Should().BeApproximately(
@@ -153,76 +154,74 @@ public class TestVCRCMitsubishiZubadan
     }
 
     [Test]
-    public void TestPoint11()
+    public static void TestPoint11()
     {
-        Cycle.Point11.Pressure.Should().Be(Cycle.Point8.Pressure);
-        Cycle.Point11.Enthalpy.Should().Be(
-            Cycle.Point8.Enthalpy - (Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow) /
-            Cycle.EvaporatorSpecificMassFlow * (Cycle.Point10.Enthalpy - Cycle.Point9.Enthalpy));
-        Cycle.Point11.Temperature.Kelvins.Should()
-            .BeApproximately((Cycle.Point9.Temperature + Cycle.Economizer.TemperatureDifference).Kelvins, 1e-3);
+        Cycle.Point11.Should().Be(
+            Cycle.Point8.CoolingTo(Cycle.Point9.Temperature + Economizer.TemperatureDifference));
         Cycle.Point11.Phase.Should().Be(Phases.Liquid);
     }
 
     [Test]
-    public void TestPoint12()
+    public static void TestPoint12()
     {
-        Cycle.Point12.Pressure.Should().Be(Cycle.Evaporator.Pressure);
-        Cycle.Point12.Enthalpy.Should().Be(Cycle.Point11.Enthalpy);
+        Cycle.Point12.Should().Be(
+            Cycle.Point11.IsenthalpicExpansionTo(Evaporator.Pressure));
         Cycle.Point12.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Test]
-    public void TestHeatEmitter()
+    public static void TestHeatEmitter()
     {
         Cycle.Condenser.Should().NotBeNull();
         Cycle.GasCooler.Should().BeNull();
     }
 
     [Test]
-    public void TestIsTranscritical() =>
+    public static void TestIsTranscritical() =>
         Cycle.IsTranscritical.Should().BeFalse();
 
     [Test]
-    public void TestRecuperator() =>
+    public static void TestRecuperator() =>
         Cycle.Recuperator.TemperatureDifference
             .Should().Be(Cycle.Point7.Temperature - Cycle.Point2.Temperature);
 
     [Test]
-    public void TestSpecificMassFlows()
+    public static void TestSpecificMassFlows()
     {
         Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
         Cycle.HeatReleaserSpecificMassFlow.Percent.Should().BeApproximately(
-            (Cycle.EvaporatorSpecificMassFlow * (1 + (Cycle.Point3.Enthalpy - Cycle.Point4.Enthalpy) /
-                (Cycle.Point4.Enthalpy - Cycle.Point10.Enthalpy))).Percent, 1e-3);
+            (Cycle.EvaporatorSpecificMassFlow *
+             (1 + (Cycle.Point3.Enthalpy - Cycle.Point4.Enthalpy) /
+                 (Cycle.Point4.Enthalpy - Cycle.Point10.Enthalpy))).Percent,
+            1e-3);
     }
 
     [Test]
-    public void TestIsentropicSpecificWork() =>
+    public static void TestIsentropicSpecificWork() =>
         Cycle.IsentropicSpecificWork.Should().Be(
             Cycle.Point3s.Enthalpy - Cycle.Point2.Enthalpy +
             Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point5s.Enthalpy - Cycle.Point4.Enthalpy));
 
     [Test]
-    public void TestSpecificWork() =>
+    public static void TestSpecificWork() =>
         Cycle.SpecificWork.Should().Be(
             Cycle.IsentropicSpecificWork /
             Cycle.Compressor.IsentropicEfficiency.DecimalFractions);
 
     [Test]
-    public void TestSpecificCoolingCapacity() =>
+    public static void TestSpecificCoolingCapacity() =>
         Cycle.SpecificCoolingCapacity.Should().Be(
             Cycle.Point1.Enthalpy - Cycle.Point12.Enthalpy);
 
     [Test]
-    public void TestSpecificHeatingCapacity() =>
+    public static void TestSpecificHeatingCapacity() =>
         Cycle.SpecificHeatingCapacity.Should().Be(
             Cycle.HeatReleaserSpecificMassFlow.DecimalFractions *
             (Cycle.Point5.Enthalpy - Cycle.Point6.Enthalpy));
 
     [Test]
-    public void TestEER()
+    public static void TestEER()
     {
         Cycle.EER.Should().Be(
             Cycle.SpecificCoolingCapacity / Cycle.SpecificWork);
@@ -231,7 +230,7 @@ public class TestVCRCMitsubishiZubadan
     }
 
     [Test]
-    public void TestCOP()
+    public static void TestCOP()
     {
         Cycle.COP.Should().Be(
             Cycle.SpecificHeatingCapacity / Cycle.SpecificWork);
@@ -240,56 +239,56 @@ public class TestVCRCMitsubishiZubadan
     }
 
     [Test]
-    public void TestThermodynamicPerfection() =>
+    public static void TestThermodynamicPerfection() =>
         AnalysisResult.ThermodynamicPerfection.Percent
             .Should().BeApproximately(25.57644561474704, Tolerance);
 
     [Test]
-    public void TestMinSpecificWorkRatio() =>
+    public static void TestMinSpecificWorkRatio() =>
         AnalysisResult.MinSpecificWorkRatio.Percent
             .Should().BeApproximately(25.27093000190046, Tolerance);
 
     [Test]
-    public void TestCompressorEnergyLossRatio() =>
+    public static void TestCompressorEnergyLossRatio() =>
         AnalysisResult.CompressorEnergyLossRatio.Percent
             .Should().BeApproximately(20, Tolerance);
 
     [Test]
-    public void TestCondenserEnergyLossRatio() =>
+    public static void TestCondenserEnergyLossRatio() =>
         AnalysisResult.CondenserEnergyLossRatio.Percent
             .Should().BeApproximately(17.402320942172274, Tolerance);
 
     [Test]
-    public void TestGasCoolerEnergyLossRatio() =>
+    public static void TestGasCoolerEnergyLossRatio() =>
         AnalysisResult.GasCoolerEnergyLossRatio.Percent.Should().Be(0);
 
     [Test]
-    public void TestExpansionValvesEnergyLossRatio() =>
+    public static void TestExpansionValvesEnergyLossRatio() =>
         AnalysisResult.ExpansionValvesEnergyLossRatio.Percent
             .Should().BeApproximately(7.442291905240232, Tolerance);
 
     [Test]
-    public void TestEvaporatorEnergyLossRatio() =>
+    public static void TestEvaporatorEnergyLossRatio() =>
         AnalysisResult.EvaporatorEnergyLossRatio.Percent
             .Should().BeApproximately(21.16669887701517, Tolerance);
 
     [Test]
-    public void TestRecuperatorEnergyLossRatio() =>
+    public static void TestRecuperatorEnergyLossRatio() =>
         AnalysisResult.RecuperatorEnergyLossRatio.Percent
             .Should().BeApproximately(1.3431046427670745, Tolerance);
 
     [Test]
-    public void TestEconomizerEnergyLossRatio() =>
+    public static void TestEconomizerEnergyLossRatio() =>
         AnalysisResult.EconomizerEnergyLossRatio.Percent
             .Should().BeApproximately(0.44158251658286674, Tolerance);
 
     [Test]
-    public void TestMixingEnergyLossRatio() =>
+    public static void TestMixingEnergyLossRatio() =>
         AnalysisResult.MixingEnergyLossRatio.Percent
             .Should().BeApproximately(6.9330711143219235, Tolerance);
 
     [Test]
-    public void TestAnalysisRelativeError()
+    public static void TestAnalysisRelativeError()
     {
         AnalysisResult.AnalysisRelativeError.Percent
             .Should().BeApproximately(1.208960702370679, Tolerance);

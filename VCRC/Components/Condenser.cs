@@ -14,7 +14,7 @@ public record Condenser : IHeatReleaser
     ///     Condenser as a VCRC component.
     /// </summary>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
-    /// <param name="temperature">Condensing temperature (bubble-point).</param>
+    /// <param name="temperature">Condensing temperature (bubble point).</param>
     /// <param name="subcooling">Subcooling in the condenser.</param>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
@@ -28,6 +28,10 @@ public record Condenser : IHeatReleaser
             (refrigerantName, temperature.ToUnit(TemperatureUnit.DegreeCelsius),
                 subcooling.ToUnit(TemperatureDeltaUnit.Kelvin));
         new CondenserValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
+        var bubblePoint = new Refrigerant(RefrigerantName).BubblePointAt(Temperature);
+        Outlet = Subcooling == TemperatureDelta.Zero
+            ? bubblePoint
+            : bubblePoint.CoolingTo(bubblePoint.Temperature - Subcooling);
     }
 
     /// <summary>
@@ -41,15 +45,17 @@ public record Condenser : IHeatReleaser
     public FluidsList RefrigerantName { get; }
 
     /// <summary>
-    ///     Condensing temperature (bubble-point).
+    ///     Condensing temperature (bubble point).
     /// </summary>
     public Temperature Temperature { get; }
 
     /// <summary>
     ///     Absolute condensing pressure.
     /// </summary>
-    public Pressure Pressure =>
-        new Refrigerant(RefrigerantName)
-            .WithState(Input.Temperature(Temperature),
-                Input.Quality(TwoPhase.Bubble.VaporQuality())).Pressure;
+    public Pressure Pressure => Outlet.Pressure;
+
+    /// <summary>
+    ///     Condenser outlet.
+    /// </summary>
+    public Refrigerant Outlet { get; }
 }

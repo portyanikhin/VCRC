@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
-using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 
@@ -26,18 +25,15 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     public SimpleVCRC(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser) :
         base(evaporator, compressor, heatReleaser)
     {
-        Point2s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Entropy(Point1.Entropy));
-        Point2 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(Point1.Enthalpy + SpecificWork));
-        Point4 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point3.Enthalpy));
+        Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
+        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point4 = Point3.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
     /// <summary>
     ///     Point 1 – evaporator outlet / compression stage suction.
     /// </summary>
-    public new Refrigerant Point1 => base.Point1;
+    public Refrigerant Point1 => Evaporator.Outlet;
 
     /// <summary>
     ///     Point 2s – isentropic compression stage discharge.
@@ -53,7 +49,7 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 3 – condenser or gas cooler outlet / EV inlet.
     /// </summary>
-    public Refrigerant Point3 => HeatReleaserOutlet;
+    public Refrigerant Point3 => HeatReleaser.Outlet;
 
     /// <summary>
     ///     Point 4 – EV outlet / evaporator inlet.

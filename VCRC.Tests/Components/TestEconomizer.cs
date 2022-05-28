@@ -2,7 +2,7 @@
 using FluentAssertions;
 using FluentValidation;
 using NUnit.Framework;
-using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC.Tests.Components;
 
@@ -13,8 +13,7 @@ public static class TestEconomizer
     public static void TestWrongSuperheat(double superheat)
     {
         Action action = () =>
-            _ = new Economizer(TemperatureDelta.FromKelvins(5),
-                TemperatureDelta.FromKelvins(superheat));
+            _ = new Economizer(5.Kelvins(), superheat.Kelvins());
         action.Should().Throw<ValidationException>()
             .WithMessage("*Superheat in the economizer should be in [0;50] K!*");
     }

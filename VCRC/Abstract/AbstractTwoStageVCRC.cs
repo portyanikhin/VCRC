@@ -28,24 +28,11 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     {
     }
 
-    protected abstract SpecificEnergy FirstStageIsentropicSpecificWork { get; }
-
-    protected abstract SpecificEnergy SecondStageIsentropicSpecificWork { get; }
-
-    protected SpecificEnergy FirstStageSpecificWork =>
-        FirstStageIsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
-
-    protected SpecificEnergy SecondStageSpecificWork =>
-        SecondStageIsentropicSpecificWork / Compressor.IsentropicEfficiency.DecimalFractions;
-
     /// <summary>
     ///     Intermediate pressure.
     /// </summary>
     public Pressure IntermediatePressure =>
         CalculateIntermediatePressure(Evaporator.Pressure, HeatReleaser.Pressure);
-
-    public sealed override SpecificEnergy IsentropicSpecificWork =>
-        FirstStageIsentropicSpecificWork + SecondStageIsentropicSpecificWork;
 
     protected Pressure CalculateIntermediatePressure(Pressure low, Pressure high)
     {

@@ -14,7 +14,7 @@ public record Evaporator
     ///     Evaporator as a VCRC component.
     /// </summary>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
-    /// <param name="temperature">Evaporating temperature (dew-point).</param>
+    /// <param name="temperature">Evaporating temperature (dew point).</param>
     /// <param name="superheat">Superheat in the evaporator.</param>
     /// <exception cref="ValidationException">
     ///     Evaporating temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
@@ -28,6 +28,10 @@ public record Evaporator
             (refrigerantName, temperature.ToUnit(TemperatureUnit.DegreeCelsius),
                 superheat.ToUnit(TemperatureDeltaUnit.Kelvin));
         new EvaporatorValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
+        var dewPoint = new Refrigerant(RefrigerantName).DewPointAt(Temperature);
+        Outlet = Superheat == TemperatureDelta.Zero
+            ? dewPoint
+            : dewPoint.HeatingTo(dewPoint.Temperature + Superheat);
     }
 
     /// <summary>
@@ -36,7 +40,7 @@ public record Evaporator
     public FluidsList RefrigerantName { get; }
 
     /// <summary>
-    ///     Evaporating temperature (dew-point).
+    ///     Evaporating temperature (dew point).
     /// </summary>
     public Temperature Temperature { get; }
 
@@ -48,8 +52,10 @@ public record Evaporator
     /// <summary>
     ///     Absolute evaporating pressure.
     /// </summary>
-    public Pressure Pressure =>
-        new Refrigerant(RefrigerantName)
-            .WithState(Input.Temperature(Temperature),
-                Input.Quality(TwoPhase.Dew.VaporQuality())).Pressure;
+    public Pressure Pressure => Outlet.Pressure;
+
+    /// <summary>
+    ///     Evaporator outlet.
+    /// </summary>
+    public Refrigerant Outlet { get; }
 }

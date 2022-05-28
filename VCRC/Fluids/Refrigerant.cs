@@ -58,11 +58,9 @@ public class Refrigerant : Fluid
         get
         {
             var intermediatePressure = (TriplePressure + CriticalPressure) / 2;
-            var bubblePoint = WithState(Input.Pressure(intermediatePressure),
-                Input.Quality(TwoPhase.Bubble.VaporQuality()));
-            var dewPoint = WithState(Input.Pressure(intermediatePressure),
-                Input.Quality(TwoPhase.Dew.VaporQuality()));
-            return (dewPoint.Temperature - bubblePoint.Temperature).Abs() > 0.01.Kelvins();
+            return (DewPointAt(intermediatePressure).Temperature -
+                    BubblePointAt(intermediatePressure).Temperature)
+                .Abs() > 0.01.Kelvins();
         }
     }
 
@@ -71,4 +69,56 @@ public class Refrigerant : Fluid
     public override Refrigerant
         WithState(IKeyedInput<Parameters> firstInput, IKeyedInput<Parameters> secondInput) =>
         (Refrigerant) base.WithState(firstInput, secondInput);
+
+    public override Refrigerant IsentropicCompressionTo(Pressure pressure) =>
+        (Refrigerant) base.IsentropicCompressionTo(pressure);
+
+    public override Refrigerant CompressionTo(Pressure pressure, Ratio isentropicEfficiency) =>
+        (Refrigerant) base.CompressionTo(pressure, isentropicEfficiency);
+
+    public override Refrigerant IsenthalpicExpansionTo(Pressure pressure) =>
+        (Refrigerant) base.IsenthalpicExpansionTo(pressure);
+
+    public override Refrigerant IsentropicExpansionTo(Pressure pressure) =>
+        (Refrigerant) base.IsentropicExpansionTo(pressure);
+
+    public override Refrigerant ExpansionTo(Pressure pressure,
+        Ratio isentropicEfficiency) =>
+        (Refrigerant) base.ExpansionTo(pressure, isentropicEfficiency);
+
+    public override Refrigerant CoolingTo(Temperature temperature,
+        Pressure? pressureDrop = null) =>
+        (Refrigerant) base.CoolingTo(temperature, pressureDrop);
+
+    public override Refrigerant CoolingTo(SpecificEnergy enthalpy,
+        Pressure? pressureDrop = null) =>
+        (Refrigerant) base.CoolingTo(enthalpy, pressureDrop);
+
+    public override Refrigerant HeatingTo(Temperature temperature,
+        Pressure? pressureDrop = null) =>
+        (Refrigerant) base.HeatingTo(temperature, pressureDrop);
+
+    public override Refrigerant HeatingTo(SpecificEnergy enthalpy,
+        Pressure? pressureDrop = null) =>
+        (Refrigerant) base.HeatingTo(enthalpy, pressureDrop);
+
+    public override Refrigerant BubblePointAt(Pressure pressure) =>
+        (Refrigerant) base.BubblePointAt(pressure);
+
+    public override Refrigerant BubblePointAt(Temperature temperature) =>
+        (Refrigerant) base.BubblePointAt(temperature);
+
+    public override Refrigerant DewPointAt(Pressure pressure) =>
+        (Refrigerant) base.DewPointAt(pressure);
+
+    public override Refrigerant DewPointAt(Temperature temperature) =>
+        (Refrigerant) base.DewPointAt(temperature);
+
+    public override Refrigerant TwoPhasePointAt(Pressure pressure, Ratio quality) =>
+        (Refrigerant) base.TwoPhasePointAt(pressure, quality);
+
+    public override Refrigerant Mixing(Ratio firstSpecificMassFlow, AbstractFluid first,
+        Ratio secondSpecificMassFlow, AbstractFluid second) =>
+        (Refrigerant) base.Mixing(firstSpecificMassFlow, first,
+            secondSpecificMassFlow, second);
 }

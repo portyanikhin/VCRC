@@ -13,7 +13,7 @@ public static class TestCompressor
     public static void TestWrongIsentropicEfficiency(double isentropicEfficiency)
     {
         Action action = () => _ = new Compressor(isentropicEfficiency.Percent());
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Isentropic efficiency of the compressor should be in (0;100) %!*");
+        action.Should().Throw<ValidationException>().WithMessage(
+            "*Isentropic efficiency of the compressor should be in (0;100) %!*");
     }
 }

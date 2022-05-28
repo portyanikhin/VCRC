@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
-using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
 
@@ -31,17 +30,12 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
         IHeatReleaser heatReleaser) : base(evaporator, compressor, heatReleaser)
     {
         Recuperator = recuperator;
-        Point2 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Temperature(Point4.Temperature - Recuperator.TemperatureDifference));
-        Point3s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Entropy(Point2.Entropy));
-        Point3 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(Point2.Enthalpy + SpecificWork));
-        Point5 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy)));
-        Point6 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point5.Enthalpy));
         new VCRCWithRecuperatorValidator().ValidateAndThrow(this);
+        Point2 = Point1.HeatingTo(Point4.Temperature - Recuperator.TemperatureDifference);
+        Point3s = Point2.IsentropicCompressionTo(HeatReleaser.Pressure);
+        Point3 = Point2.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point5 = Point4.CoolingTo(Point4.Enthalpy - (Point2.Enthalpy - Point1.Enthalpy));
+        Point6 = Point5.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
     /// <summary>
@@ -52,7 +46,7 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
     /// </summary>
-    public new Refrigerant Point1 => base.Point1;
+    public Refrigerant Point1 => Evaporator.Outlet;
 
     /// <summary>
     ///     Point 2 – recuperator "cold" outlet / compression stage suction.
@@ -73,7 +67,7 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 4 – condenser or gas cooler outlet / recuperator "hot" inlet.
     /// </summary>
-    public Refrigerant Point4 => HeatReleaserOutlet;
+    public Refrigerant Point4 => HeatReleaser.Outlet;
 
     /// <summary>
     ///     Point 5 – recuperator "hot" outlet / EV inlet.

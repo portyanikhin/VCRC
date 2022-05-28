@@ -1,6 +1,5 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
-using SharpProp;
 using UnitsNet;
 
 namespace VCRC;
@@ -29,40 +28,24 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
         IHeatReleaser heatReleaser) : base(evaporator, compressor, heatReleaser)
     {
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
-        Point2s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Entropy(Point1.Entropy));
-        Point2 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(Point1.Enthalpy + FirstStageSpecificWork));
-        Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point7 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Enthalpy(Point6.Enthalpy));
-        Point4s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Entropy(Point3.Entropy));
-        Point4 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
-                (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow)
-                .DecimalFractions));
-        Point5s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(
-                (EvaporatorSpecificMassFlow.DecimalFractions * Point2s.Enthalpy +
-                 (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow).DecimalFractions
-                 * Point4s.Enthalpy) / HeatReleaserSpecificMassFlow.DecimalFractions));
-        Point5 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(
-                (EvaporatorSpecificMassFlow.DecimalFractions * Point2.Enthalpy +
-                 (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow).DecimalFractions
-                 * Point4.Enthalpy) / HeatReleaserSpecificMassFlow.DecimalFractions));
-        Point8 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Quality(TwoPhase.Bubble.VaporQuality()));
-        Point9 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point8.Enthalpy));
+        Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
+        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point3 = Refrigerant.DewPointAt(IntermediatePressure);
+        Point7 = Point6.IsenthalpicExpansionTo(IntermediatePressure);
+        Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
+        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
+        Point5s = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2s,
+            HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point4s);
+        Point5 = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2,
+            HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point4);
+        Point8 = Refrigerant.BubblePointAt(IntermediatePressure);
+        Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
     /// <summary>
     ///     Point 1 – evaporator outlet / first compression stage suction.
     /// </summary>
-    public new Refrigerant Point1 => base.Point1;
+    public Refrigerant Point1 => Evaporator.Outlet;
 
     /// <summary>
     ///     Point 2s – first isentropic compression stage discharge.
@@ -105,7 +88,7 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
     /// <summary>
     ///     Point 6 – condenser or gas cooler outlet / first EV inlet.
     /// </summary>
-    public Refrigerant Point6 => HeatReleaserOutlet;
+    public Refrigerant Point6 => HeatReleaser.Outlet;
 
     /// <summary>
     ///     Point 7 – first EV outlet / intermediate vessel inlet.
@@ -127,10 +110,8 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
         (1 + Point7.Quality!.Value.DecimalFractions /
             (1 - Point7.Quality!.Value.DecimalFractions));
 
-    protected sealed override SpecificEnergy FirstStageIsentropicSpecificWork =>
-        Point2s.Enthalpy - Point1.Enthalpy;
-
-    protected sealed override SpecificEnergy SecondStageIsentropicSpecificWork =>
+    public sealed override SpecificEnergy IsentropicSpecificWork =>
+        Point2s.Enthalpy - Point1.Enthalpy +
         (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow).DecimalFractions *
         (Point4s.Enthalpy - Point3.Enthalpy);
 

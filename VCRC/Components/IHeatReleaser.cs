@@ -22,4 +22,9 @@ public interface IHeatReleaser
     ///     Absolute pressure.
     /// </summary>
     public Pressure Pressure { get; }
+
+    /// <summary>
+    ///     Condenser or gas cooler outlet.
+    /// </summary>
+    public Refrigerant Outlet { get; }
 }

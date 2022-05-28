@@ -13,7 +13,7 @@ public static class TestRecuperator
     public static void TestWrongSuperheat(double superheat)
     {
         Action action = () => _ = new Recuperator(superheat.Kelvins());
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Temperature difference at recuperator 'hot' side should be in (0;50) K!*");
+        action.Should().Throw<ValidationException>().WithMessage(
+            "*Temperature difference at recuperator 'hot' side should be in (0;50) K!*");
     }
 }

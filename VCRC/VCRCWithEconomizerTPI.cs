@@ -1,9 +1,7 @@
 ﻿using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
-using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-using UnitsNet.Units;
 
 namespace VCRC;
 
@@ -38,34 +36,26 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         EconomizerTPI economizer) : base(evaporator, compressor, heatReleaser)
     {
         Economizer = economizer;
-        Point2s = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Entropy(Point1.Entropy));
-        Point2 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Enthalpy(Point1.Enthalpy + FirstStageSpecificWork));
-        Point3 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Quality(TwoPhase.Dew.VaporQuality()));
-        Point4s = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Entropy(Point3.Entropy));
-        Point6 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Enthalpy(Point5.Enthalpy));
-        Point8 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Temperature(Point6.Temperature + Economizer.TemperatureDifference));
-        Point7 = Refrigerant.WithState(Input.Pressure(IntermediatePressure),
-            Input.Enthalpy(
-                ((Point6.Enthalpy.JoulesPerKilogram *
-                  (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram) +
-                  Point3.Enthalpy.JoulesPerKilogram *
-                  (Point5.Enthalpy.JoulesPerKilogram - Point8.Enthalpy.JoulesPerKilogram)) /
-                 (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram +
-                     Point5.Enthalpy.JoulesPerKilogram - Point8.Enthalpy.JoulesPerKilogram))
-                .JoulesPerKilogram()
-                .ToUnit(SpecificEnergyUnit.KilojoulePerKilogram)));
-        new VCRCWithEconomizerTPIValidator().ValidateAndThrow(this);
-        Point9 = Refrigerant.WithState(Input.Pressure(Evaporator.Pressure),
-            Input.Enthalpy(Point8.Enthalpy));
-        Point4 = Refrigerant.WithState(Input.Pressure(HeatReleaser.Pressure),
-            Input.Enthalpy(Point3.Enthalpy + SecondStageSpecificWork /
-                HeatReleaserSpecificMassFlow.DecimalFractions));
+        Point2s = Point1.IsentropicCompressionTo(IntermediatePressure);
+        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.IsentropicEfficiency);
+        Point3 = Refrigerant.DewPointAt(IntermediatePressure);
+        Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
+        Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
+        var validator = new VCRCWithEconomizerTPIValidator();
+        validator.Validate(this, options =>
+            options.ThrowOnFailures().IncludeRuleSets("EconomizerColdSide"));
+        Point8 = Point5.CoolingTo(Point6.Temperature + Economizer.TemperatureDifference);
+        Point7 = Point6.HeatingTo(
+            ((Point6.Enthalpy.JoulesPerKilogram *
+              (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram) +
+              Point3.Enthalpy.JoulesPerKilogram *
+              (Point5.Enthalpy.JoulesPerKilogram - Point8.Enthalpy.JoulesPerKilogram)) /
+             (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram +
+                 Point5.Enthalpy.JoulesPerKilogram - Point8.Enthalpy.JoulesPerKilogram))
+            .JoulesPerKilogram());
+        validator.ValidateAndThrow(this);
+        Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
+        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.IsentropicEfficiency);
     }
 
     /// <summary>
@@ -76,7 +66,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 1 – evaporator outlet / first compression stage suction.
     /// </summary>
-    public new Refrigerant Point1 => base.Point1;
+    public Refrigerant Point1 => Evaporator.Outlet;
 
     /// <summary>
     ///     Point 2s – first isentropic compression stage discharge.
@@ -108,7 +98,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 5 – condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
     /// </summary>
-    public Refrigerant Point5 => HeatReleaserOutlet;
+    public Refrigerant Point5 => HeatReleaser.Outlet;
 
     /// <summary>
     ///     Point 6 – first EV outlet / economizer "cold" inlet.
@@ -134,11 +124,10 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         EvaporatorSpecificMassFlow *
         (1 + (Point2.Enthalpy - Point3.Enthalpy) / (Point3.Enthalpy - Point7.Enthalpy));
 
-    protected sealed override SpecificEnergy FirstStageIsentropicSpecificWork =>
-        Point2s.Enthalpy - Point1.Enthalpy;
-
-    protected sealed override SpecificEnergy SecondStageIsentropicSpecificWork =>
-        HeatReleaserSpecificMassFlow.DecimalFractions * (Point4s.Enthalpy - Point3.Enthalpy);
+    public sealed override SpecificEnergy IsentropicSpecificWork =>
+        Point2s.Enthalpy - Point1.Enthalpy +
+        HeatReleaserSpecificMassFlow.DecimalFractions *
+        (Point4s.Enthalpy - Point3.Enthalpy);
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
         Point1.Enthalpy - Point9.Enthalpy;

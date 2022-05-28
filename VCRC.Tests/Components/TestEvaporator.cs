@@ -11,8 +11,16 @@ namespace VCRC.Tests.Components;
 
 public static class TestEvaporator
 {
+    private static readonly Refrigerant Refrigerant = new(FluidsList.R407C);
+
     private static readonly Evaporator Evaporator =
-        new(FluidsList.R407C, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
+        new(Refrigerant.Name, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
+
+    private static readonly Evaporator EvaporatorWithoutSuperheat =
+        new(Refrigerant.Name, Evaporator.Temperature, TemperatureDelta.Zero);
+
+    private static readonly Refrigerant DewPoint =
+        Refrigerant.DewPointAt(Evaporator.Temperature);
 
     [TestCase(-74)]
     [TestCase(87)]
@@ -20,7 +28,7 @@ public static class TestEvaporator
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new Evaporator(Evaporator.RefrigerantName, temperature.DegreesCelsius(),
+            _ = new Evaporator(Refrigerant.Name, temperature.DegreesCelsius(),
                 Evaporator.Superheat);
         action.Should().Throw<ValidationException>()
             .WithMessage("*Evaporating temperature should be in (-73.15;86.2) °C!*");
@@ -31,7 +39,7 @@ public static class TestEvaporator
     public static void TestWrongSuperheat(double superheat)
     {
         Action action = () =>
-            _ = new Evaporator(Evaporator.RefrigerantName, Evaporator.Temperature,
+            _ = new Evaporator(Refrigerant.Name, Evaporator.Temperature,
                 TemperatureDelta.FromKelvins(superheat));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Superheat in the evaporator should be in [0;50] K!*");
@@ -39,8 +47,13 @@ public static class TestEvaporator
 
     [Test]
     public static void TestPressure() =>
-        Evaporator.Pressure.Should().Be(
-            new Refrigerant(Evaporator.RefrigerantName)
-                .WithState(Input.Temperature(Evaporator.Temperature),
-                    Input.Quality(TwoPhase.Dew.VaporQuality())).Pressure);
+        Evaporator.Pressure.Should().Be(Evaporator.Outlet.Pressure);
+
+    [Test]
+    public static void TestOutlet()
+    {
+        Evaporator.Outlet.Should().Be(
+            DewPoint.HeatingTo(DewPoint.Temperature + Evaporator.Superheat));
+        EvaporatorWithoutSuperheat.Outlet.Should().Be(DewPoint);
+    }
 }
