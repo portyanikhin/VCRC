@@ -1,5 +1,6 @@
 ﻿using FluentValidation;
 using UnitsNet;
+using UnitsNet.Units;
 
 namespace VCRC;
 
@@ -46,8 +47,12 @@ public record Ejector
     public Ejector(Ratio nozzleIsentropicEfficiency, Ratio suctionIsentropicEfficiency,
         Ratio diffuserIsentropicEfficiency)
     {
-        (NozzleIsentropicEfficiency, SuctionIsentropicEfficiency, DiffuserIsentropicEfficiency) =
-            (nozzleIsentropicEfficiency, suctionIsentropicEfficiency, diffuserIsentropicEfficiency);
+        (NozzleIsentropicEfficiency,
+                SuctionIsentropicEfficiency,
+                DiffuserIsentropicEfficiency) =
+            (nozzleIsentropicEfficiency.ToUnit(RatioUnit.Percent),
+                suctionIsentropicEfficiency.ToUnit(RatioUnit.Percent),
+                diffuserIsentropicEfficiency.ToUnit(RatioUnit.Percent));
         new EjectorValidator().ValidateAndThrow(this);
     }
 
