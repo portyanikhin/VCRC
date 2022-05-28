@@ -59,7 +59,7 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
     public Refrigerant Point2 { get; }
 
     /// <summary>
-    ///     Point 3 – intermediate vessel vapor outlet / second compression stage suction.
+    ///     Point 3 – separator vapor outlet / second compression stage suction.
     /// </summary>
     public Refrigerant Point3 { get; }
 
@@ -91,12 +91,12 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
     public Refrigerant Point6 => HeatReleaser.Outlet;
 
     /// <summary>
-    ///     Point 7 – first EV outlet / intermediate vessel inlet.
+    ///     Point 7 – first EV outlet / separator inlet.
     /// </summary>
     public Refrigerant Point7 { get; }
 
     /// <summary>
-    ///     Point 8 – intermediate vessel liquid outlet / second EV inlet.
+    ///     Point 8 – separator liquid outlet / second EV inlet.
     /// </summary>
     public Refrigerant Point8 { get; }
 
