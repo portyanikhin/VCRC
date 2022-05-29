@@ -15,14 +15,15 @@ internal class EntropyAnalyzer
         EVInfo firstEVInfo,
         EVInfo? secondEVInfo = null,
         EVInfo? thirdEVInfo = null,
+        EjectorInfo? ejectorInfo = null,
         RecuperatorInfo? recuperatorInfo = null,
         EconomizerInfo? economizerInfo = null,
         MixingInfo? mixingInfo = null)
     {
         (Cycle, EvaporatorInfo, HeatReleaserInfo, FirstEVInfo, SecondEVInfo, ThirdEVInfo,
-                RecuperatorInfo, EconomizerInfo, MixingInfo) =
+                EjectorInfo, RecuperatorInfo, EconomizerInfo, MixingInfo) =
             (cycle, evaporatorInfo, heatReleaserInfo, firstEVInfo, secondEVInfo, thirdEVInfo,
-                recuperatorInfo, economizerInfo, mixingInfo);
+                ejectorInfo, recuperatorInfo, economizerInfo, mixingInfo);
         (ColdSource, HotSource) =
             (UnitMath.Min(indoor, outdoor), UnitMath.Max(indoor, outdoor));
         new EntropyAnalyzerValidator().ValidateAndThrow(this);
@@ -43,6 +44,8 @@ internal class EntropyAnalyzer
     private EVInfo? SecondEVInfo { get; }
 
     private EVInfo? ThirdEVInfo { get; }
+
+    private EjectorInfo? EjectorInfo { get; }
 
     private RecuperatorInfo? RecuperatorInfo { get; }
 
@@ -66,6 +69,9 @@ internal class EntropyAnalyzer
         (SecondEVInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero) +
         (ThirdEVInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero);
 
+    private SpecificEnergy EjectorEnergyLoss =>
+        EjectorInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero;
+
     private SpecificEnergy EvaporatorEnergyLoss =>
         EvaporatorInfo.EnergyLoss(ColdSource, HotSource);
 
@@ -79,9 +85,9 @@ internal class EntropyAnalyzer
         MixingInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero;
 
     private SpecificEnergy CalculatedIsentropicSpecificWork =>
-        MinSpecificWork + HeatReleaserEnergyLoss +
-        ExpansionValvesEnergyLoss + EvaporatorEnergyLoss +
-        RecuperatorEnergyLoss + EconomizerEnergyLoss + MixingEnergyLoss;
+        MinSpecificWork + HeatReleaserEnergyLoss + ExpansionValvesEnergyLoss +
+        EjectorEnergyLoss + EvaporatorEnergyLoss + RecuperatorEnergyLoss +
+        EconomizerEnergyLoss + MixingEnergyLoss;
 
     private SpecificEnergy CompressorEnergyLoss =>
         CalculatedIsentropicSpecificWork *
@@ -108,6 +114,7 @@ internal class EntropyAnalyzer
                 ? EnergyLossRatio(HeatReleaserEnergyLoss)
                 : Ratio.Zero,
             EnergyLossRatio(ExpansionValvesEnergyLoss),
+            EnergyLossRatio(EjectorEnergyLoss),
             EnergyLossRatio(EvaporatorEnergyLoss),
             EnergyLossRatio(RecuperatorEnergyLoss),
             EnergyLossRatio(EconomizerEnergyLoss),

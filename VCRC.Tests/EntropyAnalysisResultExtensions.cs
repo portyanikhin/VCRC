@@ -10,6 +10,7 @@ public static class EntropyAnalysisResultExtensions
            result.CondenserEnergyLossRatio +
            result.GasCoolerEnergyLossRatio +
            result.ExpansionValvesEnergyLossRatio +
+           result.EjectorEnergyLossRatio +
            result.EvaporatorEnergyLossRatio +
            result.RecuperatorEnergyLossRatio +
            result.EconomizerEnergyLossRatio +

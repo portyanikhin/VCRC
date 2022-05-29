@@ -24,6 +24,10 @@ namespace VCRC;
 ///     Minimum required specific work to compensate for entropy production in the expansion valves
 ///     (its percentage of the total specific work) (by default, %).
 /// </param>
+/// <param name="EjectorEnergyLossRatio">
+///     Minimum required specific work to compensate for entropy production in the ejector
+///     (its percentage of the total specific work) (by default, %).
+/// </param>
 /// <param name="EvaporatorEnergyLossRatio">
 ///     Minimum required specific work to compensate for entropy production in the evaporator
 ///     (its percentage of the total specific work) (by default, %).
@@ -43,5 +47,6 @@ namespace VCRC;
 /// <param name="AnalysisRelativeError">Entropy analysis relative error (by default, %).</param>
 public record EntropyAnalysisResult(Ratio ThermodynamicPerfection, Ratio MinSpecificWorkRatio,
     Ratio CompressorEnergyLossRatio, Ratio CondenserEnergyLossRatio, Ratio GasCoolerEnergyLossRatio,
-    Ratio ExpansionValvesEnergyLossRatio, Ratio EvaporatorEnergyLossRatio, Ratio RecuperatorEnergyLossRatio,
-    Ratio EconomizerEnergyLossRatio, Ratio MixingEnergyLossRatio, Ratio AnalysisRelativeError);
+    Ratio ExpansionValvesEnergyLossRatio, Ratio EjectorEnergyLossRatio, Ratio EvaporatorEnergyLossRatio,
+    Ratio RecuperatorEnergyLossRatio, Ratio EconomizerEnergyLossRatio, Ratio MixingEnergyLossRatio,
+    Ratio AnalysisRelativeError);

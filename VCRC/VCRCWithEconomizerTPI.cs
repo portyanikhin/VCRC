@@ -143,7 +143,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point9, Point1),
                 new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point4s, Point5),
                 new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point5, Point6),
-                new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null,
+                new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null,
                 new EconomizerInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point6, Point7,
                     EvaporatorSpecificMassFlow, Point5, Point8),
                 new MixingInfo(Point3, EvaporatorSpecificMassFlow, Point2,

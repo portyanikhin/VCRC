@@ -241,6 +241,10 @@ public static class TestVCRCWithEconomizerTPI
             .Should().BeApproximately(7.714502918858777, Tolerance);
 
     [Test]
+    public static void TestEjectorEnergyLossRatio() =>
+        AnalysisResult.EjectorEnergyLossRatio.Percent.Should().Be(0);
+
+    [Test]
     public static void TestEvaporatorEnergyLossRatio() =>
         AnalysisResult.EvaporatorEnergyLossRatio.Percent
             .Should().BeApproximately(22.5407081419088, Tolerance);

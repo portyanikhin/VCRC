@@ -128,7 +128,7 @@ public class VCRCWithParallelCompression : AbstractTwoStageVCRC, IEntropyAnalysa
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point9, Point1),
                 new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point5s, Point6),
                 new EVInfo(HeatReleaserSpecificMassFlow, Point6, Point7),
-                new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null,
+                new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null, null,
                 new MixingInfo(Point5, EvaporatorSpecificMassFlow, Point2,
                     HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point4))
             .Result;

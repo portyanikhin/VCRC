@@ -117,7 +117,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point8, Point1),
                 new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point4s, Point5),
                 new EVInfo(HeatReleaserSpecificMassFlow, Point5, Point6),
-                new EVInfo(EvaporatorSpecificMassFlow, Point7, Point8), null, null, null,
+                new EVInfo(EvaporatorSpecificMassFlow, Point7, Point8), null, null, null, null,
                 new MixingInfo(Point3, EvaporatorSpecificMassFlow, Point2,
                     BarbotageSpecificMassFlow, Point7))
             .Result;

@@ -186,6 +186,10 @@ public static class TestVCRCWithRecuperator
             .Should().BeApproximately(19.10155564959979, Tolerance);
 
     [Test]
+    public static void TestEjectorEnergyLossRatio() =>
+        AnalysisResult.EjectorEnergyLossRatio.Percent.Should().Be(0);
+
+    [Test]
     public static void TestEvaporatorEnergyLossRatio() =>
         AnalysisResult.EvaporatorEnergyLossRatio.Percent
             .Should().BeApproximately(13.037369549556171, Tolerance);

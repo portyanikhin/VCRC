@@ -234,6 +234,10 @@ public static class TestVCRCWithParallelCompression
             .Should().BeApproximately(26.299474729838668, Tolerance);
 
     [Test]
+    public static void TestEjectorEnergyLossRatio() =>
+        AnalysisResult.EjectorEnergyLossRatio.Percent.Should().Be(0);
+
+    [Test]
     public static void TestEvaporatorEnergyLossRatio() =>
         AnalysisResult.EvaporatorEnergyLossRatio.Percent
             .Should().BeApproximately(14.200049265764939, Tolerance);

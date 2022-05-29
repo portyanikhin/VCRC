@@ -188,7 +188,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
                 new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point5s, Point6),
                 new EVInfo(HeatReleaserSpecificMassFlow, Point6, Point7),
                 new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point8, Point9),
-                new EVInfo(EvaporatorSpecificMassFlow, Point11, Point12),
+                new EVInfo(EvaporatorSpecificMassFlow, Point11, Point12), null,
                 new RecuperatorInfo(EvaporatorSpecificMassFlow, Point1, Point2,
                     HeatReleaserSpecificMassFlow, Point7, Point8),
                 new EconomizerInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point9, Point10,

@@ -232,6 +232,10 @@ public static class TestVCRCWithIncompleteIntercooling
             .Should().BeApproximately(7.656335268000471, Tolerance);
 
     [Test]
+    public static void TestEjectorEnergyLossRatio() =>
+        AnalysisResult.EjectorEnergyLossRatio.Percent.Should().Be(0);
+
+    [Test]
     public static void TestEvaporatorEnergyLossRatio() =>
         AnalysisResult.EvaporatorEnergyLossRatio.Percent
             .Should().BeApproximately(22.3568946179561, Tolerance);

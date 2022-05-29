@@ -95,7 +95,7 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
                 this, indoor, outdoor,
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point6, Point1),
                 new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point3s, Point4),
-                new EVInfo(HeatReleaserSpecificMassFlow, Point5, Point6), null, null,
+                new EVInfo(HeatReleaserSpecificMassFlow, Point5, Point6), null, null, null,
                 new RecuperatorInfo(EvaporatorSpecificMassFlow, Point1, Point2,
                     HeatReleaserSpecificMassFlow, Point4, Point5))
             .Result;

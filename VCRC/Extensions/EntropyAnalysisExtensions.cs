@@ -34,6 +34,7 @@ public static class EntropyAnalysisExtensions
             results.Select(i => i.CondenserEnergyLossRatio.Percent).Average().Percent(),
             results.Select(i => i.GasCoolerEnergyLossRatio.Percent).Average().Percent(),
             results.Select(i => i.ExpansionValvesEnergyLossRatio.Percent).Average().Percent(),
+            results.Select(i => i.EjectorEnergyLossRatio.Percent).Average().Percent(),
             results.Select(i => i.EvaporatorEnergyLossRatio.Percent).Average().Percent(),
             results.Select(i => i.RecuperatorEnergyLossRatio.Percent).Average().Percent(),
             results.Select(i => i.EconomizerEnergyLossRatio.Percent).Average().Percent(),
