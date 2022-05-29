@@ -107,10 +107,10 @@ internal class EntropyAnalyzer
             ThermodynamicPerfection,
             EnergyLossRatio(MinSpecificWork),
             EnergyLossRatio(CompressorEnergyLoss),
-            HeatReleaserInfo.HeatReleaser is Condenser
+            Cycle.HeatReleaser is Condenser
                 ? EnergyLossRatio(HeatReleaserEnergyLoss)
                 : Ratio.Zero,
-            HeatReleaserInfo.HeatReleaser is GasCooler
+            Cycle.HeatReleaser is GasCooler
                 ? EnergyLossRatio(HeatReleaserEnergyLoss)
                 : Ratio.Zero,
             EnergyLossRatio(ExpansionValvesEnergyLoss),

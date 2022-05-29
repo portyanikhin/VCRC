@@ -57,6 +57,20 @@ public static class TestVCRCWithEconomizer
     }
 
     [Test]
+    public static void TestComponents()
+    {
+        Cycle.Evaporator.Should().Be(Evaporator);
+        Cycle.Compressor.Should().Be(Compressor);
+        Cycle.Condenser.Should().BeNull();
+        Cycle.GasCooler.Should().Be(GasCooler);
+        Cycle.Economizer.Should().Be(Economizer);
+    }
+
+    [Test]
+    public static void TestIsTranscritical() =>
+        Cycle.IsTranscritical.Should().BeTrue();
+
+    [Test]
     public static void TestPoint1()
     {
         Cycle.Point1.Should().Be(
@@ -155,17 +169,6 @@ public static class TestVCRCWithEconomizer
     }
 
     [Test]
-    public static void TestHeatEmitter()
-    {
-        Cycle.Condenser.Should().BeNull();
-        Cycle.GasCooler.Should().NotBeNull();
-    }
-
-    [Test]
-    public static void TestIsTranscritical() =>
-        Cycle.IsTranscritical.Should().BeTrue();
-
-    [Test]
     public static void TestSpecificMassFlows()
     {
         Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
@@ -187,7 +190,7 @@ public static class TestVCRCWithEconomizer
     public static void TestSpecificWork() =>
         Cycle.SpecificWork.Should().Be(
             Cycle.IsentropicSpecificWork /
-            Cycle.Compressor.Efficiency.DecimalFractions);
+            Compressor.Efficiency.DecimalFractions);
 
     [Test]
     public static void TestSpecificCoolingCapacity() =>

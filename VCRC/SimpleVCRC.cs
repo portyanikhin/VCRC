@@ -71,7 +71,7 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
         new EntropyAnalyzer(
                 this, indoor, outdoor,
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point4, Point1),
-                new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point2s, Point3),
+                new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point2s, Point3),
                 new EVInfo(HeatReleaserSpecificMassFlow, Point3, Point4))
             .Result;
 }

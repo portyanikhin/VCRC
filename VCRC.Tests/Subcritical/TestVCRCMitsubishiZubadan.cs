@@ -44,6 +44,22 @@ public static class TestVCRCMitsubishiZubadan
     }
 
     [Test]
+    public static void TestComponents()
+    {
+        Cycle.Evaporator.Should().Be(Evaporator);
+        Cycle.Recuperator.Should().Be(
+            new Recuperator(Cycle.Point7.Temperature - Cycle.Point2.Temperature));
+        Cycle.Compressor.Should().Be(Compressor);
+        Cycle.Condenser.Should().Be(Condenser);
+        Cycle.GasCooler.Should().BeNull();
+        Cycle.Economizer.Should().Be(Economizer);
+    }
+
+    [Test]
+    public static void TestIsTranscritical() =>
+        Cycle.IsTranscritical.Should().BeFalse();
+
+    [Test]
     public static void TestPoint1()
     {
         Cycle.Point1.Should().Be(
@@ -170,22 +186,6 @@ public static class TestVCRCMitsubishiZubadan
     }
 
     [Test]
-    public static void TestHeatEmitter()
-    {
-        Cycle.Condenser.Should().NotBeNull();
-        Cycle.GasCooler.Should().BeNull();
-    }
-
-    [Test]
-    public static void TestIsTranscritical() =>
-        Cycle.IsTranscritical.Should().BeFalse();
-
-    [Test]
-    public static void TestRecuperator() =>
-        Cycle.Recuperator.TemperatureDifference
-            .Should().Be(Cycle.Point7.Temperature - Cycle.Point2.Temperature);
-
-    [Test]
     public static void TestSpecificMassFlows()
     {
         Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
@@ -207,7 +207,7 @@ public static class TestVCRCMitsubishiZubadan
     public static void TestSpecificWork() =>
         Cycle.SpecificWork.Should().Be(
             Cycle.IsentropicSpecificWork /
-            Cycle.Compressor.Efficiency.DecimalFractions);
+            Compressor.Efficiency.DecimalFractions);
 
     [Test]
     public static void TestSpecificCoolingCapacity() =>

@@ -37,12 +37,25 @@ public static class TestVCRCWithIncompleteIntercooling
             _ = new VCRCWithIncompleteIntercooling(
                 new Evaporator(FluidsList.R407C,
                     Evaporator.Temperature, Evaporator.Superheat),
-                Cycle.Compressor,
+                Compressor,
                 new Condenser(FluidsList.R407C,
                     Condenser.Temperature, Condenser.Subcooling));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Refrigerant should not have a temperature glide!*");
     }
+
+    [Test]
+    public static void TestComponents()
+    {
+        Cycle.Evaporator.Should().Be(Evaporator);
+        Cycle.Compressor.Should().Be(Compressor);
+        Cycle.Condenser.Should().Be(Condenser);
+        Cycle.GasCooler.Should().BeNull();
+    }
+
+    [Test]
+    public static void TestIsTranscritical() =>
+        Cycle.IsTranscritical.Should().BeFalse();
 
     [Test]
     public static void TestPoint1()
@@ -140,17 +153,6 @@ public static class TestVCRCWithIncompleteIntercooling
     }
 
     [Test]
-    public static void TestHeatEmitter()
-    {
-        Cycle.Condenser.Should().NotBeNull();
-        Cycle.GasCooler.Should().BeNull();
-    }
-
-    [Test]
-    public static void TestIsTranscritical() =>
-        Cycle.IsTranscritical.Should().BeFalse();
-
-    [Test]
     public static void TestSpecificMassFlows()
     {
         Cycle.EvaporatorSpecificMassFlow.Should().Be(100.Percent());
@@ -171,7 +173,7 @@ public static class TestVCRCWithIncompleteIntercooling
     public static void TestSpecificWork() =>
         Cycle.SpecificWork.Should().Be(
             Cycle.IsentropicSpecificWork /
-            Cycle.Compressor.Efficiency.DecimalFractions);
+            Compressor.Efficiency.DecimalFractions);
 
     [Test]
     public static void TestSpecificCoolingCapacity() =>

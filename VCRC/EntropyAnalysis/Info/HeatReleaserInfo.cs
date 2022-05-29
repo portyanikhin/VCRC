@@ -3,8 +3,7 @@ using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 
 namespace VCRC;
 
-internal record HeatReleaserInfo(IHeatReleaser HeatReleaser,
-    Ratio SpecificMassFlow, Refrigerant IsentropicInlet, Refrigerant Outlet)
+internal record HeatReleaserInfo(Ratio SpecificMassFlow, Refrigerant IsentropicInlet, Refrigerant Outlet)
 {
     internal SpecificEnergy EnergyLoss(Temperature hotSource) =>
         SpecificMassFlow.DecimalFractions *

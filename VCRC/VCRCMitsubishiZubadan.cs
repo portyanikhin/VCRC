@@ -185,7 +185,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
         new EntropyAnalyzer(this, indoor, outdoor,
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point12, Point1),
-                new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point5s, Point6),
+                new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point5s, Point6),
                 new EVInfo(HeatReleaserSpecificMassFlow, Point6, Point7),
                 new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point8, Point9),
                 new EVInfo(EvaporatorSpecificMassFlow, Point11, Point12), null,

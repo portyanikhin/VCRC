@@ -132,7 +132,7 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
         new EntropyAnalyzer(
                 this, indoor, outdoor,
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point9, Point1),
-                new HeatReleaserInfo(HeatReleaser, HeatReleaserSpecificMassFlow, Point4s, Point5),
+                new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point4s, Point5),
                 new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point5, Point6),
                 new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null,
                 new EconomizerInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point6, Point7,
