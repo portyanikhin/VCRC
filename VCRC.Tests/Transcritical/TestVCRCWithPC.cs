@@ -10,7 +10,7 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Transcritical;
 
-public static class TestVCRCWithParallelCompression
+public static class TestVCRCWithPC
 {
     private const double Tolerance = 1e-10;
 
@@ -23,7 +23,7 @@ public static class TestVCRCWithParallelCompression
 
     private static readonly GasCooler GasCooler = new(Refrigerant.Name, 40.DegreesCelsius());
 
-    private static readonly VCRCWithParallelCompression Cycle =
+    private static readonly VCRCWithPC Cycle =
         new(Evaporator, Compressor, GasCooler);
 
     private static readonly EntropyAnalysisResult AnalysisResult =
@@ -34,7 +34,7 @@ public static class TestVCRCWithParallelCompression
     {
         var refrigerant = new Refrigerant(FluidsList.R407C);
         Action action = () =>
-            _ = new VCRCWithParallelCompression(
+            _ = new VCRCWithPC(
                 new Evaporator(refrigerant.Name,
                     Evaporator.Temperature, Evaporator.Superheat),
                 Compressor,

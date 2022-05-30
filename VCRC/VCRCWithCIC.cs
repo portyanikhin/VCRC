@@ -7,7 +7,7 @@ namespace VCRC;
 /// <summary>
 ///     Two-stage VCRC with complete intercooling.
 /// </summary>
-public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalysable
+public class VCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalysable
 {
     /// <summary>
     ///     Two-stage VCRC with complete intercooling.
@@ -24,7 +24,7 @@ public class VCRCWithCompleteIntercooling : AbstractTwoStageVCRC, IEntropyAnalys
     /// <exception cref="ValidationException">
     ///     Refrigerant should not have a temperature glide!
     /// </exception>
-    public VCRCWithCompleteIntercooling(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser) :
+    public VCRCWithCIC(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser) :
         base(evaporator, compressor, heatReleaser)
     {
         new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);

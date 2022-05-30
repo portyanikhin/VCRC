@@ -10,7 +10,7 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Transcritical;
 
-public static class TestVCRCWithCompleteIntercooling
+public static class TestVCRCWithCIC
 {
     private const double Tolerance = 1e-10;
 
@@ -23,7 +23,7 @@ public static class TestVCRCWithCompleteIntercooling
 
     private static readonly GasCooler GasCooler = new(Refrigerant.Name, 40.DegreesCelsius());
 
-    private static readonly VCRCWithCompleteIntercooling Cycle =
+    private static readonly VCRCWithCIC Cycle =
         new(Evaporator, Compressor, GasCooler);
 
     private static readonly EntropyAnalysisResult AnalysisResult =
@@ -34,7 +34,7 @@ public static class TestVCRCWithCompleteIntercooling
     {
         var refrigerant = new Refrigerant(FluidsList.R407C);
         Action action = () =>
-            _ = new VCRCWithCompleteIntercooling(
+            _ = new VCRCWithCIC(
                 new Evaporator(refrigerant.Name,
                     Evaporator.Temperature, Evaporator.Superheat),
                 Compressor,

@@ -10,7 +10,7 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Subcritical;
 
-public static class TestVCRCWithIncompleteIntercooling
+public static class TestVCRCWithIIC
 {
     private const double Tolerance = 1e-10;
 
@@ -24,7 +24,7 @@ public static class TestVCRCWithIncompleteIntercooling
     private static readonly Condenser Condenser =
         new(Refrigerant.Name, 45.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 
-    private static readonly VCRCWithIncompleteIntercooling Cycle =
+    private static readonly VCRCWithIIC Cycle =
         new(Evaporator, Compressor, Condenser);
 
     private static readonly EntropyAnalysisResult AnalysisResult =
@@ -34,7 +34,7 @@ public static class TestVCRCWithIncompleteIntercooling
     public static void TestWrongRefrigerant()
     {
         Action action = () =>
-            _ = new VCRCWithIncompleteIntercooling(
+            _ = new VCRCWithIIC(
                 new Evaporator(FluidsList.R407C,
                     Evaporator.Temperature, Evaporator.Superheat),
                 Compressor,
