@@ -56,7 +56,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Too high temperature difference at economizer 'cold' side!
     /// </exception>
     public VCRCMitsubishiZubadan(Evaporator evaporator, Compressor compressor,
-        Condenser condenser, EconomizerTPI economizer) : base(evaporator, compressor, condenser)
+        Condenser condenser, EconomizerWithTPI economizer) : base(evaporator, compressor, condenser)
     {
         (Condenser, Economizer) = (condenser, economizer);
         Point4 = Refrigerant.DewPointAt(IntermediatePressure);
@@ -85,7 +85,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Economizer as a VCRC component.
     /// </summary>
-    public EconomizerTPI Economizer { get; }
+    public EconomizerWithTPI Economizer { get; }
 
     /// <summary>
     ///     Absolute recuperator high pressure.

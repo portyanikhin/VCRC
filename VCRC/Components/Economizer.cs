@@ -7,7 +7,7 @@ namespace VCRC;
 /// <summary>
 ///     Economizer as a VCRC component.
 /// </summary>
-public record Economizer : EconomizerTPI
+public record Economizer : EconomizerWithTPI
 {
     /// <summary>
     ///     Economizer as a VCRC component.

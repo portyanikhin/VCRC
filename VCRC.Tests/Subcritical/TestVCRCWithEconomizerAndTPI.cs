@@ -11,7 +11,7 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Subcritical;
 
-public static class TestVCRCWithEconomizerTPI
+public static class TestVCRCWithEconomizerAndTPI
 {
     private const double Tolerance = 1e-10;
 
@@ -25,9 +25,9 @@ public static class TestVCRCWithEconomizerTPI
     private static readonly Condenser Condenser =
         new(Refrigerant.Name, 45.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 
-    private static readonly EconomizerTPI Economizer = new(TemperatureDelta.FromKelvins(5));
+    private static readonly EconomizerWithTPI Economizer = new(TemperatureDelta.FromKelvins(5));
 
-    private static readonly VCRCWithEconomizerTPI Cycle =
+    private static readonly VCRCWithEconomizerAndTPI Cycle =
         new(Evaporator, Compressor, Condenser, Economizer);
 
     private static readonly EntropyAnalysisResult AnalysisResult =
@@ -37,9 +37,9 @@ public static class TestVCRCWithEconomizerTPI
     public static void TestWrongEconomizerTemperatureDifference()
     {
         Action action = () =>
-            _ = new VCRCWithEconomizerTPI(
+            _ = new VCRCWithEconomizerAndTPI(
                 Evaporator, Compressor, Condenser,
-                new EconomizerTPI(TemperatureDelta.FromKelvins(49)));
+                new EconomizerWithTPI(TemperatureDelta.FromKelvins(49)));
         action.Should().Throw<ValidationException>()
             .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
     }

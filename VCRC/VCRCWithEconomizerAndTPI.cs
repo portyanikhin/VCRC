@@ -8,7 +8,7 @@ namespace VCRC;
 /// <summary>
 ///     Two-stage VCRC with economizer and two-phase injection to the compressor.
 /// </summary>
-public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
+public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
 {
     /// <summary>
     ///     Two-stage VCRC with economizer and two-phase injection to the compressor.
@@ -32,8 +32,8 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <exception cref="ValidationException">
     ///     Too high temperature difference at economizer 'cold' side!
     /// </exception>
-    public VCRCWithEconomizerTPI(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser,
-        EconomizerTPI economizer) : base(evaporator, compressor, heatReleaser)
+    public VCRCWithEconomizerAndTPI(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser,
+        EconomizerWithTPI economizer) : base(evaporator, compressor, heatReleaser)
     {
         Economizer = economizer;
         Point2s = Point1.IsentropicCompressionTo(IntermediatePressure);
@@ -41,7 +41,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         Point3 = Refrigerant.DewPointAt(IntermediatePressure);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
-        var validator = new VCRCWithEconomizerTPIValidator();
+        var validator = new VCRCWithEconomizerAndTPIValidator();
         validator.Validate(this, options =>
             options.ThrowOnFailures().IncludeRuleSets("EconomizerColdSide"));
         Point8 = Point5.CoolingTo(Point6.Temperature + Economizer.TemperatureDifference);
@@ -61,7 +61,7 @@ public class VCRCWithEconomizerTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Economizer as a VCRC component.
     /// </summary>
-    public EconomizerTPI Economizer { get; }
+    public EconomizerWithTPI Economizer { get; }
 
     /// <summary>
     ///     Point 1 – evaporator outlet / first compression stage suction.

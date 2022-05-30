@@ -23,7 +23,7 @@ public static class TestVCRCMitsubishiZubadan
     private static readonly Condenser Condenser =
         new(Refrigerant.Name, 45.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 
-    private static readonly EconomizerTPI Economizer = new(TemperatureDelta.FromKelvins(5));
+    private static readonly EconomizerWithTPI Economizer = new(TemperatureDelta.FromKelvins(5));
 
     private static readonly VCRCMitsubishiZubadan Cycle =
         new(Evaporator, Compressor, Condenser, Economizer);

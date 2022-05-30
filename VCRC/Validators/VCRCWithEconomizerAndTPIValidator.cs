@@ -2,9 +2,9 @@
 
 namespace VCRC;
 
-internal class VCRCWithEconomizerTPIValidator : AbstractValidator<VCRCWithEconomizerTPI>
+internal class VCRCWithEconomizerAndTPIValidator : AbstractValidator<VCRCWithEconomizerAndTPI>
 {
-    internal VCRCWithEconomizerTPIValidator()
+    internal VCRCWithEconomizerAndTPIValidator()
     {
         RuleFor(vcrc => vcrc.Point7.Quality)
             .Must(quality => quality?.DecimalFractions is > 0 and < 1)
