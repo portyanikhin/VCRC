@@ -28,10 +28,6 @@ public record Evaporator
             (refrigerantName, temperature.ToUnit(TemperatureUnit.DegreeCelsius),
                 superheat.ToUnit(TemperatureDeltaUnit.Kelvin));
         new EvaporatorValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
-        var dewPoint = new Refrigerant(RefrigerantName).DewPointAt(Temperature);
-        Outlet = Superheat == TemperatureDelta.Zero
-            ? dewPoint
-            : dewPoint.HeatingTo(dewPoint.Temperature + Superheat);
     }
 
     /// <summary>
@@ -57,5 +53,7 @@ public record Evaporator
     /// <summary>
     ///     Evaporator outlet.
     /// </summary>
-    public Refrigerant Outlet { get; }
+    public Refrigerant Outlet =>
+        new Refrigerant(RefrigerantName)
+            .Superheated(Temperature, Superheat);
 }

@@ -16,12 +16,6 @@ public static class TestEvaporator
     private static readonly Evaporator Evaporator =
         new(Refrigerant.Name, 5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
 
-    private static readonly Evaporator EvaporatorWithoutSuperheat =
-        new(Refrigerant.Name, Evaporator.Temperature, TemperatureDelta.Zero);
-
-    private static readonly Refrigerant DewPoint =
-        Refrigerant.DewPointAt(Evaporator.Temperature);
-
     [TestCase(-74)]
     [TestCase(87)]
     public static void TestWrongTemperature(double temperature)
@@ -50,10 +44,7 @@ public static class TestEvaporator
         Evaporator.Pressure.Should().Be(Evaporator.Outlet.Pressure);
 
     [Test]
-    public static void TestOutlet()
-    {
+    public static void TestOutlet() =>
         Evaporator.Outlet.Should().Be(
-            DewPoint.HeatingTo(DewPoint.Temperature + Evaporator.Superheat));
-        EvaporatorWithoutSuperheat.Outlet.Should().Be(DewPoint);
-    }
+            Refrigerant.Superheated(Evaporator.Temperature, Evaporator.Superheat));
 }

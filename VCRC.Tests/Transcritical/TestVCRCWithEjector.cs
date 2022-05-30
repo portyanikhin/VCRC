@@ -1,5 +1,7 @@
-﻿using System.Diagnostics.CodeAnalysis;
+﻿using System;
+using System.Diagnostics.CodeAnalysis;
 using FluentAssertions;
+using FluentValidation;
 using NUnit.Framework;
 using SharpProp;
 using UnitsNet;
@@ -32,6 +34,23 @@ public static class TestVCRCWithEjector
 
     private static readonly EjectorFlows EjectorFlows =
         Ejector.CalculateFlows(Cycle.Point3, Cycle.Point9);
+
+    [Test]
+    public static void TestWrongRefrigerant()
+    {
+        var refrigerant = new Refrigerant(FluidsList.R407C);
+        Action action = () =>
+            _ = new VCRCWithEjector(
+                new Evaporator(refrigerant.Name,
+                    Evaporator.Temperature, Evaporator.Superheat),
+                Compressor,
+                new GasCooler(refrigerant.Name,
+                    refrigerant.CriticalTemperature + TemperatureDelta.FromKelvins(5),
+                    1.1 * refrigerant.CriticalPressure),
+                Ejector);
+        action.Should().Throw<ValidationException>()
+            .WithMessage("*Refrigerant should not have a temperature glide!*");
+    }
 
     [Test]
     public static void TestComponents()
@@ -76,9 +95,7 @@ public static class TestVCRCWithEjector
     [Test]
     public static void TestPoint3()
     {
-        Cycle.Point3.Should().Be(
-            Refrigerant.WithState(Input.Pressure(GasCooler.Pressure),
-                Input.Temperature(GasCooler.Temperature)));
+        Cycle.Point3.Should().Be(GasCooler.Outlet);
         Cycle.Point3.Phase.Should().Be(Phases.Supercritical);
     }
 
@@ -122,9 +139,7 @@ public static class TestVCRCWithEjector
     [Test]
     public static void TestPoint9()
     {
-        Cycle.Point9.Should().Be(
-            Refrigerant.DewPointAt(Evaporator.Temperature)
-                .HeatingTo(Evaporator.Temperature + Evaporator.Superheat));
+        Cycle.Point9.Should().Be(Evaporator.Outlet);
         Cycle.Point9.Phase.Should().Be(Phases.Gas);
     }
 

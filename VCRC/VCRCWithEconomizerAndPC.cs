@@ -35,11 +35,7 @@ public class VCRCWithEconomizerAndPC : AbstractTwoStageVCRC, IEntropyAnalysable
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point7 = Point6.IsenthalpicExpansionTo(IntermediatePressure);
-        Point3 = Economizer.Superheat == TemperatureDelta.Zero
-            ? Refrigerant.DewPointAt(IntermediatePressure)
-            : Point7.HeatingTo(
-                Refrigerant.DewPointAt(IntermediatePressure).Temperature +
-                Economizer.Superheat);
+        Point3 = Refrigerant.Superheated(IntermediatePressure, Economizer.Superheat);
         new VCRCWithEconomizerAndPCValidator().ValidateAndThrow(this);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);

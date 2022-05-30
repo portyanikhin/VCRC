@@ -28,10 +28,6 @@ public record Condenser : IHeatReleaser
             (refrigerantName, temperature.ToUnit(TemperatureUnit.DegreeCelsius),
                 subcooling.ToUnit(TemperatureDeltaUnit.Kelvin));
         new CondenserValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
-        var bubblePoint = new Refrigerant(RefrigerantName).BubblePointAt(Temperature);
-        Outlet = Subcooling == TemperatureDelta.Zero
-            ? bubblePoint
-            : bubblePoint.CoolingTo(bubblePoint.Temperature - Subcooling);
     }
 
     /// <summary>
@@ -57,5 +53,7 @@ public record Condenser : IHeatReleaser
     /// <summary>
     ///     Condenser outlet.
     /// </summary>
-    public Refrigerant Outlet { get; }
+    public Refrigerant Outlet =>
+        new Refrigerant(RefrigerantName)
+            .Subcooled(Temperature, Subcooling);
 }

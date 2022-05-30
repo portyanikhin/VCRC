@@ -60,9 +60,7 @@ public static class TestVCRCWithCIC
     [Test]
     public static void TestPoint1()
     {
-        Cycle.Point1.Should().Be(
-            Refrigerant.DewPointAt(Evaporator.Temperature)
-                .HeatingTo(Evaporator.Temperature + Evaporator.Superheat));
+        Cycle.Point1.Should().Be(Evaporator.Outlet);
         Cycle.Point1.Phase.Should().Be(Phases.Gas);
     }
 
@@ -113,9 +111,7 @@ public static class TestVCRCWithCIC
     [Test]
     public static void TestPoint5()
     {
-        Cycle.Point5.Should().Be(
-            Refrigerant.BubblePointAt(Condenser.Temperature)
-                .CoolingTo(Condenser.Temperature - Condenser.Subcooling));
+        Cycle.Point5.Should().Be(Condenser.Outlet);
         Cycle.Point5.Phase.Should().Be(Phases.Liquid);
     }
 

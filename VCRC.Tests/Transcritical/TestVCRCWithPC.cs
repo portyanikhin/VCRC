@@ -61,9 +61,7 @@ public static class TestVCRCWithPC
     [Test]
     public static void TestPoint1()
     {
-        Cycle.Point1.Should().Be(
-            Refrigerant.DewPointAt(Evaporator.Temperature)
-                .HeatingTo(Evaporator.Temperature + Evaporator.Superheat));
+        Cycle.Point1.Should().Be(Evaporator.Outlet);
         Cycle.Point1.Phase.Should().Be(Phases.Gas);
     }
 
@@ -123,9 +121,7 @@ public static class TestVCRCWithPC
     [Test]
     public static void TestPoint6()
     {
-        Cycle.Point6.Should().Be(
-            Refrigerant.WithState(Input.Pressure(GasCooler.Pressure),
-                Input.Temperature(GasCooler.Temperature)));
+        Cycle.Point6.Should().Be(GasCooler.Outlet);
         Cycle.Point6.Phase.Should().Be(Phases.Supercritical);
     }
 

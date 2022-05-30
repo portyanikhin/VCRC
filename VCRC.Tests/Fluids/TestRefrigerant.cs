@@ -58,6 +58,90 @@ public static class TestRefrigerant
         new Refrigerant(name).HasGlide;
 
     [Test]
+    public static void TestSubcooledFromTemperature()
+    {
+        var bubblePoint = Refrigerant.BubblePointAt(100.DegreesCelsius());
+        Refrigerant.Subcooled(
+            bubblePoint.Temperature, TemperatureDelta.FromKelvins(5)).Should().Be(
+            bubblePoint.CoolingTo(bubblePoint.Temperature - TemperatureDelta.FromKelvins(5)));
+        Refrigerant.Subcooled(bubblePoint.Temperature, TemperatureDelta.Zero)
+            .Should().Be(bubblePoint);
+    }
+
+    [Test]
+    public static void TestSubcooledFromTemperature_WrongInput()
+    {
+        Action action = () =>
+            _ = Refrigerant.Subcooled(100.DegreesCelsius(),
+                TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>()
+            .WithMessage("Invalid subcooling!");
+    }
+
+    [Test]
+    public static void TestSubcooledFromPressure()
+    {
+        var bubblePoint = Refrigerant.BubblePointAt(1.Atmospheres());
+        Refrigerant.Subcooled(
+            bubblePoint.Pressure, TemperatureDelta.FromKelvins(5)).Should().Be(
+            bubblePoint.CoolingTo(bubblePoint.Temperature - TemperatureDelta.FromKelvins(5)));
+        Refrigerant.Subcooled(bubblePoint.Pressure, TemperatureDelta.Zero)
+            .Should().Be(bubblePoint);
+    }
+
+    [Test]
+    public static void TestSubcooledFromPressure_WrongInput()
+    {
+        Action action = () =>
+            _ = Refrigerant.Subcooled(1.Atmospheres(),
+                TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>()
+            .WithMessage("Invalid subcooling!");
+    }
+
+    [Test]
+    public static void TestSuperheatedFromTemperature()
+    {
+        var dewPoint = Refrigerant.DewPointAt(100.DegreesCelsius());
+        Refrigerant.Superheated(
+            dewPoint.Temperature, TemperatureDelta.FromKelvins(5)).Should().Be(
+            dewPoint.HeatingTo(dewPoint.Temperature + TemperatureDelta.FromKelvins(5)));
+        Refrigerant.Superheated(dewPoint.Temperature, TemperatureDelta.Zero)
+            .Should().Be(dewPoint);
+    }
+
+    [Test]
+    public static void TestSuperheatedFromTemperature_WrongInput()
+    {
+        Action action = () =>
+            _ = Refrigerant.Superheated(100.DegreesCelsius(),
+                TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>()
+            .WithMessage("Invalid superheat!");
+    }
+
+    [Test]
+    public static void TestSuperheatedFromPressure()
+    {
+        var dewPoint = Refrigerant.DewPointAt(1.Atmospheres());
+        Refrigerant.Superheated(
+            dewPoint.Pressure, TemperatureDelta.FromKelvins(5)).Should().Be(
+            dewPoint.HeatingTo(dewPoint.Temperature + TemperatureDelta.FromKelvins(5)));
+        Refrigerant.Superheated(dewPoint.Pressure, TemperatureDelta.Zero)
+            .Should().Be(dewPoint);
+    }
+
+    [Test]
+    public static void TestSuperheatedFromPressure_WrongInput()
+    {
+        Action action = () =>
+            _ = Refrigerant.Superheated(1.Atmospheres(),
+                TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>()
+            .WithMessage("Invalid superheat!");
+    }
+
+    [Test]
     public static void TestProcesses()
     {
         Refrigerant.IsentropicCompressionTo(HighPressure)

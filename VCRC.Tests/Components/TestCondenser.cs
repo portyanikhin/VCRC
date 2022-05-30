@@ -16,12 +16,6 @@ public static class TestCondenser
     private static readonly Condenser Condenser =
         new(Refrigerant.Name, 50.DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 
-    private static readonly Condenser CondenserWithoutSubCooling =
-        new(Refrigerant.Name, Condenser.Temperature, TemperatureDelta.Zero);
-
-    private static readonly Refrigerant BubblePoint =
-        Refrigerant.BubblePointAt(Condenser.Temperature);
-
     [TestCase(-74)]
     [TestCase(87)]
     public static void TestWrongTemperature(double temperature)
@@ -50,10 +44,7 @@ public static class TestCondenser
         Condenser.Pressure.Should().Be(Condenser.Outlet.Pressure);
 
     [Test]
-    public static void TestOutlet()
-    {
-        Condenser.Outlet.Should().Be(BubblePoint
-            .CoolingTo(BubblePoint.Temperature - Condenser.Subcooling));
-        CondenserWithoutSubCooling.Outlet.Should().Be(BubblePoint);
-    }
+    public static void TestOutlet() =>
+        Condenser.Outlet.Should().Be(
+            Refrigerant.Subcooled(Condenser.Temperature, Condenser.Subcooling));
 }

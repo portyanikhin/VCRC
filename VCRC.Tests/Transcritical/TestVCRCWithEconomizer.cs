@@ -73,9 +73,7 @@ public static class TestVCRCWithEconomizer
     [Test]
     public static void TestPoint1()
     {
-        Cycle.Point1.Should().Be(
-            Refrigerant.DewPointAt(Evaporator.Temperature)
-                .HeatingTo(Evaporator.Temperature + Evaporator.Superheat));
+        Cycle.Point1.Should().Be(Evaporator.Outlet);
         Cycle.Point1.Phase.Should().Be(Phases.Gas);
     }
 
@@ -127,9 +125,7 @@ public static class TestVCRCWithEconomizer
     [Test]
     public static void TestPoint5()
     {
-        Cycle.Point5.Should().Be(
-            Refrigerant.WithState(Input.Pressure(GasCooler.Pressure),
-                Input.Temperature(GasCooler.Temperature)));
+        Cycle.Point5.Should().Be(GasCooler.Outlet);
         Cycle.Point5.Phase.Should().Be(Phases.Supercritical);
     }
 
@@ -144,10 +140,8 @@ public static class TestVCRCWithEconomizer
     [Test]
     public static void TestPoint7()
     {
-        Cycle.Point7.Should().Be(
-            Cycle.Point6.HeatingTo(
-                Refrigerant.DewPointAt(Cycle.IntermediatePressure).Temperature +
-                Economizer.Superheat));
+        Cycle.Point7.Should().Be(Refrigerant.Superheated(
+            Cycle.IntermediatePressure, Economizer.Superheat));
         Cycle.Point7.Phase.Should().Be(Phases.Gas);
     }
 

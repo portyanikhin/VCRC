@@ -64,6 +64,74 @@ public class Refrigerant : Fluid
         }
     }
 
+    /// <summary>
+    ///     Subcooled refrigerant.
+    /// </summary>
+    /// <param name="bubblePointTemperature">Bubble point temperature.</param>
+    /// <param name="subcooling">Subcooling.</param>
+    /// <returns>Subcooled refrigerant.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Invalid subcooling!
+    /// </exception>
+    public Refrigerant Subcooled(Temperature bubblePointTemperature, TemperatureDelta subcooling) =>
+        subcooling < TemperatureDelta.Zero
+            ? throw new ArgumentException("Invalid subcooling!")
+            : subcooling == TemperatureDelta.Zero
+                ? BubblePointAt(bubblePointTemperature)
+                : BubblePointAt(bubblePointTemperature)
+                    .CoolingTo(bubblePointTemperature - subcooling);
+
+    /// <summary>
+    ///     Subcooled refrigerant.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="subcooling">Subcooling.</param>
+    /// <returns>Subcooled refrigerant.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Invalid subcooling!
+    /// </exception>
+    public Refrigerant Subcooled(Pressure pressure, TemperatureDelta subcooling) =>
+        subcooling < TemperatureDelta.Zero
+            ? throw new ArgumentException("Invalid subcooling!")
+            : subcooling == TemperatureDelta.Zero
+                ? BubblePointAt(pressure)
+                : BubblePointAt(pressure)
+                    .CoolingTo(BubblePointAt(pressure).Temperature - subcooling);
+
+    /// <summary>
+    ///     Superheated refrigerant.
+    /// </summary>
+    /// <param name="dewPointTemperature">Dew point temperature.</param>
+    /// <param name="superheat">Superheat.</param>
+    /// <returns>Superheated refrigerant.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Invalid superheat!
+    /// </exception>
+    public Refrigerant Superheated(Temperature dewPointTemperature, TemperatureDelta superheat) =>
+        superheat < TemperatureDelta.Zero
+            ? throw new ArgumentException("Invalid superheat!")
+            : superheat == TemperatureDelta.Zero
+                ? DewPointAt(dewPointTemperature)
+                : DewPointAt(dewPointTemperature)
+                    .HeatingTo(dewPointTemperature + superheat);
+
+    /// <summary>
+    ///     Superheated refrigerant.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="superheat">Superheat.</param>
+    /// <returns>Superheated refrigerant.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Invalid superheat!
+    /// </exception>
+    public Refrigerant Superheated(Pressure pressure, TemperatureDelta superheat) =>
+        superheat < TemperatureDelta.Zero
+            ? throw new ArgumentException("Invalid superheat!")
+            : superheat == TemperatureDelta.Zero
+                ? DewPointAt(pressure)
+                : DewPointAt(pressure)
+                    .HeatingTo(DewPointAt(pressure).Temperature + superheat);
+
     public override Refrigerant Factory() => new(Name);
 
     public override Refrigerant

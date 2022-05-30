@@ -50,8 +50,6 @@ public record GasCooler : IHeatReleaser
                 "It is impossible to automatically calculate the absolute pressure in the gas cooler! " +
                 "It is necessary to define it.");
         new GasCoolerValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
-        Outlet = new Refrigerant(RefrigerantName)
-            .WithState(Input.Pressure(Pressure), Input.Temperature(Temperature));
     }
 
     /// <summary>
@@ -72,5 +70,8 @@ public record GasCooler : IHeatReleaser
     /// <summary>
     ///     Gas cooler outlet.
     /// </summary>
-    public Refrigerant Outlet { get; }
+    public Refrigerant Outlet =>
+        new Refrigerant(RefrigerantName)
+            .WithState(Input.Pressure(Pressure),
+                Input.Temperature(Temperature));
 }
