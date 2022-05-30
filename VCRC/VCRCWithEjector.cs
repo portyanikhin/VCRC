@@ -1,13 +1,6 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using FluentValidation;
-using MathNet.Numerics;
-using MathNet.Numerics.RootFinding;
-using SharpProp;
 using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToRatio;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-using UnitsNet.NumberExtensions.NumberToSpeed;
 
 namespace VCRC;
 
@@ -33,47 +26,20 @@ public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
         Ejector ejector) : base(evaporator, compressor, heatReleaser)
     {
         Ejector = ejector;
-        Point4 = Point3.ExpansionTo(EjectorMixingPressure, Ejector.NozzleEfficiency);
-        Point10 = Point9.ExpansionTo(EjectorMixingPressure, Ejector.SuctionEfficiency);
-        CalculateEjectorFlowRatio(); // Also calculates Point5 and Point6
-        Point1 = Refrigerant.DewPointAt(EjectorDiffuserPressure);
+        EjectorFlows = Ejector.CalculateFlows(Point3, Point9);
+        Point1 = Refrigerant.DewPointAt(Point6.Pressure);
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
-        Point7 = Refrigerant.BubblePointAt(EjectorDiffuserPressure);
+        Point7 = Refrigerant.BubblePointAt(Point6.Pressure);
         Point8 = Point7.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
-    private Speed Point5Speed =>
-        EjectorFlowRatio.DecimalFractions *
-        CalculateOutletSpeed(Point3, Point4) +
-        (1 - EjectorFlowRatio.DecimalFractions) *
-        CalculateOutletSpeed(Point9, Point10);
-
-    private SpecificEnergy Point5KineticEnergy =>
-        (Math.Pow(Point5Speed.MetersPerSecond, 2) / 2.0)
-        .JoulesPerKilogram();
-
-    private Ratio EjectorFlowRatio { get; set; }
+    private EjectorFlows EjectorFlows { get; }
 
     /// <summary>
     ///     Ejector as a VCRC component.
     /// </summary>
     public Ejector Ejector { get; }
-
-    /// <summary>
-    ///     Ejector mixing section pressure.
-    /// </summary>
-    public Pressure EjectorMixingPressure => 0.9 * Evaporator.Pressure;
-
-    /// <summary>
-    ///     Ejector diffuser outlet pressure.
-    /// </summary>
-    public Pressure EjectorDiffuserPressure =>
-        Refrigerant.WithState(Input.Entropy(Point5.Entropy),
-                Input.Enthalpy(
-                    Point5.Enthalpy +
-                    Ejector.DiffuserEfficiency.DecimalFractions * Point5KineticEnergy))
-            .Pressure;
 
     /// <summary>
     ///     Point 1 - separator vapor outlet / compression stage suction.
@@ -99,17 +65,17 @@ public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 4 – ejector nozzle outlet.
     /// </summary>
-    public Refrigerant Point4 { get; }
+    public Refrigerant Point4 => EjectorFlows.NozzleOutlet;
 
     /// <summary>
-    ///     Point 5 – ejector diffuser inlet.
+    ///     Point 5 – ejector mixing section inlet.
     /// </summary>
-    public Refrigerant Point5 { get; private set; } = null!;
+    public Refrigerant Point5 => EjectorFlows.MixingInlet;
 
     /// <summary>
     ///     Point 6 – ejector diffuser outlet / separator inlet.
     /// </summary>
-    public Refrigerant Point6 { get; private set; } = null!;
+    public Refrigerant Point6 => EjectorFlows.DiffuserOutlet;
 
     /// <summary>
     ///     Point 7 – separator liquid outlet / EV inlet.
@@ -129,7 +95,7 @@ public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 10 – ejector suction section outlet.
     /// </summary>
-    public Refrigerant Point10 { get; }
+    public Refrigerant Point10 => EjectorFlows.SuctionOutlet;
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
@@ -155,26 +121,4 @@ public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
                 new EjectorInfo(Point6, HeatReleaserSpecificMassFlow, Point3,
                     EvaporatorSpecificMassFlow, Point9))
             .Result;
-
-    private void CalculateEjectorFlowRatio()
-    {
-        double ToSolve(double ejectorFlowRatio)
-        {
-            EjectorFlowRatio = ejectorFlowRatio.Percent();
-            Point5 = Refrigerant.WithState(Input.Pressure(EjectorMixingPressure),
-                Input.Enthalpy(
-                    EjectorFlowRatio.DecimalFractions * Point3.Enthalpy +
-                    (1 - EjectorFlowRatio.DecimalFractions) * Point9.Enthalpy -
-                    Point5KineticEnergy));
-            Point6 = Refrigerant.WithState(Input.Pressure(EjectorDiffuserPressure),
-                Input.Enthalpy(Point5.Enthalpy + Point5KineticEnergy));
-            return (Point6.Quality!.Value - EjectorFlowRatio).Percent;
-        }
-
-        NewtonRaphson.FindRootNearGuess(
-            ToSolve, Differentiate.FirstDerivativeFunc(ToSolve), 50, 1e-9, 100 - 1e-9, 1e-6);
-    }
-
-    private static Speed CalculateOutletSpeed(AbstractFluid inlet, AbstractFluid outlet) =>
-        Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram).MetersPerSecond();
 }

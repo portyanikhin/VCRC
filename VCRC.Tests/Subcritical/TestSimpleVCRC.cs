@@ -46,7 +46,7 @@ public static class TestSimpleVCRC
     }
 
     [Test]
-    public static void TestWrongRefrigerantNames()
+    public static void TestWrongRefrigerants()
     {
         Action action = () =>
             _ = new SimpleVCRC(
