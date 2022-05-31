@@ -4,6 +4,7 @@ using FluentAssertions;
 using NUnit.Framework;
 using SharpProp;
 using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToRatio;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 
@@ -58,6 +59,21 @@ public static class TestVCRCMitsubishiZubadan
     [Test]
     public static void TestIsTranscritical() =>
         Cycle.IsTranscritical.Should().BeFalse();
+
+    [Test]
+    public static void TestRecuperatorHighPressure()
+    {
+        Cycle.RecuperatorHighPressure.Should().Be(
+            Math.Sqrt(Cycle.IntermediatePressure.Pascals * Condenser.Pressure.Pascals)
+                .Pascals());
+        var lowTemperatureCycle = new VCRCMitsubishiZubadan(
+            new Evaporator(Refrigerant.Name,
+                (-20).DegreesCelsius(), Evaporator.Superheat),
+            Compressor, Condenser, Economizer);
+        lowTemperatureCycle.RecuperatorHighPressure.Should().BeGreaterThan(
+            Math.Sqrt(lowTemperatureCycle.IntermediatePressure.Pascals * Condenser.Pressure.Pascals)
+                .Pascals());
+    }
 
     [Test]
     public static void TestPoint1()

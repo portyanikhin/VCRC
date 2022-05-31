@@ -59,17 +59,11 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
         Condenser condenser, EconomizerWithTPI economizer) : base(evaporator, compressor, condenser)
     {
         (Condenser, Economizer) = (condenser, economizer);
-        Point4 = Refrigerant.DewPointAt(IntermediatePressure);
-        Point7 = Point6.IsenthalpicExpansionTo(RecuperatorHighPressure);
-        Point8 = Refrigerant.BubblePointAt(RecuperatorHighPressure);
-        Point9 = Point8.IsenthalpicExpansionTo(IntermediatePressure);
-        Point11 = Point8.CoolingTo(Point9.Temperature + Economizer.TemperatureDifference);
-        Point12 = Point11.IsenthalpicExpansionTo(Evaporator.Pressure);
-        CalculateInjectionQuality(); // Also calculates Point2, Point3 and Point10
+        CalculateInjectionQuality();
         new VCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
-        Point5s = Point4.IsentropicCompressionTo(Condenser.Pressure);
+        Point5s = Point4!.IsentropicCompressionTo(Condenser.Pressure);
         Point5 = Point4.CompressionTo(Condenser.Pressure, Compressor.Efficiency);
-        Recuperator = new Recuperator(Point7.Temperature - Point2!.Temperature);
+        Recuperator = new Recuperator(Point7!.Temperature - Point2!.Temperature);
     }
 
     /// <summary>
@@ -90,8 +84,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Absolute recuperator high pressure.
     /// </summary>
-    public Pressure RecuperatorHighPressure =>
-        CalculateIntermediatePressure(IntermediatePressure, HeatReleaser.Pressure);
+    public Pressure RecuperatorHighPressure { get; private set; }
 
     /// <summary>
     ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
@@ -117,7 +110,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 4 – second compression stage suction.
     /// </summary>
-    public Refrigerant Point4 { get; }
+    public Refrigerant Point4 { get; private set; }
 
     /// <summary>
     ///     Point 5s – second isentropic compression stage discharge.
@@ -138,17 +131,17 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 7 – first EV outlet / recuperator "hot" inlet.
     /// </summary>
-    public Refrigerant Point7 { get; }
+    public Refrigerant Point7 { get; private set; }
 
     /// <summary>
     ///     Point 8 – recuperator "hot" outlet / second EV inlet / economizer "hot" inlet.
     /// </summary>
-    public Refrigerant Point8 { get; }
+    public Refrigerant Point8 { get; private set; } = null!;
 
     /// <summary>
     ///     Point 9 – second EV outlet / economizer "cold" inlet.
     /// </summary>
-    public Refrigerant Point9 { get; }
+    public Refrigerant Point9 { get; private set; } = null!;
 
     /// <summary>
     ///     Point 10 – economizer "cold" outlet / injection of two-phase refrigerant into the compressor.
@@ -158,12 +151,12 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <summary>
     ///     Point 11 – economizer "hot" outlet / third EV inlet.
     /// </summary>
-    public Refrigerant Point11 { get; }
+    public Refrigerant Point11 { get; private set; } = null!;
 
     /// <summary>
     ///     Point 12 – third EV outlet / evaporator inlet.
     /// </summary>
-    public Refrigerant Point12 { get; }
+    public Refrigerant Point12 { get; private set; } = null!;
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
@@ -215,14 +208,30 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
                 .JoulesPerKilogram;
         }
 
-        try
+        RecuperatorHighPressure = CalculateIntermediatePressure(
+            IntermediatePressure, HeatReleaser.Pressure);
+        var validator = new VCRCMitsubishiZubadanValidator();
+        do
         {
-            NewtonRaphson.FindRootNearGuess(
-                ToSolve, Differentiate.FirstDerivativeFunc(ToSolve), 80, 1e-9, 100 - 1e-9, 1e-3);
-        }
-        catch (Exception)
-        {
-            throw new ArgumentException("Solution not found!");
-        }
+            Point4 = Refrigerant.DewPointAt(IntermediatePressure);
+            Point7 = Point6.IsenthalpicExpansionTo(RecuperatorHighPressure);
+            Point8 = Refrigerant.BubblePointAt(RecuperatorHighPressure);
+            Point9 = Point8.IsenthalpicExpansionTo(IntermediatePressure);
+            Point11 = Point8.CoolingTo(Point9.Temperature + Economizer.TemperatureDifference);
+            Point12 = Point11.IsenthalpicExpansionTo(Evaporator.Pressure);
+            try
+            {
+                NewtonRaphson.FindRootNearGuess(
+                    ToSolve, Differentiate.FirstDerivativeFunc(ToSolve), 80, 1e-9, 100 - 1e-9, 1e-3);
+            }
+            catch (Exception)
+            {
+                throw new ArgumentException("Solution not found!");
+            }
+
+            if (!validator.Validate(this).IsValid)
+                RecuperatorHighPressure = CalculateIntermediatePressure(
+                    RecuperatorHighPressure, Condenser.Pressure);
+        } while (!validator.Validate(this).IsValid);
     }
 }
