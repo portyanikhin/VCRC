@@ -12,7 +12,7 @@ namespace VCRC.Tests.Transcritical;
 
 public static class TestVCRCWithEjectorAndRecuperator
 {
-    private const double Tolerance = 1e-7;
+    private const double Tolerance = 1e-6;
 
     private static readonly Refrigerant Refrigerant = new(FluidsList.R744);
 
