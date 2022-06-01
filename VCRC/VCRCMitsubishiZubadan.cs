@@ -158,6 +158,9 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     /// </summary>
     public Refrigerant Point12 { get; private set; } = null!;
 
+    public sealed override Pressure IntermediatePressure =>
+        base.IntermediatePressure;
+
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
         (1 + (Point8.Enthalpy - Point11.Enthalpy) /

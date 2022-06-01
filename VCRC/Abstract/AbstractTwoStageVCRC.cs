@@ -31,7 +31,7 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     /// <summary>
     ///     Intermediate pressure.
     /// </summary>
-    public Pressure IntermediatePressure =>
+    public virtual Pressure IntermediatePressure =>
         CalculateIntermediatePressure(Evaporator.Pressure, HeatReleaser.Pressure);
 
     protected Pressure CalculateIntermediatePressure(Pressure low, Pressure high)

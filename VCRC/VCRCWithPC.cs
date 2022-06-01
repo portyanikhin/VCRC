@@ -105,6 +105,9 @@ public class VCRCWithPC : AbstractTwoStageVCRC, IEntropyAnalysable
     /// </summary>
     public Refrigerant Point9 { get; }
 
+    public sealed override Pressure IntermediatePressure =>
+        base.IntermediatePressure;
+
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
         (1 + Point7.Quality!.Value.DecimalFractions /

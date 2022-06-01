@@ -69,7 +69,7 @@ public static class TestVCRCWithEjector
     public static void TestPoint1()
     {
         Cycle.Point1.Should().Be(
-            Refrigerant.DewPointAt(Cycle.Point6.Pressure));
+            Refrigerant.DewPointAt(EjectorFlows.DiffuserOutlet.Pressure));
         Cycle.Point1.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -123,7 +123,7 @@ public static class TestVCRCWithEjector
     public static void TestPoint7()
     {
         Cycle.Point7.Should().Be(
-            Refrigerant.BubblePointAt(Cycle.Point6.Pressure));
+            Refrigerant.BubblePointAt(EjectorFlows.DiffuserOutlet.Pressure));
         Cycle.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
 
