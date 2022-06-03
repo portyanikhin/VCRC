@@ -107,7 +107,7 @@ public static class TestVCRCWithEjectorAndEconomizer
     {
         Cycle.Point2s.Should().Be(
             Cycle.Point1.IsentropicCompressionTo(Cycle.IntermediatePressure));
-        Cycle.Point2.Phase.Should().Be(Phases.Gas);
+        Cycle.Point2s.Phase.Should().Be(Phases.Gas);
     }
 
     [Test]

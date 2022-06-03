@@ -2,9 +2,9 @@
 
 namespace VCRC;
 
-public class VCRCWithEjectorAndEconomizerValidator : AbstractValidator<VCRCWithEjectorAndEconomizer>
+internal class VCRCWithEjectorAndEconomizerValidator : AbstractValidator<VCRCWithEjectorAndEconomizer>
 {
-    public VCRCWithEjectorAndEconomizerValidator()
+    internal VCRCWithEjectorAndEconomizerValidator()
     {
         RuleFor(vcrc => vcrc.Point7.Temperature)
             .LessThan(vcrc => vcrc.Point5.Temperature)
