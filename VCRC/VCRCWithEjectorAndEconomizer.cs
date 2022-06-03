@@ -20,7 +20,6 @@ public class VCRCWithEjectorAndEconomizer : AbstractTwoStageVCRC, IEntropyAnalys
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <param name="ejector">Ejector.</param>
     /// <param name="economizer">Economizer.</param>
-    /// ///
     /// <exception cref="ValidationException">
     ///     Only one refrigerant should be selected!
     /// </exception>
@@ -29,6 +28,12 @@ public class VCRCWithEjectorAndEconomizer : AbstractTwoStageVCRC, IEntropyAnalys
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Refrigerant should not have a temperature glide!
+    /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Wrong temperature difference at economizer 'hot' side!
+    /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Too high temperature difference at economizer 'cold' side!
     /// </exception>
     public VCRCWithEjectorAndEconomizer(Evaporator evaporator, Compressor compressor,
         IHeatReleaser heatReleaser, Ejector ejector, Economizer economizer) :
