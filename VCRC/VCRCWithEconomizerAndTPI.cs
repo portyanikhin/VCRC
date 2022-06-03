@@ -24,12 +24,6 @@ public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     There should be a two-phase refrigerant at the compressor injection circuit!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at economizer 'hot' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     Too high temperature difference at economizer 'cold' side!
     /// </exception>
     public VCRCWithEconomizerAndTPI(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser,
@@ -40,10 +34,9 @@ public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.Efficiency);
         Point3 = Refrigerant.DewPointAt(IntermediatePressure);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
+        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
-        var validator = new VCRCWithEconomizerAndTPIValidator();
-        validator.Validate(this, options =>
-            options.ThrowOnFailures().IncludeRuleSets("EconomizerColdSide"));
+        new VCRCWithEconomizerAndTPIValidator().ValidateAndThrow(this);
         Point8 = Point5.CoolingTo(Point6.Temperature + Economizer.TemperatureDifference);
         Point7 = Point6.HeatingTo(
             ((Point6.Enthalpy.JoulesPerKilogram *
@@ -53,9 +46,7 @@ public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
              (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram +
                  Point5.Enthalpy.JoulesPerKilogram - Point8.Enthalpy.JoulesPerKilogram))
             .JoulesPerKilogram());
-        validator.ValidateAndThrow(this);
         Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
-        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
     }
 
     /// <summary>

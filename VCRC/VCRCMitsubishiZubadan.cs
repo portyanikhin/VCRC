@@ -47,12 +47,6 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Wrong temperature difference at recuperator 'cold' side!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     There should be a two-phase refrigerant at the compressor injection circuit!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at economizer 'hot' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
     ///     Too high temperature difference at economizer 'cold' side!
     /// </exception>
     public VCRCMitsubishiZubadan(Evaporator evaporator, Compressor compressor,
