@@ -157,6 +157,8 @@ public static class TestVCRCWithPC
              (1 + Cycle.Point7.Quality!.Value.DecimalFractions /
                  (1 - Cycle.Point7.Quality!.Value.DecimalFractions))).Percent,
             Tolerance);
+        Cycle.IntermediateSpecificMassFlow.Should().Be(
+            Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow);
     }
 
     [Test]

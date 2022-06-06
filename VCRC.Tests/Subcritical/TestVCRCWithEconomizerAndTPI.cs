@@ -166,6 +166,8 @@ public static class TestVCRCWithEconomizerAndTPI
              (1 + (Cycle.Point2.Enthalpy - Cycle.Point3.Enthalpy) /
                  (Cycle.Point3.Enthalpy - Cycle.Point7.Enthalpy))).Percent,
             Tolerance);
+        Cycle.IntermediateSpecificMassFlow.Should().Be(
+            Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow);
     }
 
     [Test]

@@ -34,6 +34,12 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     public virtual Pressure IntermediatePressure =>
         CalculateIntermediatePressure(Evaporator.Pressure, HeatReleaser.Pressure);
 
+    /// <summary>
+    ///     Specific mass flow rate of the intermediate circuit.
+    /// </summary>
+    public virtual Ratio IntermediateSpecificMassFlow =>
+        HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow;
+
     protected Pressure CalculateIntermediatePressure(Pressure low, Pressure high)
     {
         var result = GeometricMean(low, high);

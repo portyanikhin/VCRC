@@ -35,7 +35,7 @@ public class VCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalysable
         Point8 = Refrigerant.BubblePointAt(IntermediatePressure);
         Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
         Point3 = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2,
-            HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point7);
+            IntermediateSpecificMassFlow, Point7);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
     }
@@ -100,6 +100,9 @@ public class VCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalysable
     public sealed override Pressure IntermediatePressure =>
         base.IntermediatePressure;
 
+    public sealed override Ratio IntermediateSpecificMassFlow =>
+        base.IntermediateSpecificMassFlow;
+
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow /
         (1 - Point6.Quality!.Value.DecimalFractions);
@@ -124,6 +127,6 @@ public class VCRCWithIIC : AbstractTwoStageVCRC, IEntropyAnalysable
                 new EVInfo(HeatReleaserSpecificMassFlow, Point5, Point6),
                 new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null, null,
                 new MixingInfo(Point3, EvaporatorSpecificMassFlow, Point2,
-                    HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point7))
+                    IntermediateSpecificMassFlow, Point7))
             .Result;
 }

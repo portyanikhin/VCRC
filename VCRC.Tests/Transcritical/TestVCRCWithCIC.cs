@@ -150,6 +150,8 @@ public static class TestVCRCWithCIC
                  (Cycle.Point3.Enthalpy - Cycle.Point7.Enthalpy)) /
              (1 - Cycle.Point6.Quality!.Value.DecimalFractions)).Percent,
             Tolerance);
+        Cycle.IntermediateSpecificMassFlow.Should().Be(
+            Cycle.HeatReleaserSpecificMassFlow);
     }
 
     [Test]

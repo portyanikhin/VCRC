@@ -149,16 +149,13 @@ public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAna
     /// </summary>
     public Refrigerant Point15 => EjectorFlows.SuctionOutlet;
 
-    /// <summary>
-    ///     Specific mass flow rate of the injection circuit.
-    /// </summary>
-    public Ratio InjectionSpecificMassFlow =>
+    public sealed override Pressure IntermediatePressure =>
+        CalculateIntermediatePressure(DiffuserOutletPressure, HeatReleaser.Pressure);
+
+    public sealed override Ratio IntermediateSpecificMassFlow =>
         HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow *
         (Point11.Quality!.Value.DecimalFractions /
          (1 - Point11.Quality!.Value.DecimalFractions));
-
-    public sealed override Pressure IntermediatePressure =>
-        CalculateIntermediatePressure(DiffuserOutletPressure, HeatReleaser.Pressure);
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
@@ -168,7 +165,7 @@ public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAna
             (Point3.Enthalpy - Point7.Enthalpy));
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
-        (HeatReleaserSpecificMassFlow - InjectionSpecificMassFlow).DecimalFractions *
+        (HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow).DecimalFractions *
         (Point2s.Enthalpy - Point1.Enthalpy) +
         HeatReleaserSpecificMassFlow.DecimalFractions *
         (Point4s.Enthalpy - Point3.Enthalpy);
@@ -184,14 +181,14 @@ public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAna
         new EntropyAnalyzer(this, indoor, outdoor,
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point13, Point14),
                 new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point4s, Point5),
-                new EVInfo(InjectionSpecificMassFlow, Point5, Point6),
+                new EVInfo(IntermediateSpecificMassFlow, Point5, Point6),
                 new EVInfo(EvaporatorSpecificMassFlow, Point12, Point13), null,
-                new EjectorInfo(Point11, HeatReleaserSpecificMassFlow - InjectionSpecificMassFlow, Point8,
+                new EjectorInfo(Point11, HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow, Point8,
                     EvaporatorSpecificMassFlow, Point14), null,
-                new EconomizerInfo(InjectionSpecificMassFlow, Point6, Point7,
-                    HeatReleaserSpecificMassFlow - InjectionSpecificMassFlow, Point5, Point8),
-                new MixingInfo(Point3, HeatReleaserSpecificMassFlow - InjectionSpecificMassFlow, Point2,
-                    InjectionSpecificMassFlow, Point7))
+                new EconomizerInfo(IntermediateSpecificMassFlow, Point6, Point7,
+                    HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow, Point5, Point8),
+                new MixingInfo(Point3, HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow, Point2,
+                    IntermediateSpecificMassFlow, Point7))
             .Result;
 
     private void CalculateDiffuserOutletPressure()

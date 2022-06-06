@@ -40,7 +40,7 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
         Point8 = Point5.CoolingTo(Point6.Temperature + Economizer.TemperatureDifference);
         Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
         Point3 = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2,
-            HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point7);
+            IntermediateSpecificMassFlow, Point7);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
     }
@@ -110,6 +110,9 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
     public sealed override Pressure IntermediatePressure =>
         base.IntermediatePressure;
 
+    public sealed override Ratio IntermediateSpecificMassFlow =>
+        base.IntermediateSpecificMassFlow;
+
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
         (1 + (Point5.Enthalpy - Point8.Enthalpy) /
@@ -132,11 +135,11 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
                 this, indoor, outdoor,
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point9, Point1),
                 new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point4s, Point5),
-                new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point5, Point6),
+                new EVInfo(IntermediateSpecificMassFlow, Point5, Point6),
                 new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null,
-                new EconomizerInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point6, Point7,
+                new EconomizerInfo(IntermediateSpecificMassFlow, Point6, Point7,
                     EvaporatorSpecificMassFlow, Point5, Point8),
                 new MixingInfo(Point3, EvaporatorSpecificMassFlow, Point2,
-                    HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point7))
+                    IntermediateSpecificMassFlow, Point7))
             .Result;
 }

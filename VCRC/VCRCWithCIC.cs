@@ -98,6 +98,9 @@ public class VCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalysable
         ((Point2.Enthalpy - Point3.Enthalpy) /
          (Point3.Enthalpy - Point7.Enthalpy));
 
+    public sealed override Ratio IntermediateSpecificMassFlow =>
+        HeatReleaserSpecificMassFlow;
+
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         (EvaporatorSpecificMassFlow + BarbotageSpecificMassFlow) /
         (1 - Point6.Quality!.Value.DecimalFractions);

@@ -155,6 +155,9 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     public sealed override Pressure IntermediatePressure =>
         base.IntermediatePressure;
 
+    public sealed override Ratio IntermediateSpecificMassFlow =>
+        base.IntermediateSpecificMassFlow;
+
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
         (1 + (Point8.Enthalpy - Point11.Enthalpy) /
@@ -177,14 +180,14 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
                 new EvaporatorInfo(EvaporatorSpecificMassFlow, Point12, Point1),
                 new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point5s, Point6),
                 new EVInfo(HeatReleaserSpecificMassFlow, Point6, Point7),
-                new EVInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point8, Point9),
+                new EVInfo(IntermediateSpecificMassFlow, Point8, Point9),
                 new EVInfo(EvaporatorSpecificMassFlow, Point11, Point12), null,
                 new RecuperatorInfo(EvaporatorSpecificMassFlow, Point1, Point2,
                     HeatReleaserSpecificMassFlow, Point7, Point8),
-                new EconomizerInfo(HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point9, Point10,
+                new EconomizerInfo(IntermediateSpecificMassFlow, Point9, Point10,
                     EvaporatorSpecificMassFlow, Point8, Point11),
                 new MixingInfo(Point4, EvaporatorSpecificMassFlow, Point3,
-                    HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point10))
+                    IntermediateSpecificMassFlow, Point10))
             .Result;
 
     private void CalculateInjectionQuality()
@@ -200,7 +203,7 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
             Point3 = Point2.CompressionTo(IntermediatePressure, Compressor.Efficiency);
             return (Point10.Enthalpy -
                     (Point4.Enthalpy - EvaporatorSpecificMassFlow /
-                        (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow) *
+                        IntermediateSpecificMassFlow *
                         (Point3.Enthalpy - Point4.Enthalpy)))
                 .JoulesPerKilogram;
         }

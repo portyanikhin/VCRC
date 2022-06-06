@@ -35,9 +35,9 @@ public class VCRCWithPC : AbstractTwoStageVCRC, IEntropyAnalysable
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point5s = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2s,
-            HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point4s);
+            IntermediateSpecificMassFlow, Point4s);
         Point5 = Refrigerant.Mixing(EvaporatorSpecificMassFlow, Point2,
-            HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point4);
+            IntermediateSpecificMassFlow, Point4);
         Point8 = Refrigerant.BubblePointAt(IntermediatePressure);
         Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
@@ -108,6 +108,9 @@ public class VCRCWithPC : AbstractTwoStageVCRC, IEntropyAnalysable
     public sealed override Pressure IntermediatePressure =>
         base.IntermediatePressure;
 
+    public sealed override Ratio IntermediateSpecificMassFlow =>
+        base.IntermediateSpecificMassFlow;
+
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow *
         (1 + Point7.Quality!.Value.DecimalFractions /
@@ -115,7 +118,7 @@ public class VCRCWithPC : AbstractTwoStageVCRC, IEntropyAnalysable
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy +
-        (HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow).DecimalFractions *
+        IntermediateSpecificMassFlow.DecimalFractions *
         (Point4s.Enthalpy - Point3.Enthalpy);
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
@@ -133,6 +136,6 @@ public class VCRCWithPC : AbstractTwoStageVCRC, IEntropyAnalysable
                 new EVInfo(HeatReleaserSpecificMassFlow, Point6, Point7),
                 new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null, null,
                 new MixingInfo(Point5, EvaporatorSpecificMassFlow, Point2,
-                    HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow, Point4))
+                    IntermediateSpecificMassFlow, Point4))
             .Result;
 }

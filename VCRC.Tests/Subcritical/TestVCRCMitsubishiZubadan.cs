@@ -206,6 +206,8 @@ public static class TestVCRCMitsubishiZubadan
              (1 + (Cycle.Point3.Enthalpy - Cycle.Point4.Enthalpy) /
                  (Cycle.Point4.Enthalpy - Cycle.Point10.Enthalpy))).Percent,
             1e-3);
+        Cycle.IntermediateSpecificMassFlow.Should().Be(
+            Cycle.HeatReleaserSpecificMassFlow - Cycle.EvaporatorSpecificMassFlow);
     }
 
     [Test]
