@@ -10,13 +10,13 @@ namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with an ejector as an expansion device,
-///     economizer and two-phase injection to the compressor.
+///     economizer and two-phase injection into the compressor.
 /// </summary>
 public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
 {
     /// <summary>
     ///     Two-stage VCRC with an ejector as an expansion device,
-    ///     economizer and two-phase injection to the compressor.
+    ///     economizer and two-phase injection into the compressor.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
@@ -63,7 +63,7 @@ public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAna
     public EconomizerWithTPI Economizer { get; }
 
     /// <summary>
-    ///     Point 1 - separator vapor outlet / first compression stage suction.
+    ///     Point 1 – separator vapor outlet / first compression stage suction.
     /// </summary>
     public Refrigerant Point1 { get; private set; } = null!;
 

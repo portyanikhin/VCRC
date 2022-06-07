@@ -6,12 +6,12 @@ using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
 namespace VCRC;
 
 /// <summary>
-///     Two-stage VCRC with economizer and two-phase injection to the compressor.
+///     Two-stage VCRC with economizer and two-phase injection into the compressor.
 /// </summary>
 public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
 {
     /// <summary>
-    ///     Two-stage VCRC with economizer and two-phase injection to the compressor.
+    ///     Two-stage VCRC with economizer and two-phase injection into the compressor.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>

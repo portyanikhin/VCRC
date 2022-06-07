@@ -74,7 +74,7 @@ public class VCRCWithEjectorEconomizerAndPC : AbstractTwoStageVCRC, IEntropyAnal
     public Economizer Economizer { get; }
 
     /// <summary>
-    ///     Point 1 - separator vapor outlet / first compression stage suction.
+    ///     Point 1 – separator vapor outlet / first compression stage suction.
     /// </summary>
     public Refrigerant Point1 { get; }
 
@@ -122,7 +122,7 @@ public class VCRCWithEjectorEconomizerAndPC : AbstractTwoStageVCRC, IEntropyAnal
     public Refrigerant Point6 => HeatReleaser.Outlet;
 
     /// <summary>
-    ///     Point 7 –  first EV outlet / economizer "cold" inlet.
+    ///     Point 7 – first EV outlet / economizer "cold" inlet.
     /// </summary>
     public Refrigerant Point7 { get; private set; } = null!;
 

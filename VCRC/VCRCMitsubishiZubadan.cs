@@ -12,8 +12,8 @@ namespace VCRC;
 ///     Mitsubishi Zubadan VCRC (subcritical only).
 /// </summary>
 /// <remarks>
-///     Two-stage subcritical VCRC with
-///     economizer, recuperator and two-phase injection to the compressor.
+///     Two-stage subcritical VCRC with economizer, recuperator and
+///     two-phase injection into the compressor.
 /// </remarks>
 public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
 {
@@ -21,8 +21,8 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Mitsubishi Zubadan VCRC (subcritical only).
     /// </summary>
     /// <remarks>
-    ///     Two-stage subcritical VCRC with
-    ///     economizer, recuperator and two-phase injection to the compressor.
+    ///     Two-stage subcritical VCRC with economizer, recuperator and
+    ///     two-phase injection into the compressor.
     /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
