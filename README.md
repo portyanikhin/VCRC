@@ -110,14 +110,14 @@ Console.WriteLine(gasCoolerWithSpecifiedPressure.Pressure.Bars); // 105
 Ejector with _90 %_ isentropic efficiency of the nozzle, suction section and diffuser:
 
 ```csharp
-var ejector = new Ejector(90.Percent());
+var ejector = new Ejector((90).Percent());
 ```
 
 Ejector with _90 %_ isentropic efficiency of the nozzle and suction section and 
 _80 %_ isentropic efficiency of the diffuser:
 
 ```csharp
-var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
+var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
 ```
 
 ### Recuperator
