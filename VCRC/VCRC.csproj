@@ -16,22 +16,11 @@
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <PackageReadmeFile>NuGet.md</PackageReadmeFile>
         <PackageReleaseNotes>
-BREAKING CHANGES:
-- Many new VCRCs have been added.
-- Every VCRC (except Mitsubishi Zubadan VCRC) can now be transcritical.
-- Added new VCRC components (GasCooler and Ejector records).
-- The IntermediateVessel record has been deleted.
-- Now the Recuperator is determined not by superheat, but by the temperature difference at the "hot" side.
-- The intermediate pressure for the two-stage VCRCs is now calculated only automatically.
-- The evaporating pressure is now always determined by the dew point.
-- The condensing pressure is now always determined by the bubble point.
-- Bump SharpProp from 4.0.0 to 4.0.1.
-- Documentation updated.
-
-More info in documentation.
+- Bump SharpProp from 4.0.1 to 4.0.2.
+- Bump FluentValidation from 11.0.2 to 11.0.3.
         </PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>2.0.0</PackageVersion>
+        <PackageVersion>2.0.1</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
