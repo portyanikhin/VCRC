@@ -7,10 +7,12 @@
 [![License](https://img.shields.io/github/license/portyanikhin/VCRC)](https://github.com/portyanikhin/VCRC/blob/main/LICENSE)
 [![codecov](https://codecov.io/gh/portyanikhin/VCRC/branch/main/graph/badge.svg?token=aJmrRHNQnS)](https://codecov.io/gh/portyanikhin/VCRC)
 
-Cross-platform vapor-compression refrigeration cycles analysis tool using [SharpProp](https://github.com/portyanikhin/SharpProp).
+Cross-platform vapor-compression refrigeration cycles analysis tool using 
+[SharpProp](https://github.com/portyanikhin/SharpProp).
 
 ## Navigation
 
+- [How to install](#how-to-install)
 - [Unit safety](#unit-safety)
 - [VCRC components](#vcrc-components)
     - [Evaporator](#evaporator)
@@ -35,6 +37,28 @@ Cross-platform vapor-compression refrigeration cycles analysis tool using [Sharp
 - [Two-stage VCRC with an ejector as an expansion device, economizer and two-phase injection into the compressor](#two-stage-vcrc-with-an-ejector-as-an-expansion-device-economizer-and-two-phase-injection-into-the-compressor)
 - [Mitsubishi Zubadan VCRC (subcritical only)](#mitsubishi-zubadan-vcrc-subcritical-only)
 - [Entropy analysis](#entropy-analysis)
+
+## How to install
+
+Run the following commands in the
+[Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console):
+
+```shell
+PM> Install-Package SharpProp -Version 4.0.3
+```
+
+```shell
+PM> Install-Package VCRC -Version 2.0.3
+```
+
+Or add this to the `.csproj` file:
+
+```xml
+<ItemGroup>
+    <PackageReference Include="SharpProp" Version="4.0.3"/>
+    <PackageReference Include="VCRC" Version="2.0.3"/>
+</ItemGroup>
+```
 
 ## Unit safety
 
