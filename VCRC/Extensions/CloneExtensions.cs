@@ -1,4 +1,4 @@
-﻿using Force.DeepCloner;
+﻿using SharpProp;
 
 namespace VCRC;
 
@@ -9,5 +9,6 @@ public static class CloneExtensions
     /// </summary>
     /// <param name="instance">The <see cref="Refrigerant" /> instance.</param>
     /// <returns>Deep copy of the <see cref="Refrigerant" /> instance.</returns>
-    public static Refrigerant Clone(this Refrigerant instance) => instance.DeepClone();
+    public static Refrigerant Clone(this Refrigerant instance) =>
+        (Refrigerant) ((Fluid) instance).Clone();
 }
