@@ -12,7 +12,8 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ windows-2022, ubuntu-20.04 ]
+        os: [ windows-latest, ubuntu-latest ]
+
     steps:
       - uses: actions/checkout@v3
       - name: Setup .NET 5.0
