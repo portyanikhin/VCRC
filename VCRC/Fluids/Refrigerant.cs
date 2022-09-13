@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Text.RegularExpressions;
 using CoolProp;
 using FluentValidation;
 using SharpProp;
 using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
+using UnitsNet.Units;
 
 namespace VCRC;
 
@@ -37,6 +40,34 @@ public class Refrigerant : Fluid
         base.CriticalTemperature ?? throw new NullReferenceException("Invalid critical temperature!");
 
     /// <summary>
+    ///     Temperature glide at atmospheric pressure (by default, K).
+    /// </summary>
+    public TemperatureDelta Glide =>
+        (DewPointAt(1.Atmospheres()).Temperature -
+         BubblePointAt(1.Atmospheres()).Temperature)
+        .Abs().ToUnit(TemperatureDeltaUnit.Kelvin);
+
+    /// <summary>
+    ///     <c>true</c> if the refrigerant has a temperature glide.
+    /// </summary>
+    public bool HasGlide => Glide > 0.01.Kelvins();
+
+    /// <summary>
+    ///     <c>true</c> if the refrigerant is a single component.
+    /// </summary>
+    public bool IsSingleComponent => !IsAzeotropicBlend && !IsZeotropicBlend;
+
+    /// <summary>
+    ///     <c>true</c> if the refrigerant is an azeotropic blend.
+    /// </summary>
+    public bool IsAzeotropicBlend => BlendRegex(false).IsMatch(Name.ToString());
+
+    /// <summary>
+    ///     <c>true</c> if the refrigerant is a zeotropic blend.
+    /// </summary>
+    public bool IsZeotropicBlend => BlendRegex(true).IsMatch(Name.ToString());
+
+    /// <summary>
     ///     Absolute pressure at the triple point (by default, kPa).
     /// </summary>
     /// <exception cref="NullReferenceException">Invalid triple pressure!</exception>
@@ -49,20 +80,6 @@ public class Refrigerant : Fluid
     /// <exception cref="NullReferenceException">Invalid triple temperature!</exception>
     public new Temperature TripleTemperature =>
         base.TripleTemperature ?? throw new NullReferenceException("Invalid triple temperature!");
-
-    /// <summary>
-    ///     <c>true</c> if the refrigerant has a temperature glide.
-    /// </summary>
-    public bool HasGlide
-    {
-        get
-        {
-            var intermediatePressure = (TriplePressure + CriticalPressure) / 2;
-            return (DewPointAt(intermediatePressure).Temperature -
-                    BubblePointAt(intermediatePressure).Temperature)
-                .Abs() > 0.01.Kelvins();
-        }
-    }
 
     /// <summary>
     ///     Subcooled refrigerant.
@@ -189,4 +206,7 @@ public class Refrigerant : Fluid
         Ratio secondSpecificMassFlow, AbstractFluid second) =>
         (Refrigerant) base.Mixing(firstSpecificMassFlow, first,
             secondSpecificMassFlow, second);
+
+    private static Regex BlendRegex(bool zeotropic) =>
+        new(zeotropic ? @"^R4\d{2}" : @"^R5\d{2}", RegexOptions.Compiled);
 }

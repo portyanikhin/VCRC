@@ -48,14 +48,50 @@ public static class TestRefrigerant
     public static double TestTripleTemperature() =>
         Refrigerant.TripleTemperature.DegreesCelsius;
 
-    [TestCase(FluidsList.R22, ExpectedResult = false)]
+    [TestCase(FluidsList.R32, ExpectedResult = 0)]
+    [TestCase(FluidsList.R134a, ExpectedResult = 0)]
+    [TestCase(FluidsList.R404A, ExpectedResult = 0.75017192257570287)]
+    [TestCase(FluidsList.R407C, ExpectedResult = 6.9953896623448202)]
+    [TestCase(FluidsList.R507A, ExpectedResult = 0.0014729570078202414)]
+    [TestCase(FluidsList.R511A, ExpectedResult = 0.0088663065580476541)]
+    public static double TestGlide(FluidsList name) =>
+        new Refrigerant(name).Glide.Kelvins;
+
     [TestCase(FluidsList.R32, ExpectedResult = false)]
     [TestCase(FluidsList.R134a, ExpectedResult = false)]
     [TestCase(FluidsList.R404A, ExpectedResult = true)]
     [TestCase(FluidsList.R407C, ExpectedResult = true)]
-    [TestCase(FluidsList.R410A, ExpectedResult = true)]
+    [TestCase(FluidsList.R507A, ExpectedResult = false)]
+    [TestCase(FluidsList.R511A, ExpectedResult = false)]
     public static bool TestHasGlide(FluidsList name) =>
         new Refrigerant(name).HasGlide;
+
+    [TestCase(FluidsList.R32, ExpectedResult = true)]
+    [TestCase(FluidsList.R134a, ExpectedResult = true)]
+    [TestCase(FluidsList.R404A, ExpectedResult = false)]
+    [TestCase(FluidsList.R407C, ExpectedResult = false)]
+    [TestCase(FluidsList.R507A, ExpectedResult = false)]
+    [TestCase(FluidsList.R511A, ExpectedResult = false)]
+    public static bool TestIsSingleComponent(FluidsList name) =>
+        new Refrigerant(name).IsSingleComponent;
+
+    [TestCase(FluidsList.R32, ExpectedResult = false)]
+    [TestCase(FluidsList.R134a, ExpectedResult = false)]
+    [TestCase(FluidsList.R404A, ExpectedResult = false)]
+    [TestCase(FluidsList.R407C, ExpectedResult = false)]
+    [TestCase(FluidsList.R507A, ExpectedResult = true)]
+    [TestCase(FluidsList.R511A, ExpectedResult = true)]
+    public static bool TestIsAzeotropicBlend(FluidsList name) =>
+        new Refrigerant(name).IsAzeotropicBlend;
+
+    [TestCase(FluidsList.R32, ExpectedResult = false)]
+    [TestCase(FluidsList.R134a, ExpectedResult = false)]
+    [TestCase(FluidsList.R404A, ExpectedResult = true)]
+    [TestCase(FluidsList.R407C, ExpectedResult = true)]
+    [TestCase(FluidsList.R507A, ExpectedResult = false)]
+    [TestCase(FluidsList.R511A, ExpectedResult = false)]
+    public static bool TestIsZeotropicBlend(FluidsList name) =>
+        new Refrigerant(name).IsZeotropicBlend;
 
     [Test]
     public static void TestSubcooledFromTemperature()
