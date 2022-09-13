@@ -44,19 +44,19 @@ Run the following commands in the
 [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console):
 
 ```shell
-PM> Install-Package SharpProp -Version 4.2.5
+PM> Install-Package SharpProp -Version 4.3.1
 ```
 
 ```shell
-PM> Install-Package VCRC -Version 2.1.5
+PM> Install-Package VCRC -Version 2.2.0
 ```
 
 Or add this to the `.csproj` file:
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="SharpProp" Version="4.2.5"/>
-    <PackageReference Include="VCRC" Version="2.1.5"/>
+    <PackageReference Include="SharpProp" Version="4.3.1"/>
+    <PackageReference Include="VCRC" Version="2.2.0"/>
 </ItemGroup>
 ```
 
@@ -108,8 +108,8 @@ var condenser = new Condenser(
 ### Gas cooler (for transcritical VCRCs)
 
 For R744, the absolute pressure in the gas cooler is optional.
-If it is not specified, then the optimal pressure will be calculated automatically
-in accordance with this literary source:
+If this is not specified, then the optimal pressure will be calculated automatically
+in accordance with this article:
 
 _Yang L. et al. Minimizing COP loss from optional high pressure correlation for transcritical CO2 cycle //
 Applied Thermal Engineering. – 2015. – V. 89. – P. 656-662._
