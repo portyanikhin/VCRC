@@ -22,12 +22,12 @@ public class VCRCWithPC : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Refrigerant should not have a temperature glide!
+    ///     Refrigerant should be a single component or an azeotropic blend!
     /// </exception>
     public VCRCWithPC(Evaporator evaporator, Compressor compressor,
         IHeatReleaser heatReleaser) : base(evaporator, compressor, heatReleaser)
     {
-        new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
+        new RefrigerantTypeValidator().ValidateAndThrow(Refrigerant);
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point3 = Refrigerant.DewPointAt(IntermediatePressure);

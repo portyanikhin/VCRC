@@ -30,7 +30,7 @@ public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAna
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Refrigerant should not have a temperature glide!
+    ///     Refrigerant should be a single component or an azeotropic blend!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Too high temperature difference at economizer 'cold' side!
@@ -39,7 +39,7 @@ public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAna
         IHeatReleaser heatReleaser, Ejector ejector, EconomizerWithTPI economizer) :
         base(evaporator, compressor, heatReleaser)
     {
-        new RefrigerantWithoutGlideValidator().ValidateAndThrow(Refrigerant);
+        new RefrigerantTypeValidator().ValidateAndThrow(Refrigerant);
         (Ejector, Economizer) = (ejector, economizer);
         CalculateDiffuserOutletPressure();
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);

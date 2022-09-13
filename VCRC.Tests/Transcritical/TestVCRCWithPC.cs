@@ -42,7 +42,7 @@ public static class TestVCRCWithPC
                     refrigerant.CriticalTemperature + TemperatureDelta.FromKelvins(5),
                     1.1 * refrigerant.CriticalPressure));
         action.Should().Throw<ValidationException>()
-            .WithMessage("*Refrigerant should not have a temperature glide!*");
+            .WithMessage("*Refrigerant should be a single component or an azeotropic blend!*");
     }
 
     [Test]

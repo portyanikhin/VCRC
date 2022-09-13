@@ -41,7 +41,7 @@ public static class TestVCRCWithIIC
                 new Condenser(FluidsList.R407C,
                     Condenser.Temperature, Condenser.Subcooling));
         action.Should().Throw<ValidationException>()
-            .WithMessage("*Refrigerant should not have a temperature glide!*");
+            .WithMessage("*Refrigerant should be a single component or an azeotropic blend!*");
     }
 
     [Test]
