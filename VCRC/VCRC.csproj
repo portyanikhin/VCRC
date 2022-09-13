@@ -36,7 +36,7 @@
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="11.2.1"/>
         <PackageReference Include="MathNet.Numerics" Version="5.0.0"/>
-        <PackageReference Include="SharpProp" Version="4.2.5"/>
+        <PackageReference Include="SharpProp" Version="4.3.1"/>
     </ItemGroup>
 
 </Project>
