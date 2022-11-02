@@ -15,13 +15,9 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <PackageReadmeFile>NuGet.md</PackageReadmeFile>
-        <PackageReleaseNotes>
-- Added Glide, IsSingleComponent, IsAzeotropicBlend and IsZeotropicBlend properties to the Refrigerant class.
-- Now, for cycles with an intermediate vessel, single component refrigerants or azeotropic blends can be used, and not only refrigerants without a temperature glide.
-- Bump SharpProp from 4.2.5 to 4.3.1.
-        </PackageReleaseNotes>
+        <PackageReleaseNotes>Bump SharpProp from 4.3.1 to 4.3.2.</PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>2.2.0</PackageVersion>
+        <PackageVersion>2.2.1</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFrameworks>net5.0;net6.0</TargetFrameworks>
