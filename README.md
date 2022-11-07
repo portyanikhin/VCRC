@@ -44,19 +44,19 @@ Run the following commands in the
 [Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console):
 
 ```shell
-PM> NuGet\Install-Package SharpProp -Version 4.3.2
+PM> NuGet\Install-Package SharpProp -Version 4.3.3
 ```
 
 ```shell
-PM> NuGet\Install-Package VCRC -Version 2.2.1
+PM> NuGet\Install-Package VCRC -Version 2.2.2
 ```
 
 Or add this to the `.csproj` file:
 
 ```xml
 <ItemGroup>
-    <PackageReference Include="SharpProp" Version="4.3.2"/>
-    <PackageReference Include="VCRC" Version="2.2.1"/>
+    <PackageReference Include="SharpProp" Version="4.3.3"/>
+    <PackageReference Include="VCRC" Version="2.2.2"/>
 </ItemGroup>
 ```
 
