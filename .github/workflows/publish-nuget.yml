@@ -2,7 +2,7 @@
 
 on:
   release:
-    types: [published]
+    types: [ published ]
 
 permissions:
   contents: read
@@ -14,21 +14,19 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup .NET 5.0
-        uses: actions/setup-dotnet@v2
-        with:
-          dotnet-version: 5.0.x
       - name: Setup .NET 6.0
-        uses: actions/setup-dotnet@v2
+        uses: actions/setup-dotnet@v3
         with:
           dotnet-version: 6.0.x
-      - name: Publish package to NuGet
-        id: publish_nuget
-        continue-on-error: true
-        uses: brandedoutcast/publish-nuget@v2
+      - name: Setup .NET 7.0
+        uses: actions/setup-dotnet@v3
         with:
-          PROJECT_FILE_PATH: VCRC/VCRC.csproj
-          PACKAGE_NAME: VCRC
-          VERSION_REGEX: ^\s*<PackageVersion>(.*)<\/PackageVersion>\s*$
-          TAG_FORMAT: v*
-          NUGET_KEY: ${{ secrets.NUGET_API_KEY }}
+          dotnet-version: 7.0.x
+      - name: Restore dependencies
+        run: dotnet restore
+      - name: Build
+        run: dotnet build --no-restore --configuration Release
+      - name: Pack
+        run: dotnet pack --no-build --configuration Release -o .
+      - name: Publish to NuGet
+        run: dotnet nuget push *.nupkg -s "https://api.nuget.org/v3/index.json" -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
