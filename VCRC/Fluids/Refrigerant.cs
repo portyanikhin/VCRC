@@ -1,4 +1,3 @@
-﻿using CoolProp;
 using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC;
