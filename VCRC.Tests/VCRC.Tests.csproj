@@ -4,8 +4,9 @@
         <Authors>Vladimir Portyanikhin</Authors>
         <Copyright>Copyright (c) Vladimir Portyanikhin 2021</Copyright>
         <Description>Unit tests for the VCRC</Description>
+        <ImplicitUsings>enable</ImplicitUsings>
         <IsPackable>false</IsPackable>
-        <LangVersion>10</LangVersion>
+        <LangVersion>11</LangVersion>
         <Nullable>enable</Nullable>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>

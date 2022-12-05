@@ -1,12 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentValidation;
-using MathNet.Numerics;
-using MathNet.Numerics.RootFinding;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToPressure;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with an ejector as an expansion device,

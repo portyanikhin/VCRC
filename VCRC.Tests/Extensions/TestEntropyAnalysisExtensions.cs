@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using FluentAssertions;
-using NUnit.Framework;
-using SharpProp;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToRatio;
-using UnitsNet.NumberExtensions.NumberToTemperature;
+﻿using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Extensions;
 

@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using UnitsNet;
-using UnitsNet.Units;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Compressor as a VCRC component.

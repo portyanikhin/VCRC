@@ -1,7 +1,4 @@
-﻿using System;
-using FluentValidation;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 internal class GasCoolerValidator : AbstractValidator<GasCooler>
 {

@@ -1,7 +1,4 @@
-﻿using SharpProp;
-using UnitsNet;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Heat releaser (condenser or gas cooler).

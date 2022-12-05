@@ -1,9 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentValidation;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToRatio;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Single-stage VCRC with recuperator.

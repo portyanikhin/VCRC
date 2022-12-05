@@ -1,10 +1,4 @@
-﻿using System;
-using FluentValidation;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToPressure;
-using UnitsNet.Units;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC base class.

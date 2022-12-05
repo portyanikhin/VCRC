@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using UnitsNet;
-using UnitsNet.Units;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Economizer as a VCRC component.

@@ -1,8 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using FluentValidation;
-using NUnit.Framework;
-using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
+﻿using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC.Tests.Components;
 

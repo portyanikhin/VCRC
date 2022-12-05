@@ -1,8 +1,4 @@
-﻿using FluentAssertions;
-using NUnit.Framework;
-using SharpProp;
-using UnitsNet.NumberExtensions.NumberToPressure;
-using UnitsNet.NumberExtensions.NumberToTemperature;
+﻿using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Extensions;
 

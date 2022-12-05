@@ -1,7 +1,4 @@
-﻿using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 internal record EjectorInfo(Refrigerant Outlet,
     Ratio NozzleSpecificMassFlow, Refrigerant NozzleInlet,

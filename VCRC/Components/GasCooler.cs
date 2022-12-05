@@ -1,10 +1,4 @@
-﻿using System;
-using FluentValidation;
-using SharpProp;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToPressure;
-using UnitsNet.NumberExtensions.NumberToTemperature;
-using UnitsNet.Units;
+﻿using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC;
 

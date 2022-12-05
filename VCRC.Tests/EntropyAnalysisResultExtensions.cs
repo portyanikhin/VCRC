@@ -1,6 +1,4 @@
-﻿using UnitsNet;
-
-namespace VCRC.Tests;
+﻿namespace VCRC.Tests;
 
 public static class EntropyAnalysisResultExtensions
 {

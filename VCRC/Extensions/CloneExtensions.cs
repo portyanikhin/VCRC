@@ -1,6 +1,4 @@
-﻿using SharpProp;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 public static class CloneExtensions
 {

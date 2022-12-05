@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using UnitsNet;
-using UnitsNet.Units;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Economizer as a component of VCRC with two-phase injection into the compressor.

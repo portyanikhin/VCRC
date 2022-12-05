@@ -1,12 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using FluentValidation;
-using MathNet.Numerics;
-using MathNet.Numerics.RootFinding;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToRatio;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Mitsubishi Zubadan VCRC (subcritical only).

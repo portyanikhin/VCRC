@@ -1,8 +1,4 @@
-﻿using FluentValidation;
-using UnitsNet;
-using UnitsNet.Units;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Ejector as a VCRC component.

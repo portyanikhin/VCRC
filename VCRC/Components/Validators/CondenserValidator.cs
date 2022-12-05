@@ -1,7 +1,4 @@
-﻿using System;
-using FluentValidation;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
+﻿using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC;
 

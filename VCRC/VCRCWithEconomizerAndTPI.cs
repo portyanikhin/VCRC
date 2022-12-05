@@ -1,9 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentValidation;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with economizer and two-phase injection into the compressor.

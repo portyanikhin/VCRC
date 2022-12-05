@@ -1,8 +1,4 @@
-﻿using System.Diagnostics.CodeAnalysis;
-using FluentValidation;
-using UnitsNet;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with parallel compression.

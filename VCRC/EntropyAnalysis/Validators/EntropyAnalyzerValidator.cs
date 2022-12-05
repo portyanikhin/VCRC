@@ -1,6 +1,4 @@
-﻿using FluentValidation;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 internal class EntropyAnalyzerValidator : AbstractValidator<EntropyAnalyzer>
 {

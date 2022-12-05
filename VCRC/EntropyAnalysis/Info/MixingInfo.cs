@@ -1,7 +1,4 @@
-﻿using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 internal record MixingInfo(Refrigerant Outlet, Ratio FirstSpecificMassFlow, Refrigerant First,
     Ratio SecondSpecificMassFlow, Refrigerant Second)

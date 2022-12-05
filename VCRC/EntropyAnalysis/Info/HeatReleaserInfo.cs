@@ -1,7 +1,4 @@
-﻿using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 internal record HeatReleaserInfo(Ratio SpecificMassFlow, Refrigerant IsentropicInlet, Refrigerant Outlet)
 {

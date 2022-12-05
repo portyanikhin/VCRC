@@ -1,7 +1,4 @@
-﻿using FluentValidation;
-using UnitsNet;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 public interface IEntropyAnalysable
 {

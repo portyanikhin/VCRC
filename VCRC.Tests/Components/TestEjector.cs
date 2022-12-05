@@ -1,10 +1,4 @@
-﻿using System;
-using FluentAssertions;
-using FluentValidation;
-using NUnit.Framework;
-using UnitsNet.NumberExtensions.NumberToRatio;
-
-namespace VCRC.Tests.Components;
+﻿namespace VCRC.Tests.Components;
 
 public static class TestEjector
 {

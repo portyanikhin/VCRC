@@ -1,12 +1,4 @@
-﻿using System;
-using System.Diagnostics.CodeAnalysis;
-using FluentAssertions;
-using FluentValidation;
-using NUnit.Framework;
-using SharpProp;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToRatio;
-using UnitsNet.NumberExtensions.NumberToTemperature;
+﻿using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests.Transcritical;
 

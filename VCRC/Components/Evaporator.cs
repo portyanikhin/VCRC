@@ -1,9 +1,4 @@
-﻿using FluentValidation;
-using SharpProp;
-using UnitsNet;
-using UnitsNet.Units;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Evaporator as a VCRC component.

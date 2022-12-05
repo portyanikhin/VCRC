@@ -1,14 +1,4 @@
-﻿using System;
-using FluentValidation;
-using MathNet.Numerics;
-using MathNet.Numerics.RootFinding;
-using SharpProp;
-using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToRatio;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-using UnitsNet.NumberExtensions.NumberToSpeed;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 /// <summary>
 ///     Ejector flows.

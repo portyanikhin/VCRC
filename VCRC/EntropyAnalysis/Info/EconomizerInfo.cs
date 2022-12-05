@@ -1,7 +1,4 @@
-﻿using UnitsNet;
-using UnitsNet.NumberExtensions.NumberToSpecificEnergy;
-
-namespace VCRC;
+﻿namespace VCRC;
 
 internal record EconomizerInfo(Ratio ColdSideSpecificMassFlow, Refrigerant ColdInlet, Refrigerant ColdOutlet,
     Ratio HotSideSpecificMassFlow, Refrigerant HotInlet, Refrigerant HotOutlet)
