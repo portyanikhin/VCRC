@@ -69,7 +69,7 @@ In addition, you will be able to convert all values to many other dimensions wit
 
 ## VCRC components
 
-To analyze the vapor-compression refrigeration cycle (VCRC), you first need to build it from individual components.
+To analyze the vapor-compression refrigeration cycle (VCRC), it is first necessary to build it from individual components.
 
 ### Evaporator
 
@@ -989,7 +989,7 @@ Console.WriteLine(cycle.Point5.Temperature); // 62.48 °C
 
 You can perform an entropy analysis of each VCRC mentioned earlier.
 This analysis allows us to estimate with high accuracy the distribution of energy loss 
-due to the nonequilibrium (irreversibility) of working processes in the refrigeration machine. 
+due to non-equilibrium and irreversibility of working processes in the refrigeration machine. 
 Thanks to this, you can easily estimate the energy loss to compensate for the production of entropy 
 in each part of the refrigeration cycle and make decisions that will help increase its efficiency.
 
@@ -1017,4 +1017,5 @@ Console.WriteLine(result.MixingEnergyLossRatio);          // 0 %
 Console.WriteLine(result.AnalysisRelativeError);          // 1.27e-13 %
 ```
 
-In addition, you can perform entropy analysis in the range of indoor and outdoor temperatures ([see example](https://github.com/portyanikhin/VCRC/blob/main/VCRC.Tests/Extensions/TestEntropyAnalysisExtensions.cs)).
+In addition, you can perform entropy analysis in the range of indoor and outdoor temperatures
+([see example](https://github.com/portyanikhin/VCRC/blob/main/VCRC.Tests/Extensions/EntropyAnalysisExtensionsTests.cs)).
