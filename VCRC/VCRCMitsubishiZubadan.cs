@@ -4,8 +4,8 @@
 ///     Mitsubishi Zubadan VCRC (subcritical only).
 /// </summary>
 /// <remarks>
-///     Two-stage subcritical VCRC with economizer, recuperator and
-///     two-phase injection into the compressor.
+///     Two-stage subcritical VCRC with economizer,
+///     recuperator and two-phase injection into the compressor.
 /// </remarks>
 public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
 {
@@ -13,34 +13,24 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Mitsubishi Zubadan VCRC (subcritical only).
     /// </summary>
     /// <remarks>
-    ///     Two-stage subcritical VCRC with economizer, recuperator and
-    ///     two-phase injection into the compressor.
+    ///     Two-stage subcritical VCRC with economizer,
+    ///     recuperator and two-phase injection into the compressor.
     /// </remarks>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>
     /// <param name="economizer">Economizer.</param>
-    /// <exception cref="ArgumentException">
-    ///     Solution not found!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
-    /// </exception>
+    /// <exception cref="ArgumentException">Solution not found!</exception>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     There should be a two-phase refrigerant at the recuperator 'hot' inlet!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'hot' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'cold' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Too high temperature difference at economizer 'cold' side!
-    /// </exception>
+    /// <exception cref="ValidationException">Wrong temperature difference at recuperator 'hot' side!</exception>
+    /// <exception cref="ValidationException">Wrong temperature difference at recuperator 'cold' side!</exception>
+    /// <exception cref="ValidationException">Too high temperature difference at economizer 'cold' side!</exception>
     public VCRCMitsubishiZubadan(Evaporator evaporator, Compressor compressor,
         Condenser condenser, EconomizerWithTPI economizer) : base(evaporator, compressor, condenser)
     {

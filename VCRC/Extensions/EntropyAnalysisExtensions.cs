@@ -17,9 +17,9 @@ public static class EntropyAnalysisExtensions
             : throw new ArgumentException("The lists should have the same length!");
 
     /// <summary>
-    ///     Computes the average of a list of <c>EntropyAnalysisResult</c> values.
+    ///     Computes the average of a list of the entropy analysis results.
     /// </summary>
-    /// <param name="results">List of <c>EntropyAnalysisResult</c> values.</param>
+    /// <param name="results">List of the entropy analysis results.</param>
     /// <returns>The average.</returns>
     public static EntropyAnalysisResult Average(this List<EntropyAnalysisResult> results) =>
         new(results.Select(i => i.ThermodynamicPerfection.Percent).Average().Percent(),

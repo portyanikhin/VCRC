@@ -10,7 +10,7 @@ public class Refrigerant : Fluid
     /// <summary>
     ///     VCRC working fluid.
     /// </summary>
-    /// <param name="name">Selected refrigerant.</param>
+    /// <param name="name">Selected refrigerant name.</param>
     /// <exception cref="ValidationException">
     ///     The selected fluid is not a refrigerant (its name should start with 'R')!
     /// </exception>
@@ -40,22 +40,22 @@ public class Refrigerant : Fluid
         .Abs().ToUnit(TemperatureDeltaUnit.Kelvin);
 
     /// <summary>
-    ///     <c>true</c> if the refrigerant has a temperature glide.
+    ///     True if the refrigerant has a temperature glide.
     /// </summary>
     public bool HasGlide => Glide > 0.01.Kelvins();
 
     /// <summary>
-    ///     <c>true</c> if the refrigerant is a single component.
+    ///     True if the refrigerant is a single component.
     /// </summary>
     public bool IsSingleComponent => !IsAzeotropicBlend && !IsZeotropicBlend;
 
     /// <summary>
-    ///     <c>true</c> if the refrigerant is an azeotropic blend.
+    ///     True if the refrigerant is an azeotropic blend.
     /// </summary>
     public bool IsAzeotropicBlend => BlendRegex(false).IsMatch(Name.ToString());
 
     /// <summary>
-    ///     <c>true</c> if the refrigerant is a zeotropic blend.
+    ///     True if the refrigerant is a zeotropic blend.
     /// </summary>
     public bool IsZeotropicBlend => BlendRegex(true).IsMatch(Name.ToString());
 
@@ -79,9 +79,7 @@ public class Refrigerant : Fluid
     /// <param name="bubblePointTemperature">Bubble point temperature.</param>
     /// <param name="subcooling">Subcooling.</param>
     /// <returns>Subcooled refrigerant.</returns>
-    /// <exception cref="ArgumentException">
-    ///     Invalid subcooling!
-    /// </exception>
+    /// <exception cref="ArgumentException">Invalid subcooling!</exception>
     public Refrigerant Subcooled(Temperature bubblePointTemperature, TemperatureDelta subcooling) =>
         subcooling < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid subcooling!")
@@ -96,9 +94,7 @@ public class Refrigerant : Fluid
     /// <param name="pressure">Pressure.</param>
     /// <param name="subcooling">Subcooling.</param>
     /// <returns>Subcooled refrigerant.</returns>
-    /// <exception cref="ArgumentException">
-    ///     Invalid subcooling!
-    /// </exception>
+    /// <exception cref="ArgumentException">Invalid subcooling!</exception>
     public Refrigerant Subcooled(Pressure pressure, TemperatureDelta subcooling) =>
         subcooling < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid subcooling!")
@@ -113,9 +109,7 @@ public class Refrigerant : Fluid
     /// <param name="dewPointTemperature">Dew point temperature.</param>
     /// <param name="superheat">Superheat.</param>
     /// <returns>Superheated refrigerant.</returns>
-    /// <exception cref="ArgumentException">
-    ///     Invalid superheat!
-    /// </exception>
+    /// <exception cref="ArgumentException">Invalid superheat!</exception>
     public Refrigerant Superheated(Temperature dewPointTemperature, TemperatureDelta superheat) =>
         superheat < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid superheat!")
@@ -130,9 +124,7 @@ public class Refrigerant : Fluid
     /// <param name="pressure">Pressure.</param>
     /// <param name="superheat">Superheat.</param>
     /// <returns>Superheated refrigerant.</returns>
-    /// <exception cref="ArgumentException">
-    ///     Invalid superheat!
-    /// </exception>
+    /// <exception cref="ArgumentException">Invalid superheat!</exception>
     public Refrigerant Superheated(Pressure pressure, TemperatureDelta superheat) =>
         superheat < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid superheat!")

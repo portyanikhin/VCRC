@@ -11,9 +11,7 @@ public abstract class AbstractVCRC
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
-    /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
-    /// </exception>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
@@ -52,8 +50,7 @@ public abstract class AbstractVCRC
     public GasCooler? GasCooler { get; }
 
     /// <summary>
-    ///     <c>true</c> if transcritical VCRC,
-    ///     <c>false</c> if subcritical VCRC.
+    ///     True if transcritical VCRC, false if subcritical VCRC.
     /// </summary>
     public bool IsTranscritical => GasCooler is not null;
 

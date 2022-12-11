@@ -14,9 +14,7 @@ public record Evaporator
     /// <exception cref="ValidationException">
     ///     Evaporating temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Superheat in the evaporator should be in [0;50] K!
-    /// </exception>
+    /// <exception cref="ValidationException">Superheat in the evaporator should be in [0;50] K!</exception>
     public Evaporator(FluidsList refrigerantName, Temperature temperature, TemperatureDelta superheat)
     {
         (RefrigerantName, Temperature, Superheat) =

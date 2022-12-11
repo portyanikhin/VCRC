@@ -12,15 +12,11 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
     /// <param name="recuperator">Recuperator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
-    /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
-    /// </exception>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Too high temperature difference at recuperator 'hot' side!
-    /// </exception>
+    /// <exception cref="ValidationException">Too high temperature difference at recuperator 'hot' side!</exception>
     public VCRCWithRecuperator(Evaporator evaporator, Recuperator recuperator, Compressor compressor,
         IHeatReleaser heatReleaser) : base(evaporator, compressor, heatReleaser)
     {

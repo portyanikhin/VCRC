@@ -24,9 +24,7 @@ public class VCRCWithEjectorEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAna
     /// <exception cref="ValidationException">
     ///     Refrigerant should be a single component or an azeotropic blend!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Too high temperature difference at economizer 'cold' side!
-    /// </exception>
+    /// <exception cref="ValidationException">Too high temperature difference at economizer 'cold' side!</exception>
     public VCRCWithEjectorEconomizerAndTPI(Evaporator evaporator, Compressor compressor,
         IHeatReleaser heatReleaser, Ejector ejector, EconomizerWithTPI economizer) :
         base(evaporator, compressor, heatReleaser)

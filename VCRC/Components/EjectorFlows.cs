@@ -11,9 +11,7 @@ public class EjectorFlows
     /// <param name="ejector">Ejector.</param>
     /// <param name="nozzleInlet">Nozzle inlet.</param>
     /// <param name="suctionInlet">Suction section inlet.</param>
-    /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
-    /// </exception>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
     ///     Ejector nozzle inlet pressure should be greater than suction inlet pressure!
     /// </exception>

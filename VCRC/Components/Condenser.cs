@@ -1,12 +1,12 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Condenser as a VCRC component.
+///     Condenser as a subcritical VCRC component.
 /// </summary>
 public record Condenser : IHeatReleaser
 {
     /// <summary>
-    ///     Condenser as a VCRC component.
+    ///     Condenser as a subcritical VCRC component.
     /// </summary>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
     /// <param name="temperature">Condensing temperature (bubble point).</param>
@@ -14,9 +14,7 @@ public record Condenser : IHeatReleaser
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Subcooling in the condenser should be in [0;50] K!
-    /// </exception>
+    /// <exception cref="ValidationException">Subcooling in the condenser should be in [0;50] K!</exception>
     public Condenser(FluidsList refrigerantName, Temperature temperature, TemperatureDelta subcooling)
     {
         (RefrigerantName, Temperature, Subcooling) =

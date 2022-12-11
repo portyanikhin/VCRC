@@ -12,18 +12,12 @@ public class VCRCWithEconomizer : AbstractTwoStageVCRC, IEntropyAnalysable
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <param name="economizer">Economizer.</param>
-    /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
-    /// </exception>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at economizer 'hot' side!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Too high temperature difference at economizer 'cold' side!
-    /// </exception>
+    /// <exception cref="ValidationException">Wrong temperature difference at economizer 'hot' side!</exception>
+    /// <exception cref="ValidationException">Too high temperature difference at economizer 'cold' side!</exception>
     public VCRCWithEconomizer(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser,
         Economizer economizer) : base(evaporator, compressor, heatReleaser)
     {
