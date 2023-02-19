@@ -3,6 +3,12 @@
 internal record MixingInfo(Refrigerant Outlet, Ratio FirstSpecificMassFlow, Refrigerant First,
     Ratio SecondSpecificMassFlow, Refrigerant Second)
 {
+    public Refrigerant Outlet { get; } = Outlet;
+    public Ratio FirstSpecificMassFlow { get; } = FirstSpecificMassFlow;
+    public Refrigerant First { get; } = First;
+    public Ratio SecondSpecificMassFlow { get; } = SecondSpecificMassFlow;
+    public Refrigerant Second { get; } = Second;
+
     internal SpecificEnergy EnergyLoss(Temperature hotSource) =>
         (hotSource.Kelvins *
          ((FirstSpecificMassFlow +
