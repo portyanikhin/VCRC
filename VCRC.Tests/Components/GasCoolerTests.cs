@@ -2,21 +2,22 @@
 
 namespace VCRC.Tests;
 
-public class GasCoolerTests
+public class GasCoolerTests : IClassFixture<ComparisonFixture>
 {
     private static readonly Refrigerant Refrigerant = new(FluidsList.R744);
     private static readonly Temperature Temperature = 308.15.Kelvins();
     private static readonly Pressure Pressure = 8.Megapascals();
+    private readonly ComparisonFixture _comparison;
+    private readonly GasCooler _gasCooler;
+    private readonly GasCooler _gasCoolerWithSpecifiedPressure;
 
-    public GasCoolerTests()
+    public GasCoolerTests(ComparisonFixture comparison)
     {
-        GasCooler = new GasCooler(Refrigerant.Name, Temperature);
-        GasCoolerWithSpecifiedPressure =
+        _comparison = comparison;
+        _gasCooler = new GasCooler(Refrigerant.Name, Temperature);
+        _gasCoolerWithSpecifiedPressure =
             new GasCooler(Refrigerant.Name, Temperature, Pressure);
     }
-
-    private GasCooler GasCooler { get; }
-    private GasCooler GasCoolerWithSpecifiedPressure { get; }
 
     [Fact]
     public void GasCooler_AnyRefrigerantOtherThanR744WithUnspecifiedPressure_ThrowsArgumentException()
@@ -47,33 +48,36 @@ public class GasCoolerTests
 
     [Fact]
     public void RefrigerantName_Always_ReturnsEnteredName() =>
-        GasCooler.RefrigerantName.Should().Be(Refrigerant.Name);
+        _gasCooler.RefrigerantName.Should().Be(Refrigerant.Name);
 
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        GasCooler.Temperature.Should().Be(Temperature);
-        GasCooler.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
+        _gasCooler.Temperature.Equals(Temperature, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _gasCooler.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
 
     [Fact]
     public void Pressure_IfUnspecified_ReturnsOptimalValueByYangEtAlInKilopascals()
     {
-        GasCooler.Pressure.Should().Be(
-            (2.759 * GasCooler.Temperature.DegreesCelsius - 9.912).Bars());
-        GasCooler.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
+        _gasCooler.Pressure.Equals((2.759 * _gasCooler.Temperature.DegreesCelsius - 9.912).Bars(),
+                _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _gasCooler.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
 
     [Fact]
     public void Pressure_IfSpecified_ReturnsSpecifiedValueInKilopascals()
     {
-        GasCoolerWithSpecifiedPressure.Pressure.Should().Be(Pressure);
-        GasCoolerWithSpecifiedPressure.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
+        _gasCoolerWithSpecifiedPressure.Pressure.Equals(Pressure, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _gasCoolerWithSpecifiedPressure.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
 
     [Fact]
     public void Outlet_Always_ReturnsRefrigerantAtPressureAndTemperature() =>
-        GasCooler.Outlet.Should().Be(
-            Refrigerant.WithState(Input.Pressure(GasCooler.Pressure),
+        _gasCooler.Outlet.Should().Be(
+            Refrigerant.WithState(Input.Pressure(_gasCooler.Pressure),
                 Input.Temperature(Temperature)));
 }

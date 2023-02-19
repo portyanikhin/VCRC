@@ -2,16 +2,19 @@
 
 namespace VCRC.Tests;
 
-public class CondenserTests
+public class CondenserTests : IClassFixture<ComparisonFixture>
 {
     private static readonly Refrigerant Refrigerant = new(FluidsList.R407C);
     private static readonly Temperature Temperature = 323.15.Kelvins();
     private static readonly TemperatureDelta Subcooling = TemperatureDelta.FromDegreesCelsius(3);
+    private readonly ComparisonFixture _comparison;
+    private readonly Condenser _condenser;
 
-    public CondenserTests() =>
-        Condenser = new Condenser(Refrigerant.Name, Temperature, Subcooling);
-
-    private Condenser Condenser { get; }
+    public CondenserTests(ComparisonFixture comparison)
+    {
+        _comparison = comparison;
+        _condenser = new Condenser(Refrigerant.Name, Temperature, Subcooling);
+    }
 
     [Theory]
     [InlineData(-74.0)]
@@ -38,30 +41,33 @@ public class CondenserTests
 
     [Fact]
     public void RefrigerantName_Always_ReturnsEnteredName() =>
-        Condenser.RefrigerantName.Should().Be(Refrigerant.Name);
+        _condenser.RefrigerantName.Should().Be(Refrigerant.Name);
 
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        Condenser.Temperature.Should().Be(Temperature);
-        Condenser.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
+        _condenser.Temperature.Equals(Temperature, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _condenser.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
 
     [Fact]
     public void Subcooling_Always_ReturnsEnteredValueInKelvins()
     {
-        Condenser.Subcooling.Should().Be(Subcooling);
-        Condenser.Subcooling.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
+        _condenser.Subcooling.Equals(Subcooling, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _condenser.Subcooling.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 
     [Fact]
     public void Pressure_Always_ReturnsOutletPressureInKilopascals()
     {
-        Condenser.Pressure.Should().Be(Condenser.Outlet.Pressure);
-        Condenser.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
+        _condenser.Pressure.Equals(_condenser.Outlet.Pressure, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _condenser.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
 
     [Fact]
     public void Outlet_Always_ReturnsSubcooledRefrigerant() =>
-        Condenser.Outlet.Should().Be(Refrigerant.Subcooled(Temperature, Subcooling));
+        _condenser.Outlet.Should().Be(Refrigerant.Subcooled(Temperature, Subcooling));
 }

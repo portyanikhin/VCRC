@@ -2,16 +2,19 @@
 
 namespace VCRC.Tests;
 
-public class EvaporatorTests
+public class EvaporatorTests : IClassFixture<ComparisonFixture>
 {
     private static readonly Refrigerant Refrigerant = new(FluidsList.R407C);
     private static readonly Temperature Temperature = 278.15.Kelvins();
     private static readonly TemperatureDelta Superheat = TemperatureDelta.FromDegreesCelsius(8);
+    private readonly ComparisonFixture _comparison;
+    private readonly Evaporator _evaporator;
 
-    public EvaporatorTests() =>
-        Evaporator = new Evaporator(Refrigerant.Name, Temperature, Superheat);
-
-    private Evaporator Evaporator { get; }
+    public EvaporatorTests(ComparisonFixture comparison)
+    {
+        _comparison = comparison;
+        _evaporator = new Evaporator(Refrigerant.Name, Temperature, Superheat);
+    }
 
     [Theory]
     [InlineData(-74.0)]
@@ -38,30 +41,32 @@ public class EvaporatorTests
 
     [Fact]
     public void RefrigerantName_Always_ReturnsEnteredName() =>
-        Evaporator.RefrigerantName.Should().Be(Refrigerant.Name);
+        _evaporator.RefrigerantName.Should().Be(Refrigerant.Name);
 
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        Evaporator.Temperature.Should().Be(Temperature);
-        Evaporator.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
+        _evaporator.Temperature.Equals(Temperature, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _evaporator.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
 
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        Evaporator.Superheat.Should().Be(Superheat);
-        Evaporator.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
+        _evaporator.Superheat.Equals(Superheat, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _evaporator.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 
     [Fact]
     public void Pressure_Always_ReturnsOutletPressureInKilopascals()
     {
-        Evaporator.Pressure.Should().Be(Evaporator.Outlet.Pressure);
-        Evaporator.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
+        _evaporator.Pressure.Should().Be(_evaporator.Outlet.Pressure);
+        _evaporator.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
 
     [Fact]
     public void Outlet_Always_ReturnsSuperheatedRefrigerant() =>
-        Evaporator.Outlet.Should().Be(Refrigerant.Superheated(Temperature, Superheat));
+        _evaporator.Outlet.Should().Be(Refrigerant.Superheated(Temperature, Superheat));
 }

@@ -7,15 +7,15 @@ public class RefrigerantTests
     private static readonly Ratio IsentropicEfficiency = 80.Percent();
     private static readonly TemperatureDelta TemperatureDelta = TemperatureDelta.FromKelvins(10);
     private static readonly SpecificEnergy EnthalpyDelta = 50.KilojoulesPerKilogram();
+    private readonly Refrigerant _refrigerant;
 
     public RefrigerantTests() =>
-        Refrigerant = new Refrigerant(FluidsList.R718)
+        _refrigerant = new Refrigerant(FluidsList.R718)
             .WithState(Input.Pressure(1.Atmospheres()),
                 Input.Temperature(150.DegreesCelsius()));
 
-    private Refrigerant Refrigerant { get; }
-    private Pressure HighPressure => 2 * Refrigerant.Pressure;
-    private Pressure LowPressure => 0.5 * Refrigerant.Pressure;
+    private Pressure HighPressure => 2 * _refrigerant.Pressure;
+    private Pressure LowPressure => 0.5 * _refrigerant.Pressure;
 
     [Fact]
     public static void Refrigerant_WrongName_ThrowsValidationException()
@@ -27,19 +27,19 @@ public class RefrigerantTests
 
     [Fact]
     public void CriticalPressure_Water_Returns22e6() =>
-        Refrigerant.CriticalPressure.Pascals.Should().Be(22.064e6);
+        _refrigerant.CriticalPressure.Pascals.Should().Be(22.064e6);
 
     [Fact]
     public void CriticalTemperature_Water_Returns373() =>
-        Refrigerant.CriticalTemperature.DegreesCelsius.Should().Be(373.946);
+        _refrigerant.CriticalTemperature.DegreesCelsius.Should().Be(373.946);
 
     [Fact]
     public void TriplePressure_Water_Returns611() =>
-        Refrigerant.TriplePressure.Pascals.Should().Be(611.65480089686844);
+        _refrigerant.TriplePressure.Pascals.Should().Be(611.65480089686844);
 
     [Fact]
     public void TripleTemperature_Water_ReturnsZero() =>
-        Refrigerant.TripleTemperature.DegreesCelsius.Should().Be(0.010000000000047748);
+        _refrigerant.TripleTemperature.DegreesCelsius.Should().Be(0.010000000000047748);
 
     [Theory]
     [InlineData(FluidsList.R32)]
@@ -118,135 +118,139 @@ public class RefrigerantTests
     [Fact]
     public void Subcooled_TemperatureAndWrongSubcooling_ThrowsArgumentException()
     {
-        Action action = () => _ = Refrigerant.Subcooled(
-            Refrigerant.Temperature, TemperatureDelta.FromKelvins(-5));
+        Action action = () => _ = _refrigerant.Subcooled(
+            _refrigerant.Temperature, TemperatureDelta.FromKelvins(-5));
         action.Should().Throw<ArgumentException>().WithMessage("Invalid subcooling!");
     }
 
     [Fact]
     public void Subcooled_TemperatureAndNonZeroSubcooling_ReturnsRefrigerantAtSatPressureAndSubcooledTemperature()
     {
-        var bubblePoint = Refrigerant.BubblePointAt(Refrigerant.Temperature);
-        Refrigerant.Subcooled(Refrigerant.Temperature, TemperatureDelta.FromKelvins(3))
+        var bubblePoint = _refrigerant.BubblePointAt(_refrigerant.Temperature);
+        _refrigerant.Subcooled(_refrigerant.Temperature, TemperatureDelta.FromKelvins(3))
             .Should().Be(bubblePoint.CoolingTo(bubblePoint.Temperature - TemperatureDelta.FromKelvins(3)));
     }
 
     [Fact]
     public void Subcooled_TemperatureAndZeroSubcooling_ReturnsBubblePointAtTemperature()
     {
-        var bubblePoint = Refrigerant.BubblePointAt(Refrigerant.Temperature);
-        Refrigerant.Subcooled(Refrigerant.Temperature, TemperatureDelta.Zero)
+        var bubblePoint = _refrigerant.BubblePointAt(_refrigerant.Temperature);
+        _refrigerant.Subcooled(_refrigerant.Temperature, TemperatureDelta.Zero)
             .Should().Be(bubblePoint);
     }
 
     [Fact]
     public void Subcooled_PressureAndWrongSubcooling_ThrowsArgumentException()
     {
-        Action action = () => _ = Refrigerant.Subcooled(
-            Refrigerant.Pressure, TemperatureDelta.FromKelvins(-5));
+        Action action = () => _ = _refrigerant.Subcooled(
+            _refrigerant.Pressure, TemperatureDelta.FromKelvins(-5));
         action.Should().Throw<ArgumentException>().WithMessage("Invalid subcooling!");
     }
 
     [Fact]
     public void Subcooled_PressureAndNonZeroSubcooling_ReturnsRefrigerantAtSatPressureAndSubcooledTemperature()
     {
-        var bubblePoint = Refrigerant.BubblePointAt(Refrigerant.Pressure);
-        Refrigerant.Subcooled(Refrigerant.Pressure, TemperatureDelta.FromKelvins(3))
+        var bubblePoint = _refrigerant.BubblePointAt(_refrigerant.Pressure);
+        _refrigerant.Subcooled(_refrigerant.Pressure, TemperatureDelta.FromKelvins(3))
             .Should().Be(bubblePoint.CoolingTo(bubblePoint.Temperature - TemperatureDelta.FromKelvins(3)));
     }
 
     [Fact]
     public void Subcooled_PressureAndZeroSubcooling_ReturnsBubblePointAtPressure()
     {
-        var bubblePoint = Refrigerant.BubblePointAt(Refrigerant.Pressure);
-        Refrigerant.Subcooled(Refrigerant.Pressure, TemperatureDelta.Zero)
+        var bubblePoint = _refrigerant.BubblePointAt(_refrigerant.Pressure);
+        _refrigerant.Subcooled(_refrigerant.Pressure, TemperatureDelta.Zero)
             .Should().Be(bubblePoint);
     }
 
     [Fact]
     public void Superheated_TemperatureAndWrongSuperheat_ThrowsArgumentException()
     {
-        Action action = () => _ = Refrigerant.Superheated(
-            Refrigerant.Temperature, TemperatureDelta.FromKelvins(-5));
+        Action action = () => _ = _refrigerant.Superheated(
+            _refrigerant.Temperature, TemperatureDelta.FromKelvins(-5));
         action.Should().Throw<ArgumentException>().WithMessage("Invalid superheat!");
     }
 
     [Fact]
     public void Superheated_TemperatureAndNonZeroSuperheat_ReturnsRefrigerantAtSatPressureAndSuperheatedTemperature()
     {
-        var dewPoint = Refrigerant.DewPointAt(Refrigerant.Temperature);
-        Refrigerant.Superheated(Refrigerant.Temperature, TemperatureDelta.FromKelvins(8))
+        var dewPoint = _refrigerant.DewPointAt(_refrigerant.Temperature);
+        _refrigerant.Superheated(_refrigerant.Temperature, TemperatureDelta.FromKelvins(8))
             .Should().Be(dewPoint.HeatingTo(dewPoint.Temperature + TemperatureDelta.FromKelvins(8)));
     }
 
     [Fact]
     public void Superheated_TemperatureAndZeroSuperheat_ReturnsDewPointAtTemperature()
     {
-        var dewPoint = Refrigerant.DewPointAt(Refrigerant.Temperature);
-        Refrigerant.Superheated(Refrigerant.Temperature, TemperatureDelta.Zero)
+        var dewPoint = _refrigerant.DewPointAt(_refrigerant.Temperature);
+        _refrigerant.Superheated(_refrigerant.Temperature, TemperatureDelta.Zero)
             .Should().Be(dewPoint);
     }
 
     [Fact]
     public void Superheated_PressureAndWrongSuperheat_ThrowsArgumentException()
     {
-        Action action = () => _ = Refrigerant.Superheated(
-            Refrigerant.Pressure, TemperatureDelta.FromKelvins(-5));
+        Action action = () => _ = _refrigerant.Superheated(
+            _refrigerant.Pressure, TemperatureDelta.FromKelvins(-5));
         action.Should().Throw<ArgumentException>().WithMessage("Invalid superheat!");
     }
 
     [Fact]
     public void Superheated_PressureAndNonZeroSuperheat_ReturnsRefrigerantAtSatPressureAndSuperheatedTemperature()
     {
-        var dewPoint = Refrigerant.DewPointAt(Refrigerant.Pressure);
-        Refrigerant.Superheated(Refrigerant.Pressure, TemperatureDelta.FromKelvins(8))
+        var dewPoint = _refrigerant.DewPointAt(_refrigerant.Pressure);
+        _refrigerant.Superheated(_refrigerant.Pressure, TemperatureDelta.FromKelvins(8))
             .Should().Be(dewPoint.HeatingTo(dewPoint.Temperature + TemperatureDelta.FromKelvins(8)));
     }
 
     [Fact]
     public void Superheated_PressureAndZeroSuperheat_ReturnsDewPointAtAtPressure()
     {
-        var dewPoint = Refrigerant.DewPointAt(Refrigerant.Pressure);
-        Refrigerant.Superheated(Refrigerant.Pressure, TemperatureDelta.Zero)
+        var dewPoint = _refrigerant.DewPointAt(_refrigerant.Pressure);
+        _refrigerant.Superheated(_refrigerant.Pressure, TemperatureDelta.Zero)
             .Should().Be(dewPoint);
     }
 
     [Fact]
-    public void Processes_Override_ReturnsInstancesOfTheRefrigerantType()
+    public void Methods_New_ReturnsInstancesOfTheRefrigerantType()
     {
-        Refrigerant.IsentropicCompressionTo(HighPressure)
+        _refrigerant.Clone()
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.CompressionTo(HighPressure, IsentropicEfficiency)
+        _refrigerant.Factory()
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.IsenthalpicExpansionTo(LowPressure)
+        _refrigerant.IsentropicCompressionTo(HighPressure)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.IsentropicExpansionTo(LowPressure)
+        _refrigerant.CompressionTo(HighPressure, IsentropicEfficiency)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.ExpansionTo(LowPressure, IsentropicEfficiency)
+        _refrigerant.IsenthalpicExpansionTo(LowPressure)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.CoolingTo(Refrigerant.Temperature - TemperatureDelta)
+        _refrigerant.IsentropicExpansionTo(LowPressure)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.CoolingTo(Refrigerant.Enthalpy - EnthalpyDelta)
+        _refrigerant.ExpansionTo(LowPressure, IsentropicEfficiency)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.HeatingTo(Refrigerant.Temperature + TemperatureDelta)
+        _refrigerant.CoolingTo(_refrigerant.Temperature - TemperatureDelta)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.HeatingTo(Refrigerant.Enthalpy + EnthalpyDelta)
+        _refrigerant.CoolingTo(_refrigerant.Enthalpy - EnthalpyDelta)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.BubblePointAt(1.Atmospheres())
+        _refrigerant.HeatingTo(_refrigerant.Temperature + TemperatureDelta)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.BubblePointAt(100.DegreesCelsius())
+        _refrigerant.HeatingTo(_refrigerant.Enthalpy + EnthalpyDelta)
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.DewPointAt(1.Atmospheres())
+        _refrigerant.BubblePointAt(1.Atmospheres())
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.DewPointAt(100.DegreesCelsius())
+        _refrigerant.BubblePointAt(100.DegreesCelsius())
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.TwoPhasePointAt(1.Atmospheres(), 50.Percent())
+        _refrigerant.DewPointAt(1.Atmospheres())
             .Should().BeOfType<Refrigerant>();
-        Refrigerant.Mixing(
+        _refrigerant.DewPointAt(100.DegreesCelsius())
+            .Should().BeOfType<Refrigerant>();
+        _refrigerant.TwoPhasePointAt(1.Atmospheres(), 50.Percent())
+            .Should().BeOfType<Refrigerant>();
+        _refrigerant.Mixing(
                 100.Percent(),
-                Refrigerant.CoolingTo(Refrigerant.Temperature - TemperatureDelta),
+                _refrigerant.CoolingTo(_refrigerant.Temperature - TemperatureDelta),
                 200.Percent(),
-                Refrigerant.HeatingTo(Refrigerant.Temperature + TemperatureDelta))
+                _refrigerant.HeatingTo(_refrigerant.Temperature + TemperatureDelta))
             .Should().BeOfType<Refrigerant>();
     }
 }

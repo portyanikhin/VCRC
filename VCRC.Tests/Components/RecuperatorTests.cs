@@ -2,15 +2,19 @@
 
 namespace VCRC.Tests;
 
-public class RecuperatorTests
+public class RecuperatorTests : IClassFixture<ComparisonFixture>
 {
     private static readonly TemperatureDelta TemperatureDifference =
         TemperatureDelta.FromDegreesCelsius(5);
 
-    public RecuperatorTests() =>
-        Recuperator = new Recuperator(TemperatureDifference);
+    private readonly ComparisonFixture _comparison;
+    private readonly Recuperator _recuperator;
 
-    private Recuperator Recuperator { get; }
+    public RecuperatorTests(ComparisonFixture comparison)
+    {
+        _comparison = comparison;
+        _recuperator = new Recuperator(TemperatureDifference);
+    }
 
     [Theory]
     [InlineData(0.0)]
@@ -25,7 +29,8 @@ public class RecuperatorTests
     [Fact]
     public void TemperatureDifference_Always_ReturnsEnteredValueInKelvins()
     {
-        Recuperator.TemperatureDifference.Should().Be(TemperatureDifference);
-        Recuperator.TemperatureDifference.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
+        _recuperator.TemperatureDifference.Equals(TemperatureDifference, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _recuperator.TemperatureDifference.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 }

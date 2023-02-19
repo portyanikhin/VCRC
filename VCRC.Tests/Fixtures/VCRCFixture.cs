@@ -6,7 +6,6 @@ public abstract class VCRCFixture<T> where T : AbstractVCRC, IEntropyAnalysable
 {
     protected VCRCFixture(FluidsList refrigerantName)
     {
-        Tolerance = 1e-5;
         Refrigerant = new Refrigerant(refrigerantName);
         Evaporator = new Evaporator(Refrigerant.Name,
             5.DegreesCelsius(), TemperatureDelta.FromKelvins(8));
@@ -16,9 +15,8 @@ public abstract class VCRCFixture<T> where T : AbstractVCRC, IEntropyAnalysable
         Ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
     }
 
-    public abstract T Cycle { get; }
+    public abstract T Instance { get; }
     public EntropyAnalysisResult AnalysisResult { get; protected init; } = null!;
-    public double Tolerance { get; }
     public Refrigerant Refrigerant { get; }
     public Evaporator Evaporator { get; }
     public Recuperator Recuperator { get; }
@@ -62,23 +60,23 @@ public abstract class VCRCFixture<T> where T : AbstractVCRC, IEntropyAnalysable
         {
             var type when type == typeof(VCRCWithEjector) =>
                 Ejector.CalculateFlows(
-                    (Cycle as VCRCWithEjector)!.Point3,
-                    (Cycle as VCRCWithEjector)!.Point9),
+                    (Instance as VCRCWithEjector)!.Point3,
+                    (Instance as VCRCWithEjector)!.Point9),
             var type when type == typeof(VCRCWithEjectorAndEconomizer) =>
                 Ejector.CalculateFlows(
-                    (Cycle as VCRCWithEjectorAndEconomizer)!.Point8,
-                    (Cycle as VCRCWithEjectorAndEconomizer)!.Point14),
+                    (Instance as VCRCWithEjectorAndEconomizer)!.Point8,
+                    (Instance as VCRCWithEjectorAndEconomizer)!.Point14),
             var type when type == typeof(VCRCWithEjectorEconomizerAndPC) =>
                 Ejector.CalculateFlows(
-                    (Cycle as VCRCWithEjectorEconomizerAndPC)!.Point8,
-                    (Cycle as VCRCWithEjectorEconomizerAndPC)!.Point14),
+                    (Instance as VCRCWithEjectorEconomizerAndPC)!.Point8,
+                    (Instance as VCRCWithEjectorEconomizerAndPC)!.Point14),
             var type when type == typeof(VCRCWithEjectorEconomizerAndTPI) =>
                 Ejector.CalculateFlows(
-                    (Cycle as VCRCWithEjectorEconomizerAndTPI)!.Point8,
-                    (Cycle as VCRCWithEjectorEconomizerAndTPI)!.Point14),
+                    (Instance as VCRCWithEjectorEconomizerAndTPI)!.Point8,
+                    (Instance as VCRCWithEjectorEconomizerAndTPI)!.Point14),
             _ => null!
         };
 
     protected EntropyAnalysisResult PerformEntropyAnalysis() =>
-        Cycle.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
+        Instance.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
 }

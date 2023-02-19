@@ -1,13 +1,16 @@
 ﻿namespace VCRC.Tests;
 
-public class CompressorTests
+public class CompressorTests : IClassFixture<ComparisonFixture>
 {
     private static readonly Ratio Efficiency = 0.8.DecimalFractions();
+    private readonly ComparisonFixture _comparison;
+    private readonly Compressor _compressor;
 
-    public CompressorTests() =>
-        Compressor = new Compressor(Efficiency);
-
-    private Compressor Compressor { get; }
+    public CompressorTests(ComparisonFixture comparison)
+    {
+        _comparison = comparison;
+        _compressor = new Compressor(Efficiency);
+    }
 
     [Theory]
     [InlineData(0.0)]
@@ -22,7 +25,8 @@ public class CompressorTests
     [Fact]
     public void Efficiency_Always_ReturnsEnteredValueInPercents()
     {
-        Compressor.Efficiency.Should().Be(Efficiency);
-        Compressor.Efficiency.Unit.Should().Be(RatioUnit.Percent);
+        _compressor.Efficiency.Equals(Efficiency, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _compressor.Efficiency.Unit.Should().Be(RatioUnit.Percent);
     }
 }
