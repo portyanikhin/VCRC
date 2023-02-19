@@ -26,7 +26,7 @@
         <PackageVersion>3.0.0</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+        <TargetFrameworks>netstandard2.0;netstandard2.1;net7.0</TargetFrameworks>
         <Title>VCRC</Title>
     </PropertyGroup>
 

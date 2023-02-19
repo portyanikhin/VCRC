@@ -12,8 +12,15 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
         <Title>VCRC.Tests</Title>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
+        <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>

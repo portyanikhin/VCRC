@@ -16,14 +16,14 @@ public abstract class VCRCFixture<T> where T : AbstractVCRC, IEntropyAnalysable
     }
 
     public abstract T Instance { get; }
-    public EntropyAnalysisResult AnalysisResult { get; protected init; } = null!;
+    public EntropyAnalysisResult AnalysisResult { get; protected set; } = null!;
     public Refrigerant Refrigerant { get; }
     public Evaporator Evaporator { get; }
     public Recuperator Recuperator { get; }
     public Compressor Compressor { get; }
     public Economizer Economizer { get; }
     public Ejector Ejector { get; }
-    public EjectorFlows EjectorFlows { get; protected init; } = null!;
+    public EjectorFlows EjectorFlows { get; protected set; } = null!;
 
     protected T CreateVCRC(IHeatReleaser heatReleaser) =>
         (typeof(T) switch
