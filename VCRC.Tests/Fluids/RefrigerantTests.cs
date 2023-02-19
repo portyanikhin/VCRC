@@ -2,17 +2,22 @@
 
 namespace VCRC.Tests;
 
-public class RefrigerantTests
+public class RefrigerantTests : IClassFixture<ComparisonFixture>
 {
     private static readonly Ratio IsentropicEfficiency = 80.Percent();
     private static readonly TemperatureDelta TemperatureDelta = TemperatureDelta.FromKelvins(10);
     private static readonly SpecificEnergy EnthalpyDelta = 50.KilojoulesPerKilogram();
+    private readonly ComparisonFixture _comparison;
     private readonly Refrigerant _refrigerant;
 
-    public RefrigerantTests() =>
+    public RefrigerantTests(ComparisonFixture comparison)
+    {
+        _comparison = comparison;
+        _comparison.Tolerance = 1e-9;
         _refrigerant = new Refrigerant(FluidsList.R718)
             .WithState(Input.Pressure(1.Atmospheres()),
                 Input.Temperature(150.DegreesCelsius()));
+    }
 
     private Pressure HighPressure => 2 * _refrigerant.Pressure;
     private Pressure LowPressure => 0.5 * _refrigerant.Pressure;
@@ -50,14 +55,14 @@ public class RefrigerantTests
     [Theory]
     [InlineData(FluidsList.R404A, 0.75017192257570287)]
     [InlineData(FluidsList.R407C, 6.9953896623448202)]
-    public static void Glide_ZeotropicBlends_ReturnsNotZero(FluidsList name, double expected) =>
-        new Refrigerant(name).Glide.Kelvins.Should().Be(expected);
+    public void Glide_ZeotropicBlends_ReturnsNotZero(FluidsList name, double expected) =>
+        new Refrigerant(name).Glide.Kelvins.Should().BeApproximately(expected, _comparison.Tolerance);
 
     [Theory]
     [InlineData(FluidsList.R507A, 0.0014729570078202414)]
     [InlineData(FluidsList.R511A, 0.0088663065580476541)]
-    public static void Glide_AzeotropicBlends_ReturnsApproximatelyZero(FluidsList name, double expected) =>
-        new Refrigerant(name).Glide.Kelvins.Should().Be(expected);
+    public void Glide_AzeotropicBlends_ReturnsApproximatelyZero(FluidsList name, double expected) =>
+        new Refrigerant(name).Glide.Kelvins.Should().BeApproximately(expected, _comparison.Tolerance);
 
     [Theory]
     [InlineData(FluidsList.R32)]

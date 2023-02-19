@@ -14,19 +14,17 @@ jobs:
 
     steps:
       - uses: actions/checkout@v3
-      - name: Setup .NET 6.0
+      - name: Setup .NET
         uses: actions/setup-dotnet@v3
         with:
-          dotnet-version: 6.0.x
-      - name: Setup .NET 7.0
-        uses: actions/setup-dotnet@v3
-        with:
-          dotnet-version: 7.0.x
+          dotnet-version: |
+            6.0.x
+            7.0.x
       - name: Restore dependencies
         run: dotnet restore
       - name: Build
         run: dotnet build --no-restore --configuration Release
       - name: Pack
-        run: dotnet pack --no-build --configuration Release -o .
+        run: dotnet pack --no-build --configuration Release --property PackageOutputPath=${GITHUB_WORKSPACE}/nuget
       - name: Publish to NuGet
-        run: dotnet nuget push *.nupkg -s "https://api.nuget.org/v3/index.json" -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
+        run: dotnet nuget push ./nuget/*.nupkg -s "https://api.nuget.org/v3/index.json" -k ${{ secrets.NUGET_API_KEY }} --skip-duplicate
