@@ -3,7 +3,7 @@
 [![Build & Tests](https://github.com/portyanikhin/VCRC/actions/workflows/build-tests.yml/badge.svg)](https://github.com/portyanikhin/VCRC/actions/workflows/build-tests.yml)
 [![CodeQL](https://github.com/portyanikhin/VCRC/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/portyanikhin/VCRC/actions/workflows/codeql-analysis.yml)
 [![NuGet](https://img.shields.io/nuget/v/VCRC)](https://www.nuget.org/packages/VCRC)
-![Platform](https://img.shields.io/badge/platform-win--64%20%7C%20linux--64-lightgrey)
+![Platform](https://img.shields.io/badge/platform-win--64%20%7C%20mac--64%20%7C%20linux--64-lightgrey)
 [![License](https://img.shields.io/github/license/portyanikhin/VCRC)](https://github.com/portyanikhin/VCRC/blob/main/LICENSE)
 [![codecov](https://codecov.io/gh/portyanikhin/VCRC/branch/main/graph/badge.svg?token=aJmrRHNQnS)](https://codecov.io/gh/portyanikhin/VCRC)
 
@@ -40,25 +40,18 @@ Cross-platform vapor-compression refrigeration cycles analysis tool using
 
 ## How to install
 
-Run the following commands in the
-[Package Manager Console](http://docs.nuget.org/docs/start-here/using-the-package-manager-console):
+Add it via CLI (you also need to explicitly add [SharpProp](https://github.com/portyanikhin/SharpProp)):
 
 ```shell
-NuGet\Install-Package SharpProp -Version 5.0.0
+dotnet add package SharpProp
 ```
 
 ```shell
-NuGet\Install-Package VCRC -Version 3.0.0
+dotnet add package VCRC
 ```
 
-Or add this to the `.csproj` file:
-
-```xml
-<ItemGroup>
-    <PackageReference Include="SharpProp" Version="5.0.0"/>
-    <PackageReference Include="VCRC" Version="3.0.0"/>
-</ItemGroup>
-```
+Or go to [NuGet Gallery | SharpProp](https://www.nuget.org/packages/SharpProp)
+and [NuGet Gallery | VCRC](https://www.nuget.org/packages/VCRC) for detailed instructions.
 
 ## Unit safety
 
@@ -80,6 +73,11 @@ For example:
 - Superheat: _5 K_.
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 ```
@@ -89,6 +87,9 @@ var evaporator = new Evaporator(
 Compressor with _80 %_ isentropic efficiency:
 
 ```c#
+using UnitsNet.NumberExtensions.NumberToRatio;
+using VCRC;
+
 var compressor = new Compressor((80).Percent());
 ```
 
@@ -101,6 +102,11 @@ For example:
 - Subcooling: _3 K_.
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var condenser = new Condenser(
     FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
 ```
@@ -121,6 +127,11 @@ For example:
 - Pressure (optional for R744): _105 bar_.
 
 ```c#
+using SharpProp;
+using UnitsNet.NumberExtensions.NumberToPressure;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var gasCooler = new GasCooler(
     FluidsList.R744, (40).DegreesCelsius());
 var gasCoolerWithSpecifiedPressure = new GasCooler(
@@ -134,6 +145,9 @@ Console.WriteLine(gasCoolerWithSpecifiedPressure.Pressure.Bars); // 105
 Ejector with _90 %_ isentropic efficiency of the nozzle, suction section and diffuser:
 
 ```csharp
+using UnitsNet.NumberExtensions.NumberToRatio;
+using VCRC;
+
 var ejector = new Ejector((90).Percent());
 ```
 
@@ -141,6 +155,9 @@ Ejector with _90 %_ isentropic efficiency of the nozzle and suction section and
 _80 %_ isentropic efficiency of the diffuser:
 
 ```csharp
+using UnitsNet.NumberExtensions.NumberToRatio;
+using VCRC;
+
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
 ```
 
@@ -149,6 +166,9 @@ var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
 Recuperator with _5 K_ temperature difference at "hot" side:
 
 ```c#
+using UnitsNet;
+using VCRC;
+
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
 ```
 
@@ -157,6 +177,9 @@ var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
 Economizer with _5 K_ temperature difference at "cold" side and _5 K_ superheat:
 
 ```c#
+using UnitsNet;
+using VCRC;
+
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
 ```
@@ -166,6 +189,9 @@ var economizer = new Economizer(
 Economizer with two-phase injection to the compressor and _5 K_ temperature difference at "cold" side:
 
 ```c#
+using UnitsNet;
+using VCRC;
+
 var economizer = new EconomizerWithTPI(TemperatureDelta.FromKelvins(5));
 ```
 
@@ -197,6 +223,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -211,6 +243,12 @@ Console.WriteLine(cycle.Point2.Temperature); // 88.76 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -251,6 +289,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
@@ -267,6 +311,12 @@ Console.WriteLine(cycle.Point3.Temperature); // 120.68 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
@@ -313,6 +363,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -328,6 +384,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 85.53 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -372,6 +434,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -387,6 +455,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 62.48 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -432,6 +506,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -447,6 +527,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 62.48 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -492,6 +578,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -510,6 +602,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 87.14 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -558,6 +656,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -576,6 +680,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 68.27 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -624,6 +734,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -642,6 +758,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 62.48 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -690,6 +812,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -706,6 +834,12 @@ Console.WriteLine(cycle.Point2.Temperature); // 79.05 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -758,6 +892,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -777,6 +917,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 79.97 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -832,6 +978,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -851,6 +1003,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 67.52 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -906,6 +1064,12 @@ the coefficient of performance (aka heating coefficient, aka COP) and the compre
 **_For the subcritical cycle_**
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -924,6 +1088,12 @@ Console.WriteLine(cycle.Point4.Temperature); // 61.76 °C
 **_For the transcritical cycle_**
 
 ```csharp
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -971,6 +1141,12 @@ To calculate the energy efficiency ratio (aka cooling coefficient, aka EER),
 the coefficient of performance (aka heating coefficient, aka COP) and the compressor discharge temperatures:
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
@@ -996,6 +1172,12 @@ in each part of the refrigeration cycle and make decisions that will help increa
 For example, simple single-stage VCRC, _18 °C_ indoor temperature, _35 °C_ outdoor temperature:
 
 ```c#
+using SharpProp;
+using UnitsNet;
+using UnitsNet.NumberExtensions.NumberToRatio;
+using UnitsNet.NumberExtensions.NumberToTemperature;
+using VCRC;
+
 var evaporator = new Evaporator(
     FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());

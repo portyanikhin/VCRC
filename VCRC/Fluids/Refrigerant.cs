@@ -135,61 +135,204 @@ public class Refrigerant : Fluid
 
     protected override AbstractFluid CreateInstance() => new Refrigerant(Name);
 
+    /// <summary>
+    ///     Performs deep (full) copy of the refrigerant instance.
+    /// </summary>
+    /// <returns>Deep copy of the refrigerant instance.</returns>
     public new Refrigerant Clone() => (Refrigerant) base.Clone();
 
+    /// <summary>
+    ///     Creates a new refrigerant instance with no defined state.
+    /// </summary>
+    /// <returns>A new refrigerant instance with no defined state.</returns>
     public new Refrigerant Factory() => new(Name);
 
+    /// <summary>
+    ///     Returns a new refrigerant instance with a defined state.
+    /// </summary>
+    /// <param name="firstInput">First input property.</param>
+    /// <param name="secondInput">Second input property.</param>
+    /// <returns>A new refrigerant instance with a defined state.</returns>
+    /// <exception cref="ArgumentException">Need to define 2 unique inputs!</exception>
     public new Refrigerant
         WithState(IKeyedInput<Parameters> firstInput, IKeyedInput<Parameters> secondInput) =>
         (Refrigerant) base.WithState(firstInput, secondInput);
 
+    /// <summary>
+    ///     The process of isentropic compression to a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Compressor outlet pressure should be higher than inlet pressure!
+    /// </exception>
     public new Refrigerant IsentropicCompressionTo(Pressure pressure) =>
         (Refrigerant) base.IsentropicCompressionTo(pressure);
 
+    /// <summary>
+    ///     The process of compression to a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="isentropicEfficiency">Compressor isentropic efficiency.</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Compressor outlet pressure should be higher than inlet pressure!
+    /// </exception>
+    /// <exception cref="ArgumentException">Invalid compressor isentropic efficiency!</exception>
     public new Refrigerant CompressionTo(Pressure pressure, Ratio isentropicEfficiency) =>
         (Refrigerant) base.CompressionTo(pressure, isentropicEfficiency);
 
+    /// <summary>
+    ///     The process of isenthalpic expansion to a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Expansion valve outlet pressure should be lower than inlet pressure!
+    /// </exception>
     public new Refrigerant IsenthalpicExpansionTo(Pressure pressure) =>
         (Refrigerant) base.IsenthalpicExpansionTo(pressure);
 
+    /// <summary>
+    ///     The process of isentropic expansion to a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Expander outlet pressure should be lower than inlet pressure!
+    /// </exception>
     public new Refrigerant IsentropicExpansionTo(Pressure pressure) =>
         (Refrigerant) base.IsentropicExpansionTo(pressure);
 
+    /// <summary>
+    ///     The process of expansion to a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="isentropicEfficiency">Expander isentropic efficiency.</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     Expander outlet pressure should be lower than inlet pressure!
+    /// </exception>
+    /// <exception cref="ArgumentException">Invalid expander isentropic efficiency!</exception>
     public new Refrigerant ExpansionTo(Pressure pressure,
         Ratio isentropicEfficiency) =>
         (Refrigerant) base.ExpansionTo(pressure, isentropicEfficiency);
 
+    /// <summary>
+    ///     The process of cooling to a given temperature.
+    /// </summary>
+    /// <param name="temperature">Temperature.</param>
+    /// <param name="pressureDrop">Pressure drop in the heat exchanger (optional).</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     During the cooling process, the temperature should decrease!
+    /// </exception>
+    /// <exception cref="ArgumentException">Invalid pressure drop in the heat exchanger!</exception>
     public new Refrigerant CoolingTo(Temperature temperature,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.CoolingTo(temperature, pressureDrop);
 
+    /// <summary>
+    ///     The process of cooling to a given enthalpy.
+    /// </summary>
+    /// <param name="enthalpy">Enthalpy.</param>
+    /// <param name="pressureDrop">Pressure drop in the heat exchanger (optional).</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     During the cooling process, the enthalpy should decrease!
+    /// </exception>
+    /// <exception cref="ArgumentException">Invalid pressure drop in the heat exchanger!</exception>
     public new Refrigerant CoolingTo(SpecificEnergy enthalpy,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.CoolingTo(enthalpy, pressureDrop);
 
+    /// <summary>
+    ///     The process of heating to a given temperature.
+    /// </summary>
+    /// <param name="temperature">Temperature.</param>
+    /// <param name="pressureDrop">Pressure drop in the heat exchanger (optional).</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     During the heating process, the temperature should increase!
+    /// </exception>
+    /// <exception cref="ArgumentException">Invalid pressure drop in the heat exchanger!</exception>
     public new Refrigerant HeatingTo(Temperature temperature,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.HeatingTo(temperature, pressureDrop);
 
+    /// <summary>
+    ///     The process of heating to a given enthalpy.
+    /// </summary>
+    /// <param name="enthalpy">Enthalpy.</param>
+    /// <param name="pressureDrop">Pressure drop in the heat exchanger (optional).</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     During the heating process, the enthalpy should increase!
+    /// </exception>
+    /// <exception cref="ArgumentException">Invalid pressure drop in the heat exchanger!</exception>
     public new Refrigerant HeatingTo(SpecificEnergy enthalpy,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.HeatingTo(enthalpy, pressureDrop);
 
+    /// <summary>
+    ///     Returns a bubble point at a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <returns>A bubble point at a given pressure.</returns>
     public new Refrigerant BubblePointAt(Pressure pressure) =>
         (Refrigerant) base.BubblePointAt(pressure);
 
+    /// <summary>
+    ///     Returns a bubble point at a given temperature.
+    /// </summary>
+    /// <param name="temperature">Temperature.</param>
+    /// <returns>A bubble point at a given temperature.</returns>
     public new Refrigerant BubblePointAt(Temperature temperature) =>
         (Refrigerant) base.BubblePointAt(temperature);
 
+    /// <summary>
+    ///     Returns a dew point at a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <returns>A dew point at a given pressure.</returns>
     public new Refrigerant DewPointAt(Pressure pressure) =>
         (Refrigerant) base.DewPointAt(pressure);
 
+    /// <summary>
+    ///     Returns a dew point at a given temperature.
+    /// </summary>
+    /// <param name="temperature">Temperature.</param>
+    /// <returns>A dew point at a given temperature.</returns>
     public new Refrigerant DewPointAt(Temperature temperature) =>
         (Refrigerant) base.DewPointAt(temperature);
 
+    /// <summary>
+    ///     Returns a two-phase point at a given pressure.
+    /// </summary>
+    /// <param name="pressure">Pressure.</param>
+    /// <param name="quality">Vapor quality.</param>
+    /// <returns>Two-phase point at a given pressure.</returns>
     public new Refrigerant TwoPhasePointAt(Pressure pressure, Ratio quality) =>
         (Refrigerant) base.TwoPhasePointAt(pressure, quality);
 
+    /// <summary>
+    ///     The mixing process.
+    /// </summary>
+    /// <param name="firstSpecificMassFlow">
+    ///     Specific mass flow rate of the fluid at the first state.
+    /// </param>
+    /// <param name="first">Fluid at the first state.</param>
+    /// <param name="secondSpecificMassFlow">
+    ///     Specific mass flow rate of the fluid at the second state.
+    /// </param>
+    /// <param name="second">Fluid at the second state.</param>
+    /// <returns>The state of the fluid at the end of the process.</returns>
+    /// <exception cref="ArgumentException">
+    ///     The mixing process is possible only for the same fluids!
+    /// </exception>
+    /// <exception cref="ArgumentException">
+    ///     The mixing process is possible only for flows with the same pressure!
+    /// </exception>
     public new Refrigerant Mixing(Ratio firstSpecificMassFlow, AbstractFluid first,
         Ratio secondSpecificMassFlow, AbstractFluid second) =>
         (Refrigerant) base.Mixing(firstSpecificMassFlow, first,
