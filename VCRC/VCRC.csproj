@@ -16,14 +16,9 @@
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <PackageReadmeFile>NuGet.md</PackageReadmeFile>
-        <PackageReleaseNotes>
-- Change target frameworks to .NET 6.0 and .NET 7.0.
-- Documentation update.
-- Bump SharpProp from 4.4.1 to 5.0.0.
-- Bump FluentValidation from 11.3.0 to 11.4.0.
-        </PackageReleaseNotes>
+        <PackageReleaseNotes>Release notes can be found at https://github.com/portyanikhin/VCRC/releases</PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>3.0.0</PackageVersion>
+        <PackageVersion>3.1.0</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFrameworks>netstandard2.0;netstandard2.1;net7.0</TargetFrameworks>
