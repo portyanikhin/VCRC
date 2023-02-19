@@ -83,7 +83,7 @@ public class Refrigerant : Fluid
     public Refrigerant Subcooled(Temperature bubblePointTemperature, TemperatureDelta subcooling) =>
         subcooling < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid subcooling!")
-            : subcooling == TemperatureDelta.Zero
+            : subcooling.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
                 ? BubblePointAt(bubblePointTemperature)
                 : BubblePointAt(bubblePointTemperature)
                     .CoolingTo(bubblePointTemperature - subcooling);
@@ -98,7 +98,7 @@ public class Refrigerant : Fluid
     public Refrigerant Subcooled(Pressure pressure, TemperatureDelta subcooling) =>
         subcooling < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid subcooling!")
-            : subcooling == TemperatureDelta.Zero
+            : subcooling.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
                 ? BubblePointAt(pressure)
                 : BubblePointAt(pressure)
                     .CoolingTo(BubblePointAt(pressure).Temperature - subcooling);
@@ -113,7 +113,7 @@ public class Refrigerant : Fluid
     public Refrigerant Superheated(Temperature dewPointTemperature, TemperatureDelta superheat) =>
         superheat < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid superheat!")
-            : superheat == TemperatureDelta.Zero
+            : superheat.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
                 ? DewPointAt(dewPointTemperature)
                 : DewPointAt(dewPointTemperature)
                     .HeatingTo(dewPointTemperature + superheat);
@@ -128,65 +128,69 @@ public class Refrigerant : Fluid
     public Refrigerant Superheated(Pressure pressure, TemperatureDelta superheat) =>
         superheat < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid superheat!")
-            : superheat == TemperatureDelta.Zero
+            : superheat.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
                 ? DewPointAt(pressure)
                 : DewPointAt(pressure)
                     .HeatingTo(DewPointAt(pressure).Temperature + superheat);
 
-    public override Refrigerant Factory() => new(Name);
+    protected override AbstractFluid CreateInstance() => new Refrigerant(Name);
 
-    public override Refrigerant
+    public new Refrigerant Clone() => (Refrigerant) base.Clone();
+
+    public new Refrigerant Factory() => new(Name);
+
+    public new Refrigerant
         WithState(IKeyedInput<Parameters> firstInput, IKeyedInput<Parameters> secondInput) =>
         (Refrigerant) base.WithState(firstInput, secondInput);
 
-    public override Refrigerant IsentropicCompressionTo(Pressure pressure) =>
+    public new Refrigerant IsentropicCompressionTo(Pressure pressure) =>
         (Refrigerant) base.IsentropicCompressionTo(pressure);
 
-    public override Refrigerant CompressionTo(Pressure pressure, Ratio isentropicEfficiency) =>
+    public new Refrigerant CompressionTo(Pressure pressure, Ratio isentropicEfficiency) =>
         (Refrigerant) base.CompressionTo(pressure, isentropicEfficiency);
 
-    public override Refrigerant IsenthalpicExpansionTo(Pressure pressure) =>
+    public new Refrigerant IsenthalpicExpansionTo(Pressure pressure) =>
         (Refrigerant) base.IsenthalpicExpansionTo(pressure);
 
-    public override Refrigerant IsentropicExpansionTo(Pressure pressure) =>
+    public new Refrigerant IsentropicExpansionTo(Pressure pressure) =>
         (Refrigerant) base.IsentropicExpansionTo(pressure);
 
-    public override Refrigerant ExpansionTo(Pressure pressure,
+    public new Refrigerant ExpansionTo(Pressure pressure,
         Ratio isentropicEfficiency) =>
         (Refrigerant) base.ExpansionTo(pressure, isentropicEfficiency);
 
-    public override Refrigerant CoolingTo(Temperature temperature,
+    public new Refrigerant CoolingTo(Temperature temperature,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.CoolingTo(temperature, pressureDrop);
 
-    public override Refrigerant CoolingTo(SpecificEnergy enthalpy,
+    public new Refrigerant CoolingTo(SpecificEnergy enthalpy,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.CoolingTo(enthalpy, pressureDrop);
 
-    public override Refrigerant HeatingTo(Temperature temperature,
+    public new Refrigerant HeatingTo(Temperature temperature,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.HeatingTo(temperature, pressureDrop);
 
-    public override Refrigerant HeatingTo(SpecificEnergy enthalpy,
+    public new Refrigerant HeatingTo(SpecificEnergy enthalpy,
         Pressure? pressureDrop = null) =>
         (Refrigerant) base.HeatingTo(enthalpy, pressureDrop);
 
-    public override Refrigerant BubblePointAt(Pressure pressure) =>
+    public new Refrigerant BubblePointAt(Pressure pressure) =>
         (Refrigerant) base.BubblePointAt(pressure);
 
-    public override Refrigerant BubblePointAt(Temperature temperature) =>
+    public new Refrigerant BubblePointAt(Temperature temperature) =>
         (Refrigerant) base.BubblePointAt(temperature);
 
-    public override Refrigerant DewPointAt(Pressure pressure) =>
+    public new Refrigerant DewPointAt(Pressure pressure) =>
         (Refrigerant) base.DewPointAt(pressure);
 
-    public override Refrigerant DewPointAt(Temperature temperature) =>
+    public new Refrigerant DewPointAt(Temperature temperature) =>
         (Refrigerant) base.DewPointAt(temperature);
 
-    public override Refrigerant TwoPhasePointAt(Pressure pressure, Ratio quality) =>
+    public new Refrigerant TwoPhasePointAt(Pressure pressure, Ratio quality) =>
         (Refrigerant) base.TwoPhasePointAt(pressure, quality);
 
-    public override Refrigerant Mixing(Ratio firstSpecificMassFlow, AbstractFluid first,
+    public new Refrigerant Mixing(Ratio firstSpecificMassFlow, AbstractFluid first,
         Ratio secondSpecificMassFlow, AbstractFluid second) =>
         (Refrigerant) base.Mixing(firstSpecificMassFlow, first,
             secondSpecificMassFlow, second);

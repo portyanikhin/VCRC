@@ -2,15 +2,18 @@
 
 namespace VCRC.Tests;
 
-public class EconomizerTests
+public class EconomizerTests : IClassFixture<ComparisonFixture>
 {
     private static readonly TemperatureDelta TemperatureDifference = 5.DegreesCelsius();
     private static readonly TemperatureDelta Superheat = 5.DegreesCelsius();
+    private readonly ComparisonFixture _comparison;
+    private readonly Economizer _economizer;
 
-    public EconomizerTests() =>
-        Economizer = new Economizer(TemperatureDifference, Superheat);
-
-    private Economizer Economizer { get; }
+    public EconomizerTests(ComparisonFixture comparison)
+    {
+        _comparison = comparison;
+        _economizer = new Economizer(TemperatureDifference, Superheat);
+    }
 
     [Theory]
     [InlineData(-1.0)]
@@ -25,7 +28,8 @@ public class EconomizerTests
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        Economizer.Superheat.Should().Be(Superheat);
-        Economizer.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
+        _economizer.Superheat.Equals(Superheat, _comparison.Tolerance, _comparison.Type)
+            .Should().BeTrue();
+        _economizer.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 }
