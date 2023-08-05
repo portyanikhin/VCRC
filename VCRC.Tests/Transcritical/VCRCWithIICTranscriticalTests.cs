@@ -131,16 +131,16 @@ public class VCRCWithIICTranscriticalTests :
     public void SpecificMassFlows_Always_CalculatesAutomaticallyByHeatBalance()
     {
         _vcrc.Instance.EvaporatorSpecificMassFlow.Equals(
-                100.Percent(), _comparison.Tolerance, _comparison.Type)
+                100.Percent(), _comparison.Tolerance.Percent())
             .Should().BeTrue();
         _vcrc.Instance.HeatReleaserSpecificMassFlow.Equals(
                 _vcrc.Instance.EvaporatorSpecificMassFlow /
                 (1 - _vcrc.Instance.Point6.Quality!.Value.DecimalFractions),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.Percent())
             .Should().BeTrue();
         _vcrc.Instance.IntermediateSpecificMassFlow.Equals(
                 _vcrc.Instance.HeatReleaserSpecificMassFlow - _vcrc.Instance.EvaporatorSpecificMassFlow,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.Percent())
             .Should().BeTrue();
     }
 
@@ -150,21 +150,21 @@ public class VCRCWithIICTranscriticalTests :
                 _vcrc.Instance.Point2s.Enthalpy - _vcrc.Instance.Point1.Enthalpy +
                 _vcrc.Instance.HeatReleaserSpecificMassFlow.DecimalFractions *
                 (_vcrc.Instance.Point4s.Enthalpy - _vcrc.Instance.Point3.Enthalpy),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificWork_Always_ReturnsEnthalpyDifferenceForRealCompression() =>
         _vcrc.Instance.SpecificWork.Equals(
                 _vcrc.Instance.IsentropicSpecificWork / _vcrc.Compressor.Efficiency.DecimalFractions,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
         _vcrc.Instance.SpecificCoolingCapacity.Equals(
                 _vcrc.Instance.Point1.Enthalpy - _vcrc.Instance.Point9.Enthalpy,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
@@ -172,7 +172,7 @@ public class VCRCWithIICTranscriticalTests :
         _vcrc.Instance.SpecificHeatingCapacity.Equals(
                 _vcrc.Instance.HeatReleaserSpecificMassFlow.DecimalFractions *
                 (_vcrc.Instance.Point4.Enthalpy - _vcrc.Instance.Point5.Enthalpy),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]

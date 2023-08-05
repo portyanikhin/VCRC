@@ -46,7 +46,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _condenser.Temperature.Equals(Temperature, _comparison.Tolerance, _comparison.Type)
+        _condenser.Temperature.Equals(Temperature, _comparison.Tolerance.Kelvins())
             .Should().BeTrue();
         _condenser.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
@@ -54,7 +54,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Subcooling_Always_ReturnsEnteredValueInKelvins()
     {
-        _condenser.Subcooling.Equals(Subcooling, _comparison.Tolerance, _comparison.Type)
+        _condenser.Subcooling.Equals(Subcooling, _comparison.Tolerance.Kelvins())
             .Should().BeTrue();
         _condenser.Subcooling.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
@@ -62,7 +62,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Pressure_Always_ReturnsOutletPressureInKilopascals()
     {
-        _condenser.Pressure.Equals(_condenser.Outlet.Pressure, _comparison.Tolerance, _comparison.Type)
+        _condenser.Pressure.Equals(_condenser.Outlet.Pressure, _comparison.Tolerance.Kelvins())
             .Should().BeTrue();
         _condenser.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }

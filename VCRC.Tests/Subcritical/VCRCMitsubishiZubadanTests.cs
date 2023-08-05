@@ -63,7 +63,7 @@ public class VCRCMitsubishiZubadanTests :
         _vcrc.Instance.RecuperatorHighPressure.Equals(
                 Math.Sqrt(_vcrc.Instance.IntermediatePressure.Pascals *
                           _vcrc.Condenser.Pressure.Pascals).Pascals(),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.Pascals())
             .Should().BeTrue();
         var lowTemperatureCycle = new VCRCMitsubishiZubadan(
             new Evaporator(_vcrc.Refrigerant.Name, (-20).DegreesCelsius(), _vcrc.Evaporator.Superheat),
@@ -172,13 +172,13 @@ public class VCRCMitsubishiZubadanTests :
     public void Point10_Always_ReturnsEconomizerColdOutlet()
     {
         _vcrc.Instance.Point10.Pressure.Equals(
-                _vcrc.Instance.IntermediatePressure, _comparison.Tolerance, _comparison.Type)
+                _vcrc.Instance.IntermediatePressure, _comparison.Tolerance.Pascals())
             .Should().BeTrue();
         _vcrc.Instance.Point10.Enthalpy.Equals(
                 _vcrc.Instance.Point4.Enthalpy - _vcrc.Instance.EvaporatorSpecificMassFlow /
                 (_vcrc.Instance.HeatReleaserSpecificMassFlow - _vcrc.Instance.EvaporatorSpecificMassFlow) *
                 (_vcrc.Instance.Point3.Enthalpy - _vcrc.Instance.Point4.Enthalpy),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
         _vcrc.Instance.Point10.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -204,17 +204,17 @@ public class VCRCMitsubishiZubadanTests :
     public void SpecificMassFlows_Always_CalculatesAutomaticallyByHeatBalance()
     {
         _vcrc.Instance.EvaporatorSpecificMassFlow.Equals(
-                100.Percent(), _comparison.Tolerance, _comparison.Type)
+                100.Percent(), _comparison.Tolerance.Percent())
             .Should().BeTrue();
         _vcrc.Instance.HeatReleaserSpecificMassFlow.Equals(
                 _vcrc.Instance.EvaporatorSpecificMassFlow *
                 (1 + (_vcrc.Instance.Point3.Enthalpy - _vcrc.Instance.Point4.Enthalpy) /
                     (_vcrc.Instance.Point4.Enthalpy - _vcrc.Instance.Point10.Enthalpy)),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.Percent())
             .Should().BeTrue();
         _vcrc.Instance.IntermediateSpecificMassFlow.Equals(
                 _vcrc.Instance.HeatReleaserSpecificMassFlow - _vcrc.Instance.EvaporatorSpecificMassFlow,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.Percent())
             .Should().BeTrue();
     }
 
@@ -224,21 +224,21 @@ public class VCRCMitsubishiZubadanTests :
                 _vcrc.Instance.Point3s.Enthalpy - _vcrc.Instance.Point2.Enthalpy +
                 _vcrc.Instance.HeatReleaserSpecificMassFlow.DecimalFractions *
                 (_vcrc.Instance.Point5s.Enthalpy - _vcrc.Instance.Point4.Enthalpy),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificWork_Always_ReturnsEnthalpyDifferenceForRealCompression() =>
         _vcrc.Instance.SpecificWork.Equals(
                 _vcrc.Instance.IsentropicSpecificWork / _vcrc.Compressor.Efficiency.DecimalFractions,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
         _vcrc.Instance.SpecificCoolingCapacity.Equals(
                 _vcrc.Instance.Point1.Enthalpy - _vcrc.Instance.Point12.Enthalpy,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
@@ -246,7 +246,7 @@ public class VCRCMitsubishiZubadanTests :
         _vcrc.Instance.SpecificHeatingCapacity.Equals(
                 _vcrc.Instance.HeatReleaserSpecificMassFlow.DecimalFractions *
                 (_vcrc.Instance.Point5.Enthalpy - _vcrc.Instance.Point6.Enthalpy),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]

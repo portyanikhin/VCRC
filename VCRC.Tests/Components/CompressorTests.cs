@@ -25,7 +25,7 @@ public class CompressorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Efficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _compressor.Efficiency.Equals(Efficiency, _comparison.Tolerance, _comparison.Type)
+        _compressor.Efficiency.Equals(Efficiency, _comparison.Tolerance.Percent())
             .Should().BeTrue();
         _compressor.Efficiency.Unit.Should().Be(RatioUnit.Percent);
     }

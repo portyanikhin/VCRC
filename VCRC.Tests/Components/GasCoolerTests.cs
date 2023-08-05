@@ -53,7 +53,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _gasCooler.Temperature.Equals(Temperature, _comparison.Tolerance, _comparison.Type)
+        _gasCooler.Temperature.Equals(Temperature, _comparison.Tolerance.Kelvins())
             .Should().BeTrue();
         _gasCooler.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
@@ -62,7 +62,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     public void Pressure_IfUnspecified_ReturnsOptimalValueByYangEtAlInKilopascals()
     {
         _gasCooler.Pressure.Equals((2.759 * _gasCooler.Temperature.DegreesCelsius - 9.912).Bars(),
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.Pascals())
             .Should().BeTrue();
         _gasCooler.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
@@ -70,7 +70,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Pressure_IfSpecified_ReturnsSpecifiedValueInKilopascals()
     {
-        _gasCoolerWithSpecifiedPressure.Pressure.Equals(Pressure, _comparison.Tolerance, _comparison.Type)
+        _gasCoolerWithSpecifiedPressure.Pressure.Equals(Pressure, _comparison.Tolerance.Pascals())
             .Should().BeTrue();
         _gasCoolerWithSpecifiedPressure.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }

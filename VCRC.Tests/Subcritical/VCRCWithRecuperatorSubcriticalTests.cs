@@ -111,28 +111,28 @@ public class VCRCWithRecuperatorSubcriticalTests :
     public void IsentropicSpecificWork_Always_ReturnsEnthalpyDifferenceForIsentropicCompression() =>
         _vcrc.Instance.IsentropicSpecificWork.Equals(
                 _vcrc.Instance.Point3s.Enthalpy - _vcrc.Instance.Point2.Enthalpy,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificWork_Always_ReturnsEnthalpyDifferenceForRealCompression() =>
         _vcrc.Instance.SpecificWork.Equals(
                 _vcrc.Instance.IsentropicSpecificWork / _vcrc.Compressor.Efficiency.DecimalFractions,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
         _vcrc.Instance.SpecificCoolingCapacity.Equals(
                 _vcrc.Instance.Point1.Enthalpy - _vcrc.Instance.Point6.Enthalpy,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificHeatingCapacity_Always_ReturnsEnthalpyDifferenceInCondenser() =>
         _vcrc.Instance.SpecificHeatingCapacity.Equals(
                 _vcrc.Instance.Point3.Enthalpy - _vcrc.Instance.Point4.Enthalpy,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]

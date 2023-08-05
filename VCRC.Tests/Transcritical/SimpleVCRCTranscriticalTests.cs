@@ -78,21 +78,21 @@ public class SimpleVCRCTranscriticalTests :
     public void SpecificWork_Always_ReturnsEnthalpyDifferenceForRealCompression() =>
         _vcrc.Instance.SpecificWork.Equals(
                 _vcrc.Instance.IsentropicSpecificWork / _vcrc.Compressor.Efficiency.DecimalFractions,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
         _vcrc.Instance.SpecificCoolingCapacity.Equals(
                 _vcrc.Instance.Point1.Enthalpy - _vcrc.Instance.Point4.Enthalpy,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
     public void SpecificHeatingCapacity_Always_ReturnsEnthalpyDifferenceInCondenser() =>
         _vcrc.Instance.SpecificHeatingCapacity.Equals(
                 _vcrc.Instance.Point2.Enthalpy - _vcrc.Instance.Point3.Enthalpy,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.JoulesPerKilogram())
             .Should().BeTrue();
 
     [Fact]
