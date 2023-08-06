@@ -28,7 +28,7 @@ public class EconomizerTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        _economizer.Superheat.Equals(Superheat, _comparison.Tolerance, _comparison.Type)
+        _economizer.Superheat.Equals(Superheat, _comparison.Tolerance.Kelvins())
             .Should().BeTrue();
         _economizer.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }

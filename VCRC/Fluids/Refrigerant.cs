@@ -83,7 +83,7 @@ public class Refrigerant : Fluid
     public Refrigerant Subcooled(Temperature bubblePointTemperature, TemperatureDelta subcooling) =>
         subcooling < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid subcooling!")
-            : subcooling.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
+            : subcooling.Equals(TemperatureDelta.Zero, Tolerance.Kelvins())
                 ? BubblePointAt(bubblePointTemperature)
                 : BubblePointAt(bubblePointTemperature)
                     .CoolingTo(bubblePointTemperature - subcooling);
@@ -98,7 +98,7 @@ public class Refrigerant : Fluid
     public Refrigerant Subcooled(Pressure pressure, TemperatureDelta subcooling) =>
         subcooling < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid subcooling!")
-            : subcooling.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
+            : subcooling.Equals(TemperatureDelta.Zero, Tolerance.Kelvins())
                 ? BubblePointAt(pressure)
                 : BubblePointAt(pressure)
                     .CoolingTo(BubblePointAt(pressure).Temperature - subcooling);
@@ -113,7 +113,7 @@ public class Refrigerant : Fluid
     public Refrigerant Superheated(Temperature dewPointTemperature, TemperatureDelta superheat) =>
         superheat < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid superheat!")
-            : superheat.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
+            : superheat.Equals(TemperatureDelta.Zero, Tolerance.Kelvins())
                 ? DewPointAt(dewPointTemperature)
                 : DewPointAt(dewPointTemperature)
                     .HeatingTo(dewPointTemperature + superheat);
@@ -128,7 +128,7 @@ public class Refrigerant : Fluid
     public Refrigerant Superheated(Pressure pressure, TemperatureDelta superheat) =>
         superheat < TemperatureDelta.Zero
             ? throw new ArgumentException("Invalid superheat!")
-            : superheat.Equals(TemperatureDelta.Zero, ComparisonTolerance, ComparisonType)
+            : superheat.Equals(TemperatureDelta.Zero, Tolerance.Kelvins())
                 ? DewPointAt(pressure)
                 : DewPointAt(pressure)
                     .HeatingTo(DewPointAt(pressure).Temperature + superheat);
@@ -333,7 +333,7 @@ public class Refrigerant : Fluid
     /// <exception cref="ArgumentException">
     ///     The mixing process is possible only for flows with the same pressure!
     /// </exception>
-    public new Refrigerant Mixing(Ratio firstSpecificMassFlow, AbstractFluid first,
+    public Refrigerant Mixing(Ratio firstSpecificMassFlow, AbstractFluid first,
         Ratio secondSpecificMassFlow, AbstractFluid second) =>
         (Refrigerant) base.Mixing(firstSpecificMassFlow, first,
             secondSpecificMassFlow, second);

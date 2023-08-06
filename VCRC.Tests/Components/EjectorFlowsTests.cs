@@ -99,7 +99,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void FlowRatio_Always_ReturnsApproximatelyDiffuserOutletVaporQuality() =>
         _ejectorFlows.FlowRatio.Equals(_ejectorFlows.DiffuserOutlet.Quality!.Value,
-                _comparison.Tolerance, _comparison.Type)
+                _comparison.Tolerance.Percent())
             .Should().BeTrue();
 
     private static Speed CalculateOutletSpeed(AbstractFluid inlet, AbstractFluid outlet) =>
