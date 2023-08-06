@@ -46,7 +46,7 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _evaporator.Temperature.Equals(Temperature, _comparison.Tolerance.Kelvins())
+        _evaporator.Temperature.Equals(Temperature, _comparison.Tolerance.DegreesCelsius())
             .Should().BeTrue();
         _evaporator.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
@@ -54,7 +54,7 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        _evaporator.Superheat.Equals(Superheat, _comparison.Tolerance.Kelvins())
+        _evaporator.Superheat.Equals(Superheat, TemperatureDelta.FromKelvins(_comparison.Tolerance))
             .Should().BeTrue();
         _evaporator.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }

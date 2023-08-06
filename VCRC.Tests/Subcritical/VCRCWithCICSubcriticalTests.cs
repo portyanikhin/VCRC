@@ -133,14 +133,14 @@ public class VCRCWithCICSubcriticalTests :
     public void SpecificMassFlows_Always_CalculatesAutomaticallyByHeatBalance()
     {
         _vcrc.Instance.EvaporatorSpecificMassFlow.Equals(
-                100.Percent(), _comparison.Tolerance.JoulesPerKilogram())
+                100.Percent(), _comparison.Tolerance.Percent())
             .Should().BeTrue();
         _vcrc.Instance.HeatReleaserSpecificMassFlow.Equals(
                 _vcrc.Instance.EvaporatorSpecificMassFlow *
                 (1 + (_vcrc.Instance.Point2.Enthalpy - _vcrc.Instance.Point3.Enthalpy) /
                     (_vcrc.Instance.Point3.Enthalpy - _vcrc.Instance.Point7.Enthalpy)) /
                 (1 - _vcrc.Instance.Point6.Quality!.Value.DecimalFractions),
-                _comparison.Tolerance.JoulesPerKilogram())
+                _comparison.Tolerance.Percent())
             .Should().BeTrue();
         _vcrc.Instance.IntermediateSpecificMassFlow.Equals(
                 _vcrc.Instance.HeatReleaserSpecificMassFlow, _comparison.Tolerance.Percent())

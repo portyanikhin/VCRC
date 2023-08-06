@@ -53,7 +53,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _gasCooler.Temperature.Equals(Temperature, _comparison.Tolerance.Kelvins())
+        _gasCooler.Temperature.Equals(Temperature, _comparison.Tolerance.DegreesCelsius())
             .Should().BeTrue();
         _gasCooler.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }

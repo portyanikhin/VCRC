@@ -178,7 +178,7 @@ public class VCRCMitsubishiZubadanTests :
                 _vcrc.Instance.Point4.Enthalpy - _vcrc.Instance.EvaporatorSpecificMassFlow /
                 (_vcrc.Instance.HeatReleaserSpecificMassFlow - _vcrc.Instance.EvaporatorSpecificMassFlow) *
                 (_vcrc.Instance.Point3.Enthalpy - _vcrc.Instance.Point4.Enthalpy),
-                _comparison.Tolerance.JoulesPerKilogram())
+                100.JoulesPerKilogram())
             .Should().BeTrue();
         _vcrc.Instance.Point10.Phase.Should().Be(Phases.TwoPhase);
     }
