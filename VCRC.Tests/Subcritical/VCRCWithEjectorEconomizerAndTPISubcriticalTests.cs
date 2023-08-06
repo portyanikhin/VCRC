@@ -1,14 +1,16 @@
 ﻿namespace VCRC.Tests;
 
-public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
-    IClassFixture<ComparisonFixture>,
-    IClassFixture<SubcriticalVCRCFixture<VCRCWithEjectorEconomizerAndTPI>>
+public class VCRCWithEjectorEconomizerAndTPISubcriticalTests
+    : IClassFixture<ComparisonFixture>,
+        IClassFixture<SubcriticalVCRCFixture<VCRCWithEjectorEconomizerAndTPI>>
 {
     private readonly ComparisonFixture _comparison;
     private readonly SubcriticalVCRCFixture<VCRCWithEjectorEconomizerAndTPI> _vcrc;
 
     public VCRCWithEjectorEconomizerAndTPISubcriticalTests(
-        ComparisonFixture comparison, SubcriticalVCRCFixture<VCRCWithEjectorEconomizerAndTPI> vcrc)
+        ComparisonFixture comparison,
+        SubcriticalVCRCFixture<VCRCWithEjectorEconomizerAndTPI> vcrc
+    )
     {
         _comparison = comparison;
         _vcrc = vcrc;
@@ -17,25 +19,48 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [Fact]
     public void VCRCWithEjectorEconomizerAndTPI_WrongRefrigerant_ThrowsValidationException()
     {
-        Action action = () => _ = new VCRCWithEjectorEconomizerAndTPI(
-            new Evaporator(FluidsList.R407C,
-                _vcrc.Evaporator.Temperature, _vcrc.Evaporator.Superheat),
-            _vcrc.Compressor,
-            new Condenser(FluidsList.R407C,
-                _vcrc.Condenser.Temperature, _vcrc.Condenser.Subcooling),
-            _vcrc.Ejector, _vcrc.Economizer);
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Refrigerant should be a single component or an azeotropic blend!*");
+        Action action = () =>
+            _ = new VCRCWithEjectorEconomizerAndTPI(
+                new Evaporator(
+                    FluidsList.R407C,
+                    _vcrc.Evaporator.Temperature,
+                    _vcrc.Evaporator.Superheat
+                ),
+                _vcrc.Compressor,
+                new Condenser(
+                    FluidsList.R407C,
+                    _vcrc.Condenser.Temperature,
+                    _vcrc.Condenser.Subcooling
+                ),
+                _vcrc.Ejector,
+                _vcrc.Economizer
+            );
+        action
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage(
+                "*Refrigerant should be "
+                    + "a single component or an azeotropic blend!*"
+            );
     }
 
     [Fact]
     public void VCRCWithEjectorEconomizerAndTPI_WrongEconomizerTemperatureDifference_ThrowsValidationException()
     {
-        Action action = () => _ = new VCRCWithEjectorEconomizerAndTPI(
-            _vcrc.Evaporator, _vcrc.Compressor, _vcrc.Condenser, _vcrc.Ejector,
-            new EconomizerWithTPI(TemperatureDelta.FromKelvins(49)));
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Too high temperature difference at economizer 'cold' side!*");
+        Action action = () =>
+            _ = new VCRCWithEjectorEconomizerAndTPI(
+                _vcrc.Evaporator,
+                _vcrc.Compressor,
+                _vcrc.Condenser,
+                _vcrc.Ejector,
+                new EconomizerWithTPI(TemperatureDelta.FromKelvins(49))
+            );
+        action
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage(
+                "*Too high temperature difference at economizer 'cold' side!*"
+            );
     }
 
     [Fact]
@@ -69,10 +94,15 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [Fact]
     public void Point1_Always_ReturnsSeparatorVaporOutlet()
     {
-        _vcrc.Instance.Point1.Pressure.Pascals.Should().BeApproximately(
-            _vcrc.EjectorFlows.DiffuserOutlet.Pressure.Pascals, 50);
-        _vcrc.Instance.Point1.Should().Be(
-            _vcrc.Refrigerant.DewPointAt(_vcrc.Instance.Point1.Pressure));
+        _vcrc.Instance.Point1.Pressure.Pascals
+            .Should()
+            .BeApproximately(
+                _vcrc.EjectorFlows.DiffuserOutlet.Pressure.Pascals,
+                50
+            );
+        _vcrc.Instance.Point1
+            .Should()
+            .Be(_vcrc.Refrigerant.DewPointAt(_vcrc.Instance.Point1.Pressure));
         _vcrc.Instance.Point1.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -80,25 +110,40 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point2s_Always_ReturnsFirstIsentropicCompressionStageDischarge()
     {
-        _vcrc.Instance.Point2s.Should().Be(
-            _vcrc.Instance.Point1.IsentropicCompressionTo(_vcrc.Instance.IntermediatePressure));
+        _vcrc.Instance.Point2s
+            .Should()
+            .Be(
+                _vcrc.Instance.Point1.IsentropicCompressionTo(
+                    _vcrc.Instance.IntermediatePressure
+                )
+            );
         _vcrc.Instance.Point2s.Phase.Should().Be(Phases.Gas);
     }
 
     [Fact]
     public void Point2_Always_ReturnsFirstCompressionStageDischarge()
     {
-        _vcrc.Instance.Point2.Should().Be(
-            _vcrc.Instance.Point1.CompressionTo(
-                _vcrc.Instance.IntermediatePressure, _vcrc.Compressor.Efficiency));
+        _vcrc.Instance.Point2
+            .Should()
+            .Be(
+                _vcrc.Instance.Point1.CompressionTo(
+                    _vcrc.Instance.IntermediatePressure,
+                    _vcrc.Compressor.Efficiency
+                )
+            );
         _vcrc.Instance.Point2.Phase.Should().Be(Phases.Gas);
     }
 
     [Fact]
     public void Point3_Always_ReturnsSecondCompressionStageSuction()
     {
-        _vcrc.Instance.Point3.Should().Be(
-            _vcrc.Refrigerant.DewPointAt(_vcrc.Instance.IntermediatePressure));
+        _vcrc.Instance.Point3
+            .Should()
+            .Be(
+                _vcrc.Refrigerant.DewPointAt(
+                    _vcrc.Instance.IntermediatePressure
+                )
+            );
         _vcrc.Instance.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -106,17 +151,27 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point4s_Always_ReturnsSecondIsentropicCompressionStageDischarge()
     {
-        _vcrc.Instance.Point4s.Should().Be(
-            _vcrc.Instance.Point3.IsentropicCompressionTo(_vcrc.Condenser.Pressure));
+        _vcrc.Instance.Point4s
+            .Should()
+            .Be(
+                _vcrc.Instance.Point3.IsentropicCompressionTo(
+                    _vcrc.Condenser.Pressure
+                )
+            );
         _vcrc.Instance.Point4s.Phase.Should().Be(Phases.Gas);
     }
 
     [Fact]
     public void Point4_Always_ReturnsSecondCompressionStageDischarge()
     {
-        _vcrc.Instance.Point4.Should().Be(
-            _vcrc.Instance.Point3.CompressionTo(
-                _vcrc.Condenser.Pressure, _vcrc.Compressor.Efficiency));
+        _vcrc.Instance.Point4
+            .Should()
+            .Be(
+                _vcrc.Instance.Point3.CompressionTo(
+                    _vcrc.Condenser.Pressure,
+                    _vcrc.Compressor.Efficiency
+                )
+            );
         _vcrc.Instance.Point4.Phase.Should().Be(Phases.Gas);
     }
 
@@ -130,39 +185,82 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [Fact]
     public void Point6_Always_ReturnsEconomizerColdInlet()
     {
-        _vcrc.Instance.Point6.Should().Be(
-            _vcrc.Instance.Point5.IsenthalpicExpansionTo(_vcrc.Instance.IntermediatePressure));
+        _vcrc.Instance.Point6
+            .Should()
+            .Be(
+                _vcrc.Instance.Point5.IsenthalpicExpansionTo(
+                    _vcrc.Instance.IntermediatePressure
+                )
+            );
         _vcrc.Instance.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point7_Always_ReturnsEconomizerColdOutlet()
     {
-        _vcrc.Instance.Point7.Pressure.Equals(
-                _vcrc.Instance.IntermediatePressure, _comparison.Tolerance.Pascals())
-            .Should().BeTrue();
-        _vcrc.Instance.Point7.Should().Be(
-            _vcrc.Instance.Point6.HeatingTo(
-                ((_vcrc.Instance.Point6.Enthalpy.JoulesPerKilogram *
-                  (_vcrc.Instance.Point2.Enthalpy.JoulesPerKilogram -
-                   _vcrc.Instance.Point3.Enthalpy.JoulesPerKilogram) +
-                  _vcrc.Instance.Point3.Enthalpy.JoulesPerKilogram *
-                  (_vcrc.Instance.Point5.Enthalpy.JoulesPerKilogram -
-                   _vcrc.Instance.Point8.Enthalpy.JoulesPerKilogram)) /
-                 (_vcrc.Instance.Point2.Enthalpy.JoulesPerKilogram -
-                  _vcrc.Instance.Point3.Enthalpy.JoulesPerKilogram +
-                  _vcrc.Instance.Point5.Enthalpy.JoulesPerKilogram -
-                  _vcrc.Instance.Point8.Enthalpy.JoulesPerKilogram))
-                .JoulesPerKilogram()));
+        _vcrc.Instance.Point7.Pressure
+            .Equals(
+                _vcrc.Instance.IntermediatePressure,
+                _comparison.Tolerance.Pascals()
+            )
+            .Should()
+            .BeTrue();
+        _vcrc.Instance.Point7
+            .Should()
+            .Be(
+                _vcrc.Instance.Point6.HeatingTo(
+                    (
+                        (
+                            _vcrc.Instance.Point6.Enthalpy.JoulesPerKilogram
+                                * (
+                                    _vcrc
+                                        .Instance
+                                        .Point2
+                                        .Enthalpy
+                                        .JoulesPerKilogram
+                                    - _vcrc
+                                        .Instance
+                                        .Point3
+                                        .Enthalpy
+                                        .JoulesPerKilogram
+                                )
+                            + _vcrc.Instance.Point3.Enthalpy.JoulesPerKilogram
+                                * (
+                                    _vcrc
+                                        .Instance
+                                        .Point5
+                                        .Enthalpy
+                                        .JoulesPerKilogram
+                                    - _vcrc
+                                        .Instance
+                                        .Point8
+                                        .Enthalpy
+                                        .JoulesPerKilogram
+                                )
+                        )
+                        / (
+                            _vcrc.Instance.Point2.Enthalpy.JoulesPerKilogram
+                            - _vcrc.Instance.Point3.Enthalpy.JoulesPerKilogram
+                            + _vcrc.Instance.Point5.Enthalpy.JoulesPerKilogram
+                            - _vcrc.Instance.Point8.Enthalpy.JoulesPerKilogram
+                        )
+                    ).JoulesPerKilogram()
+                )
+            );
         _vcrc.Instance.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point8_Always_ReturnsEconomizerHotOutlet()
     {
-        _vcrc.Instance.Point8.Should().Be(
-            _vcrc.Instance.Point5.CoolingTo(
-                _vcrc.Instance.Point6.Temperature + _vcrc.Economizer.TemperatureDifference));
+        _vcrc.Instance.Point8
+            .Should()
+            .Be(
+                _vcrc.Instance.Point5.CoolingTo(
+                    _vcrc.Instance.Point6.Temperature
+                        + _vcrc.Economizer.TemperatureDifference
+                )
+            );
         _vcrc.Instance.Point8.Phase.Should().Be(Phases.Liquid);
     }
 
@@ -190,16 +288,26 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [Fact]
     public void Point12_Always_ReturnsSeparatorLiquidOutlet()
     {
-        _vcrc.Instance.Point12.Should().Be(
-            _vcrc.Refrigerant.BubblePointAt(_vcrc.EjectorFlows.DiffuserOutlet.Pressure));
+        _vcrc.Instance.Point12
+            .Should()
+            .Be(
+                _vcrc.Refrigerant.BubblePointAt(
+                    _vcrc.EjectorFlows.DiffuserOutlet.Pressure
+                )
+            );
         _vcrc.Instance.Point12.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point13_Always_ReturnsEvaporatorInlet()
     {
-        _vcrc.Instance.Point13.Should().Be(
-            _vcrc.Instance.Point12.IsenthalpicExpansionTo(_vcrc.Evaporator.Pressure));
+        _vcrc.Instance.Point13
+            .Should()
+            .Be(
+                _vcrc.Instance.Point12.IsenthalpicExpansionTo(
+                    _vcrc.Evaporator.Pressure
+                )
+            );
         _vcrc.Instance.Point13.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -219,100 +327,192 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
 
     [Fact]
     public void IntermediatePressure_ForThisCase_ReturnsMiddlePressureBetweenDiffuserOutletAndCondenserPressures() =>
-        _vcrc.Instance.IntermediatePressure.Pascals.Should().BeApproximately(
-            Math.Sqrt(_vcrc.EjectorFlows.DiffuserOutlet.Pressure.Pascals *
-                      _vcrc.Condenser.Pressure.Pascals), 50);
+        _vcrc.Instance.IntermediatePressure.Pascals
+            .Should()
+            .BeApproximately(
+                Math.Sqrt(
+                    _vcrc.EjectorFlows.DiffuserOutlet.Pressure.Pascals
+                        * _vcrc.Condenser.Pressure.Pascals
+                ),
+                50
+            );
 
     [Fact]
     public void SpecificMassFlows_Always_CalculatesAutomaticallyByHeatBalance()
     {
-        _vcrc.Instance.EvaporatorSpecificMassFlow.Equals(
-                100.Percent(), _comparison.Tolerance.Percent())
-            .Should().BeTrue();
-        _vcrc.Instance.HeatReleaserSpecificMassFlow.Equals(
-                _vcrc.Instance.EvaporatorSpecificMassFlow *
-                (_vcrc.Instance.Point11.Quality!.Value.DecimalFractions /
-                 (1 - _vcrc.Instance.Point11.Quality!.Value.DecimalFractions)) *
-                (1 + (_vcrc.Instance.Point2.Enthalpy - _vcrc.Instance.Point3.Enthalpy) /
-                    (_vcrc.Instance.Point3.Enthalpy - _vcrc.Instance.Point7.Enthalpy)),
-                _comparison.Tolerance.Percent())
-            .Should().BeTrue();
-        _vcrc.Instance.IntermediateSpecificMassFlow.Equals(
-                _vcrc.Instance.HeatReleaserSpecificMassFlow - _vcrc.Instance.EvaporatorSpecificMassFlow *
-                (_vcrc.Instance.Point11.Quality!.Value.DecimalFractions /
-                 (1 - _vcrc.Instance.Point11.Quality!.Value.DecimalFractions)),
-                _comparison.Tolerance.Percent())
-            .Should().BeTrue();
+        _vcrc.Instance.EvaporatorSpecificMassFlow
+            .Equals(100.Percent(), _comparison.Tolerance.Percent())
+            .Should()
+            .BeTrue();
+        _vcrc.Instance.HeatReleaserSpecificMassFlow
+            .Equals(
+                _vcrc.Instance.EvaporatorSpecificMassFlow
+                    * (
+                        _vcrc.Instance.Point11.Quality!.Value.DecimalFractions
+                        / (
+                            1
+                            - _vcrc
+                                .Instance
+                                .Point11
+                                .Quality!
+                                .Value
+                                .DecimalFractions
+                        )
+                    )
+                    * (
+                        1
+                        + (
+                            _vcrc.Instance.Point2.Enthalpy
+                            - _vcrc.Instance.Point3.Enthalpy
+                        )
+                            / (
+                                _vcrc.Instance.Point3.Enthalpy
+                                - _vcrc.Instance.Point7.Enthalpy
+                            )
+                    ),
+                _comparison.Tolerance.Percent()
+            )
+            .Should()
+            .BeTrue();
+        _vcrc.Instance.IntermediateSpecificMassFlow
+            .Equals(
+                _vcrc.Instance.HeatReleaserSpecificMassFlow
+                    - _vcrc.Instance.EvaporatorSpecificMassFlow
+                        * (
+                            _vcrc
+                                .Instance
+                                .Point11
+                                .Quality!
+                                .Value
+                                .DecimalFractions
+                            / (
+                                1
+                                - _vcrc
+                                    .Instance
+                                    .Point11
+                                    .Quality!
+                                    .Value
+                                    .DecimalFractions
+                            )
+                        ),
+                _comparison.Tolerance.Percent()
+            )
+            .Should()
+            .BeTrue();
     }
 
     [Fact]
     public void IsentropicSpecificWork_Always_ReturnsEnthalpyDifferenceForIsentropicCompression() =>
-        _vcrc.Instance.IsentropicSpecificWork.Equals(
-                (_vcrc.Instance.HeatReleaserSpecificMassFlow -
-                 _vcrc.Instance.IntermediateSpecificMassFlow).DecimalFractions *
-                (_vcrc.Instance.Point2s.Enthalpy - _vcrc.Instance.Point1.Enthalpy) +
-                _vcrc.Instance.HeatReleaserSpecificMassFlow.DecimalFractions *
-                (_vcrc.Instance.Point4s.Enthalpy - _vcrc.Instance.Point3.Enthalpy),
-                _comparison.Tolerance.JoulesPerKilogram())
-            .Should().BeTrue();
+        _vcrc.Instance.IsentropicSpecificWork
+            .Equals(
+                (
+                    _vcrc.Instance.HeatReleaserSpecificMassFlow
+                    - _vcrc.Instance.IntermediateSpecificMassFlow
+                ).DecimalFractions
+                    * (
+                        _vcrc.Instance.Point2s.Enthalpy
+                        - _vcrc.Instance.Point1.Enthalpy
+                    )
+                    + _vcrc
+                        .Instance
+                        .HeatReleaserSpecificMassFlow
+                        .DecimalFractions
+                        * (
+                            _vcrc.Instance.Point4s.Enthalpy
+                            - _vcrc.Instance.Point3.Enthalpy
+                        ),
+                _comparison.Tolerance.JoulesPerKilogram()
+            )
+            .Should()
+            .BeTrue();
 
     [Fact]
     public void SpecificWork_Always_ReturnsEnthalpyDifferenceForRealCompression() =>
-        _vcrc.Instance.SpecificWork.Equals(
-                _vcrc.Instance.IsentropicSpecificWork / _vcrc.Compressor.Efficiency.DecimalFractions,
-                _comparison.Tolerance.JoulesPerKilogram())
-            .Should().BeTrue();
+        _vcrc.Instance.SpecificWork
+            .Equals(
+                _vcrc.Instance.IsentropicSpecificWork
+                    / _vcrc.Compressor.Efficiency.DecimalFractions,
+                _comparison.Tolerance.JoulesPerKilogram()
+            )
+            .Should()
+            .BeTrue();
 
     [Fact]
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
-        _vcrc.Instance.SpecificCoolingCapacity.Equals(
-                _vcrc.Instance.Point14.Enthalpy - _vcrc.Instance.Point13.Enthalpy,
-                _comparison.Tolerance.JoulesPerKilogram())
-            .Should().BeTrue();
+        _vcrc.Instance.SpecificCoolingCapacity
+            .Equals(
+                _vcrc.Instance.Point14.Enthalpy
+                    - _vcrc.Instance.Point13.Enthalpy,
+                _comparison.Tolerance.JoulesPerKilogram()
+            )
+            .Should()
+            .BeTrue();
 
     [Fact]
     public void SpecificHeatingCapacity_Always_ReturnsEnthalpyDifferenceInCondenser() =>
-        _vcrc.Instance.SpecificHeatingCapacity.Equals(
-                _vcrc.Instance.HeatReleaserSpecificMassFlow.DecimalFractions *
-                (_vcrc.Instance.Point4.Enthalpy - _vcrc.Instance.Point5.Enthalpy),
-                _comparison.Tolerance.JoulesPerKilogram())
-            .Should().BeTrue();
+        _vcrc.Instance.SpecificHeatingCapacity
+            .Equals(
+                _vcrc.Instance.HeatReleaserSpecificMassFlow.DecimalFractions
+                    * (
+                        _vcrc.Instance.Point4.Enthalpy
+                        - _vcrc.Instance.Point5.Enthalpy
+                    ),
+                _comparison.Tolerance.JoulesPerKilogram()
+            )
+            .Should()
+            .BeTrue();
 
     [Fact]
     public void EER_Always_ReturnsRatioBetweenSpecificCoolingCapacityAndSpecificWork()
     {
-        _vcrc.Instance.EER.Should().Be(
-            _vcrc.Instance.SpecificCoolingCapacity / _vcrc.Instance.SpecificWork);
-        _vcrc.Instance.EER.Should().BeApproximately(4.877124735439032, _comparison.Tolerance);
+        _vcrc.Instance.EER
+            .Should()
+            .Be(
+                _vcrc.Instance.SpecificCoolingCapacity
+                    / _vcrc.Instance.SpecificWork
+            );
+        _vcrc.Instance.EER
+            .Should()
+            .BeApproximately(4.877124735439032, _comparison.Tolerance);
     }
 
     [Fact]
     public void COP_Always_ReturnsRatioBetweenSpecificHeatingCapacityAndSpecificWork()
     {
-        _vcrc.Instance.COP.Should().Be(
-            _vcrc.Instance.SpecificHeatingCapacity / _vcrc.Instance.SpecificWork);
-        _vcrc.Instance.COP.Should().BeApproximately(5.877039217058631, _comparison.Tolerance);
+        _vcrc.Instance.COP
+            .Should()
+            .Be(
+                _vcrc.Instance.SpecificHeatingCapacity
+                    / _vcrc.Instance.SpecificWork
+            );
+        _vcrc.Instance.COP
+            .Should()
+            .BeApproximately(5.877039217058631, _comparison.Tolerance);
     }
 
     [Fact]
     public void ThermodynamicPerfection_ForThisCase_ReturnsAbout28() =>
         _vcrc.AnalysisResult.ThermodynamicPerfection.Percent
-            .Should().BeApproximately(28.477115061811283, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(28.477115061811283, _comparison.Tolerance);
 
     [Fact]
     public void MinSpecificWorkRatio_ForThisCase_ReturnsAbout28() =>
         _vcrc.AnalysisResult.MinSpecificWorkRatio.Percent
-            .Should().BeApproximately(28.428456212893284, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(28.428456212893284, _comparison.Tolerance);
 
     [Fact]
     public void CompressorEnergyLossRatio_ForThisCase_Returns20() =>
         _vcrc.AnalysisResult.CompressorEnergyLossRatio.Percent
-            .Should().BeApproximately(20, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(20, _comparison.Tolerance);
 
     [Fact]
     public void CondenserEnergyLossRatio_ForThisCase_ReturnsAbout19() =>
         _vcrc.AnalysisResult.CondenserEnergyLossRatio.Percent
-            .Should().BeApproximately(19.138658083587742, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(19.138658083587742, _comparison.Tolerance);
 
     [Fact]
     public void GasCoolerEnergyLossRatio_ForThisCase_Returns0() =>
@@ -321,17 +521,20 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [Fact]
     public void ExpansionValvesEnergyLossRatio_ForThisCase_ReturnsAbout0() =>
         _vcrc.AnalysisResult.ExpansionValvesEnergyLossRatio.Percent
-            .Should().BeApproximately(0.9728410809403587, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(0.9728410809403587, _comparison.Tolerance);
 
     [Fact]
     public void EjectorEnergyLossRatio_ForThisCase_ReturnsAbout4() =>
         _vcrc.AnalysisResult.EjectorEnergyLossRatio.Percent
-            .Should().BeApproximately(4.51876384630047, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(4.51876384630047, _comparison.Tolerance);
 
     [Fact]
     public void EvaporatorEnergyLossRatio_ForThisCase_ReturnsAbout23() =>
         _vcrc.AnalysisResult.EvaporatorEnergyLossRatio.Percent
-            .Should().BeApproximately(23.847229676543304, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(23.847229676543304, _comparison.Tolerance);
 
     [Fact]
     public void RecuperatorEnergyLossRatio_Always_Returns0() =>
@@ -340,18 +543,24 @@ public class VCRCWithEjectorEconomizerAndTPISubcriticalTests :
     [Fact]
     public void EconomizerEnergyLossRatio_ForThisCase_ReturnsAbout1() =>
         _vcrc.AnalysisResult.EconomizerEnergyLossRatio.Percent
-            .Should().BeApproximately(1.819717819138191, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(1.819717819138191, _comparison.Tolerance);
 
     [Fact]
     public void TestMixingEnergyLossRatio_ForThisCase_ReturnsAbout1() =>
         _vcrc.AnalysisResult.MixingEnergyLossRatio.Percent
-            .Should().BeApproximately(1.274333280596639, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(1.274333280596639, _comparison.Tolerance);
 
     [Fact]
     public void AnalysisRelativeError_Always_ReturnsNegligibleValue()
     {
         _vcrc.AnalysisResult.AnalysisRelativeError.Percent
-            .Should().BeApproximately(0.17116247380301927, _comparison.Tolerance);
-        _vcrc.AnalysisResult.Sum().Percent.Should().BeApproximately(100, _comparison.Tolerance);
+            .Should()
+            .BeApproximately(0.17116247380301927, _comparison.Tolerance);
+        _vcrc.AnalysisResult
+            .Sum()
+            .Percent.Should()
+            .BeApproximately(100, _comparison.Tolerance);
     }
 }

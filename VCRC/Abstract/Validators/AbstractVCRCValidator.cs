@@ -10,6 +10,9 @@ internal class AbstractVCRCValidator : AbstractValidator<AbstractVCRC>
         RuleFor(vcrc => vcrc.HeatReleaser.Temperature)
             .GreaterThan(vcrc => vcrc.Evaporator.Temperature)
             .When(vcrc => vcrc.HeatReleaser is Condenser)
-            .WithMessage("Condensing temperature should be greater than evaporating temperature!");
+            .WithMessage(
+                "Condensing temperature should be "
+                    + "greater than evaporating temperature!"
+            );
     }
 }

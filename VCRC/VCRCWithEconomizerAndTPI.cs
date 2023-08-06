@@ -1,42 +1,76 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Two-stage VCRC with economizer and two-phase injection into the compressor.
+///     Two-stage VCRC with economizer
+///     and two-phase injection into the compressor.
 /// </summary>
 public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
 {
     /// <summary>
-    ///     Two-stage VCRC with economizer and two-phase injection into the compressor.
+    ///     Two-stage VCRC with economizer
+    ///     and two-phase injection into the compressor.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <param name="economizer">Economizer.</param>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
-    ///     Condensing temperature should be greater than evaporating temperature!
+    ///     Only one refrigerant should be selected!
     /// </exception>
-    /// <exception cref="ValidationException">Too high temperature difference at economizer 'cold' side!</exception>
-    public VCRCWithEconomizerAndTPI(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser,
-        EconomizerWithTPI economizer) : base(evaporator, compressor, heatReleaser)
+    /// <exception cref="ValidationException">
+    ///     Condensing temperature
+    ///     should be greater than evaporating temperature!
+    /// </exception>
+    /// <exception cref="ValidationException">
+    ///     Too high temperature difference at economizer 'cold' side!
+    /// </exception>
+    public VCRCWithEconomizerAndTPI(
+        Evaporator evaporator,
+        Compressor compressor,
+        IHeatReleaser heatReleaser,
+        EconomizerWithTPI economizer
+    )
+        : base(evaporator, compressor, heatReleaser)
     {
         Economizer = economizer;
         Point2s = Point1.IsentropicCompressionTo(IntermediatePressure);
-        Point2 = Point1.CompressionTo(IntermediatePressure, Compressor.Efficiency);
+        Point2 = Point1.CompressionTo(
+            IntermediatePressure,
+            Compressor.Efficiency
+        );
         Point3 = Refrigerant.DewPointAt(IntermediatePressure);
         Point4s = Point3.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point4 = Point3.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
+        Point4 = Point3.CompressionTo(
+            HeatReleaser.Pressure,
+            Compressor.Efficiency
+        );
         Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
         new VCRCWithEconomizerAndTPIValidator().ValidateAndThrow(this);
-        Point8 = Point5.CoolingTo(Point6.Temperature + Economizer.TemperatureDifference);
+        Point8 = Point5.CoolingTo(
+            Point6.Temperature + Economizer.TemperatureDifference
+        );
         Point7 = Point6.HeatingTo(
-            ((Point6.Enthalpy.JoulesPerKilogram *
-              (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram) +
-              Point3.Enthalpy.JoulesPerKilogram *
-              (Point5.Enthalpy.JoulesPerKilogram - Point8.Enthalpy.JoulesPerKilogram)) /
-             (Point2.Enthalpy.JoulesPerKilogram - Point3.Enthalpy.JoulesPerKilogram +
-                 Point5.Enthalpy.JoulesPerKilogram - Point8.Enthalpy.JoulesPerKilogram))
-            .JoulesPerKilogram());
+            (
+                (
+                    Point6.Enthalpy.JoulesPerKilogram
+                        * (
+                            Point2.Enthalpy.JoulesPerKilogram
+                            - Point3.Enthalpy.JoulesPerKilogram
+                        )
+                    + Point3.Enthalpy.JoulesPerKilogram
+                        * (
+                            Point5.Enthalpy.JoulesPerKilogram
+                            - Point8.Enthalpy.JoulesPerKilogram
+                        )
+                )
+                / (
+                    Point2.Enthalpy.JoulesPerKilogram
+                    - Point3.Enthalpy.JoulesPerKilogram
+                    + Point5.Enthalpy.JoulesPerKilogram
+                    - Point8.Enthalpy.JoulesPerKilogram
+                )
+            ).JoulesPerKilogram()
+        );
         Point9 = Point8.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
@@ -73,12 +107,14 @@ public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     public Refrigerant Point4s { get; }
 
     /// <summary>
-    ///     Point 4 – second compression stage discharge / condenser or gas cooler inlet.
+    ///     Point 4 – second compression stage discharge /
+    ///     condenser or gas cooler inlet.
     /// </summary>
     public Refrigerant Point4 { get; }
 
     /// <summary>
-    ///     Point 5 – condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
+    ///     Point 5 – condenser or gas cooler outlet /
+    ///     first EV inlet / economizer "hot" inlet.
     /// </summary>
     public Refrigerant Point5 => HeatReleaser.Outlet;
 
@@ -88,7 +124,8 @@ public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
     public Refrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – economizer "cold" outlet / injection of two-phase refrigerant into the compressor.
+    ///     Point 7 – economizer "cold" outlet /
+    ///     injection of two-phase refrigerant into the compressor.
     /// </summary>
     public Refrigerant Point7 { get; }
 
@@ -109,32 +146,55 @@ public class VCRCWithEconomizerAndTPI : AbstractTwoStageVCRC, IEntropyAnalysable
         base.IntermediateSpecificMassFlow;
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
-        EvaporatorSpecificMassFlow *
-        (1 + (Point2.Enthalpy - Point3.Enthalpy) /
-            (Point3.Enthalpy - Point7.Enthalpy));
+        EvaporatorSpecificMassFlow
+        * (
+            1
+            + (Point2.Enthalpy - Point3.Enthalpy)
+                / (Point3.Enthalpy - Point7.Enthalpy)
+        );
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
-        Point2s.Enthalpy - Point1.Enthalpy +
-        HeatReleaserSpecificMassFlow.DecimalFractions *
-        (Point4s.Enthalpy - Point3.Enthalpy);
+        Point2s.Enthalpy
+        - Point1.Enthalpy
+        + HeatReleaserSpecificMassFlow.DecimalFractions
+            * (Point4s.Enthalpy - Point3.Enthalpy);
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
         Point1.Enthalpy - Point9.Enthalpy;
 
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
-        HeatReleaserSpecificMassFlow.DecimalFractions *
-        (Point4.Enthalpy - Point5.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions
+        * (Point4.Enthalpy - Point5.Enthalpy);
 
-    public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
+    public EntropyAnalysisResult EntropyAnalysis(
+        Temperature indoor,
+        Temperature outdoor
+    ) =>
         new EntropyAnalyzer(
-                this, indoor, outdoor,
-                new EvaporatorInfo(EvaporatorSpecificMassFlow, Point9, Point1),
-                new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point4s, Point5),
-                new EVInfo(IntermediateSpecificMassFlow, Point5, Point6),
-                new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9), null, null, null,
-                new EconomizerInfo(IntermediateSpecificMassFlow, Point6, Point7,
-                    EvaporatorSpecificMassFlow, Point5, Point8),
-                new MixingInfo(Point3, EvaporatorSpecificMassFlow, Point2,
-                    IntermediateSpecificMassFlow, Point7))
-            .Result;
+            this,
+            indoor,
+            outdoor,
+            new EvaporatorInfo(EvaporatorSpecificMassFlow, Point9, Point1),
+            new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point4s, Point5),
+            new EVInfo(IntermediateSpecificMassFlow, Point5, Point6),
+            new EVInfo(EvaporatorSpecificMassFlow, Point8, Point9),
+            null,
+            null,
+            null,
+            new EconomizerInfo(
+                IntermediateSpecificMassFlow,
+                Point6,
+                Point7,
+                EvaporatorSpecificMassFlow,
+                Point5,
+                Point8
+            ),
+            new MixingInfo(
+                Point3,
+                EvaporatorSpecificMassFlow,
+                Point2,
+                IntermediateSpecificMassFlow,
+                Point7
+            )
+        ).Result;
 }

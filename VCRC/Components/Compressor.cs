@@ -8,7 +8,9 @@ public record Compressor
     /// <summary>
     ///     Compressor as a VCRC component.
     /// </summary>
-    /// <param name="efficiency">Isentropic efficiency of the compressor.</param>
+    /// <param name="efficiency">
+    ///     Isentropic efficiency of the compressor.
+    /// </param>
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the compressor should be in (0;100) %!
     /// </exception>

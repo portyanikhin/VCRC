@@ -6,7 +6,8 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
 {
     private static readonly Refrigerant Refrigerant = new(FluidsList.R407C);
     private static readonly Temperature Temperature = 278.15.Kelvins();
-    private static readonly TemperatureDelta Superheat = TemperatureDelta.FromDegreesCelsius(8);
+    private static readonly TemperatureDelta Superheat =
+        TemperatureDelta.FromDegreesCelsius(8);
     private readonly ComparisonFixture _comparison;
     private readonly Evaporator _evaporator;
 
@@ -19,24 +20,44 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     [Theory]
     [InlineData(-74.0)]
     [InlineData(87.0)]
-    public void Evaporator_WrongTemperature_ThrowsValidationException(double temperature)
+    public void Evaporator_WrongTemperature_ThrowsValidationException(
+        double temperature
+    )
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
-        Action action = () => _ = new Evaporator(
-            Refrigerant.Name, temperature.DegreesCelsius(), Superheat);
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Evaporating temperature should be in (-73.15;86.2) °C!*");
+        Action action = () =>
+            _ = new Evaporator(
+                Refrigerant.Name,
+                temperature.DegreesCelsius(),
+                Superheat
+            );
+        action
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage(
+                "*Evaporating temperature should be in (-73.15;86.2) °C!*"
+            );
     }
 
     [Theory]
     [InlineData(-1.0)]
     [InlineData(51.0)]
-    public void Evaporator_WrongSuperheat_ThrowsValidationException(double superheat)
+    public void Evaporator_WrongSuperheat_ThrowsValidationException(
+        double superheat
+    )
     {
-        Action action = () => _ = new Evaporator(
-            Refrigerant.Name, Temperature, TemperatureDelta.FromKelvins(superheat));
-        action.Should().Throw<ValidationException>()
-            .WithMessage("*Superheat in the evaporator should be in [0;50] K!*");
+        Action action = () =>
+            _ = new Evaporator(
+                Refrigerant.Name,
+                Temperature,
+                TemperatureDelta.FromKelvins(superheat)
+            );
+        action
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage(
+                "*Superheat in the evaporator should be in [0;50] K!*"
+            );
     }
 
     [Fact]
@@ -46,16 +67,23 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _evaporator.Temperature.Equals(Temperature, _comparison.Tolerance.DegreesCelsius())
-            .Should().BeTrue();
+        _evaporator.Temperature
+            .Equals(Temperature, _comparison.Tolerance.DegreesCelsius())
+            .Should()
+            .BeTrue();
         _evaporator.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
 
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        _evaporator.Superheat.Equals(Superheat, TemperatureDelta.FromKelvins(_comparison.Tolerance))
-            .Should().BeTrue();
+        _evaporator.Superheat
+            .Equals(
+                Superheat,
+                TemperatureDelta.FromKelvins(_comparison.Tolerance)
+            )
+            .Should()
+            .BeTrue();
         _evaporator.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 
@@ -68,5 +96,7 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void Outlet_Always_ReturnsSuperheatedRefrigerant() =>
-        _evaporator.Outlet.Should().Be(Refrigerant.Superheated(Temperature, Superheat));
+        _evaporator.Outlet
+            .Should()
+            .Be(Refrigerant.Superheated(Temperature, Superheat));
 }

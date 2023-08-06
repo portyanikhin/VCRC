@@ -1,7 +1,13 @@
 ﻿namespace VCRC;
 
-internal record EconomizerInfo(Ratio ColdSideSpecificMassFlow, Refrigerant ColdInlet, Refrigerant ColdOutlet,
-    Ratio HotSideSpecificMassFlow, Refrigerant HotInlet, Refrigerant HotOutlet)
+internal record EconomizerInfo(
+    Ratio ColdSideSpecificMassFlow,
+    Refrigerant ColdInlet,
+    Refrigerant ColdOutlet,
+    Ratio HotSideSpecificMassFlow,
+    Refrigerant HotInlet,
+    Refrigerant HotOutlet
+)
 {
     public Ratio ColdSideSpecificMassFlow { get; } = ColdSideSpecificMassFlow;
     public Refrigerant ColdInlet { get; } = ColdInlet;
@@ -11,9 +17,13 @@ internal record EconomizerInfo(Ratio ColdSideSpecificMassFlow, Refrigerant ColdI
     public Refrigerant HotOutlet { get; } = HotOutlet;
 
     internal SpecificEnergy EnergyLoss(Temperature hotSource) =>
-        (hotSource.Kelvins *
-         (ColdSideSpecificMassFlow.DecimalFractions * (ColdOutlet.Entropy - ColdInlet.Entropy) -
-          HotSideSpecificMassFlow.DecimalFractions * (HotInlet.Entropy - HotOutlet.Entropy))
-         .JoulesPerKilogramKelvin)
-        .JoulesPerKilogram();
+        (
+            hotSource.Kelvins
+            * (
+                ColdSideSpecificMassFlow.DecimalFractions
+                    * (ColdOutlet.Entropy - ColdInlet.Entropy)
+                - HotSideSpecificMassFlow.DecimalFractions
+                    * (HotInlet.Entropy - HotOutlet.Entropy)
+            ).JoulesPerKilogramKelvin
+        ).JoulesPerKilogram();
 }

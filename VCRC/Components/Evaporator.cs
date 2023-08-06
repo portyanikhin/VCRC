@@ -12,15 +12,26 @@ public record Evaporator
     /// <param name="temperature">Evaporating temperature (dew point).</param>
     /// <param name="superheat">Superheat in the evaporator.</param>
     /// <exception cref="ValidationException">
-    ///     Evaporating temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
+    ///     Evaporating temperature should be in
+    ///     ({TripleTemperature};{CriticalTemperature}) °C!
     /// </exception>
-    /// <exception cref="ValidationException">Superheat in the evaporator should be in [0;50] K!</exception>
-    public Evaporator(FluidsList refrigerantName, Temperature temperature, TemperatureDelta superheat)
+    /// <exception cref="ValidationException">
+    ///     Superheat in the evaporator should be in [0;50] K!
+    /// </exception>
+    public Evaporator(
+        FluidsList refrigerantName,
+        Temperature temperature,
+        TemperatureDelta superheat
+    )
     {
-        (RefrigerantName, Temperature, Superheat) =
-            (refrigerantName, temperature.ToUnit(TemperatureUnit.DegreeCelsius),
-                superheat.ToUnit(TemperatureDeltaUnit.Kelvin));
-        new EvaporatorValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
+        (RefrigerantName, Temperature, Superheat) = (
+            refrigerantName,
+            temperature.ToUnit(TemperatureUnit.DegreeCelsius),
+            superheat.ToUnit(TemperatureDeltaUnit.Kelvin)
+        );
+        new EvaporatorValidator(
+            new Refrigerant(RefrigerantName)
+        ).ValidateAndThrow(this);
     }
 
     /// <summary>
@@ -47,6 +58,5 @@ public record Evaporator
     ///     Evaporator outlet.
     /// </summary>
     public Refrigerant Outlet =>
-        new Refrigerant(RefrigerantName)
-            .Superheated(Temperature, Superheat);
+        new Refrigerant(RefrigerantName).Superheated(Temperature, Superheat);
 }

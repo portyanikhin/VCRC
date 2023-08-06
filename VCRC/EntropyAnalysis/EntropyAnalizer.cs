@@ -14,14 +14,36 @@ internal class EntropyAnalyzer
         EjectorInfo? ejectorInfo = null,
         RecuperatorInfo? recuperatorInfo = null,
         EconomizerInfo? economizerInfo = null,
-        MixingInfo? mixingInfo = null)
+        MixingInfo? mixingInfo = null
+    )
     {
-        (Cycle, EvaporatorInfo, HeatReleaserInfo, FirstEVInfo, SecondEVInfo, ThirdEVInfo,
-                EjectorInfo, RecuperatorInfo, EconomizerInfo, MixingInfo) =
-            (cycle, evaporatorInfo, heatReleaserInfo, firstEVInfo, secondEVInfo, thirdEVInfo,
-                ejectorInfo, recuperatorInfo, economizerInfo, mixingInfo);
-        (ColdSource, HotSource) =
-            (UnitMath.Min(indoor, outdoor), UnitMath.Max(indoor, outdoor));
+        (
+            Cycle,
+            EvaporatorInfo,
+            HeatReleaserInfo,
+            FirstEVInfo,
+            SecondEVInfo,
+            ThirdEVInfo,
+            EjectorInfo,
+            RecuperatorInfo,
+            EconomizerInfo,
+            MixingInfo
+        ) = (
+            cycle,
+            evaporatorInfo,
+            heatReleaserInfo,
+            firstEVInfo,
+            secondEVInfo,
+            thirdEVInfo,
+            ejectorInfo,
+            recuperatorInfo,
+            economizerInfo,
+            mixingInfo
+        );
+        (ColdSource, HotSource) = (
+            UnitMath.Min(indoor, outdoor),
+            UnitMath.Max(indoor, outdoor)
+        );
         new EntropyAnalyzerValidator().ValidateAndThrow(this);
     }
 
@@ -50,20 +72,22 @@ internal class EntropyAnalyzer
     private MixingInfo? MixingInfo { get; }
 
     private Ratio ThermodynamicPerfection =>
-        Ratio.FromDecimalFractions(MinSpecificWork / Cycle.SpecificWork)
+        Ratio
+            .FromDecimalFractions(MinSpecificWork / Cycle.SpecificWork)
             .ToUnit(RatioUnit.Percent);
 
     private SpecificEnergy MinSpecificWork =>
-        Cycle.SpecificCoolingCapacity *
-        (HotSource - ColdSource).Kelvins / ColdSource.Kelvins;
+        Cycle.SpecificCoolingCapacity
+        * (HotSource - ColdSource).Kelvins
+        / ColdSource.Kelvins;
 
     private SpecificEnergy HeatReleaserEnergyLoss =>
         HeatReleaserInfo.EnergyLoss(HotSource);
 
     private SpecificEnergy ExpansionValvesEnergyLoss =>
-        FirstEVInfo.EnergyLoss(HotSource) +
-        (SecondEVInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero) +
-        (ThirdEVInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero);
+        FirstEVInfo.EnergyLoss(HotSource)
+        + (SecondEVInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero)
+        + (ThirdEVInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero);
 
     private SpecificEnergy EjectorEnergyLoss =>
         EjectorInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero;
@@ -81,21 +105,30 @@ internal class EntropyAnalyzer
         MixingInfo?.EnergyLoss(HotSource) ?? SpecificEnergy.Zero;
 
     private SpecificEnergy CalculatedIsentropicSpecificWork =>
-        MinSpecificWork + HeatReleaserEnergyLoss + ExpansionValvesEnergyLoss +
-        EjectorEnergyLoss + EvaporatorEnergyLoss + RecuperatorEnergyLoss +
-        EconomizerEnergyLoss + MixingEnergyLoss;
+        MinSpecificWork
+        + HeatReleaserEnergyLoss
+        + ExpansionValvesEnergyLoss
+        + EjectorEnergyLoss
+        + EvaporatorEnergyLoss
+        + RecuperatorEnergyLoss
+        + EconomizerEnergyLoss
+        + MixingEnergyLoss;
 
     private SpecificEnergy CompressorEnergyLoss =>
-        CalculatedIsentropicSpecificWork *
-        (1.0 / Cycle.Compressor.Efficiency.DecimalFractions - 1);
+        CalculatedIsentropicSpecificWork
+        * (1.0 / Cycle.Compressor.Efficiency.DecimalFractions - 1);
 
     private SpecificEnergy CalculatedSpecificWork =>
         CalculatedIsentropicSpecificWork + CompressorEnergyLoss;
 
     private Ratio AnalysisRelativeError =>
-        Ratio.FromDecimalFractions(
-                (CalculatedIsentropicSpecificWork - Cycle.IsentropicSpecificWork).Abs() /
-                Cycle.IsentropicSpecificWork)
+        Ratio
+            .FromDecimalFractions(
+                (
+                    CalculatedIsentropicSpecificWork
+                    - Cycle.IsentropicSpecificWork
+                ).Abs() / Cycle.IsentropicSpecificWork
+            )
             .ToUnit(RatioUnit.Percent);
 
     internal EntropyAnalysisResult Result =>
@@ -115,9 +148,11 @@ internal class EntropyAnalyzer
             EnergyLossRatio(RecuperatorEnergyLoss),
             EnergyLossRatio(EconomizerEnergyLoss),
             EnergyLossRatio(MixingEnergyLoss),
-            AnalysisRelativeError);
+            AnalysisRelativeError
+        );
 
     private Ratio EnergyLossRatio(SpecificEnergy energyLoss) =>
-        Ratio.FromDecimalFractions(energyLoss / CalculatedSpecificWork)
+        Ratio
+            .FromDecimalFractions(energyLoss / CalculatedSpecificWork)
             .ToUnit(RatioUnit.Percent);
 }

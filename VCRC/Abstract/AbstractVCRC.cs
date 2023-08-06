@@ -15,13 +15,22 @@ public abstract class AbstractVCRC
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    protected AbstractVCRC(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser)
+    protected AbstractVCRC(
+        Evaporator evaporator,
+        Compressor compressor,
+        IHeatReleaser heatReleaser
+    )
     {
-        (Evaporator, Compressor, HeatReleaser) =
-            (evaporator, compressor, heatReleaser);
+        (Evaporator, Compressor, HeatReleaser) = (
+            evaporator,
+            compressor,
+            heatReleaser
+        );
         new AbstractVCRCValidator().ValidateAndThrow(this);
-        (Condenser, GasCooler) =
-            (HeatReleaser as Condenser, HeatReleaser as GasCooler);
+        (Condenser, GasCooler) = (
+            HeatReleaser as Condenser,
+            HeatReleaser as GasCooler
+        );
         Refrigerant = new Refrigerant(Evaporator.RefrigerantName);
     }
 

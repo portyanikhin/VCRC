@@ -15,18 +15,27 @@ public class CompressorTests : IClassFixture<ComparisonFixture>
     [Theory]
     [InlineData(0.0)]
     [InlineData(100.0)]
-    public static void Compressor_WrongEfficiency_ThrowsValidationException(double efficiency)
+    public static void Compressor_WrongEfficiency_ThrowsValidationException(
+        double efficiency
+    )
     {
         Action action = () => _ = new Compressor(efficiency.Percent());
-        action.Should().Throw<ValidationException>().WithMessage(
-            "*Isentropic efficiency of the compressor should be in (0;100) %!*");
+        action
+            .Should()
+            .Throw<ValidationException>()
+            .WithMessage(
+                "*Isentropic efficiency of the compressor "
+                    + "should be in (0;100) %!*"
+            );
     }
 
     [Fact]
     public void Efficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _compressor.Efficiency.Equals(Efficiency, _comparison.Tolerance.Percent())
-            .Should().BeTrue();
+        _compressor.Efficiency
+            .Equals(Efficiency, _comparison.Tolerance.Percent())
+            .Should()
+            .BeTrue();
         _compressor.Efficiency.Unit.Should().Be(RatioUnit.Percent);
     }
 }

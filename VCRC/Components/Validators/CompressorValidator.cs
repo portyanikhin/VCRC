@@ -6,6 +6,9 @@ internal class CompressorValidator : AbstractValidator<Compressor>
     {
         RuleFor(compressor => compressor.Efficiency)
             .ExclusiveBetween(Ratio.Zero, 100.Percent())
-            .WithMessage("Isentropic efficiency of the compressor should be in (0;100) %!");
+            .WithMessage(
+                "Isentropic efficiency of the compressor "
+                    + "should be in (0;100) %!"
+            );
     }
 }

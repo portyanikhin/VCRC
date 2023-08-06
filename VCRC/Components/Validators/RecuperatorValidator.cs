@@ -8,6 +8,9 @@ internal class RecuperatorValidator : AbstractValidator<Recuperator>
     {
         RuleFor(recuperator => recuperator.TemperatureDifference)
             .ExclusiveBetween(TemperatureDelta.Zero, 50.Kelvins())
-            .WithMessage("Temperature difference at recuperator 'hot' side should be in (0;50) K!");
+            .WithMessage(
+                "Temperature difference at recuperator 'hot' side "
+                    + "should be in (0;50) K!"
+            );
     }
 }

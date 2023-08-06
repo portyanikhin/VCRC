@@ -11,15 +11,25 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
-    ///     Condensing temperature should be greater than evaporating temperature!
+    ///     Only one refrigerant should be selected!
     /// </exception>
-    public SimpleVCRC(Evaporator evaporator, Compressor compressor, IHeatReleaser heatReleaser) :
-        base(evaporator, compressor, heatReleaser)
+    /// <exception cref="ValidationException">
+    ///     Condensing temperature
+    ///     should be greater than evaporating temperature!
+    /// </exception>
+    public SimpleVCRC(
+        Evaporator evaporator,
+        Compressor compressor,
+        IHeatReleaser heatReleaser
+    )
+        : base(evaporator, compressor, heatReleaser)
     {
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
+        Point2 = Point1.CompressionTo(
+            HeatReleaser.Pressure,
+            Compressor.Efficiency
+        );
         Point4 = Point3.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
@@ -35,7 +45,8 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     public Refrigerant Point2s { get; }
 
     /// <summary>
-    ///     Point 2 – compression stage discharge / condenser or gas cooler inlet.
+    ///     Point 2 – compression stage discharge /
+    ///     condenser or gas cooler inlet.
     /// </summary>
     public Refrigerant Point2 { get; }
 
@@ -49,7 +60,8 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     /// </summary>
     public Refrigerant Point4 { get; }
 
-    public sealed override Ratio HeatReleaserSpecificMassFlow { get; } = 100.Percent();
+    public sealed override Ratio HeatReleaserSpecificMassFlow { get; } =
+        100.Percent();
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy;
@@ -60,11 +72,16 @@ public class SimpleVCRC : AbstractVCRC, IEntropyAnalysable
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
         Point2.Enthalpy - Point3.Enthalpy;
 
-    public EntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor) =>
+    public EntropyAnalysisResult EntropyAnalysis(
+        Temperature indoor,
+        Temperature outdoor
+    ) =>
         new EntropyAnalyzer(
-                this, indoor, outdoor,
-                new EvaporatorInfo(EvaporatorSpecificMassFlow, Point4, Point1),
-                new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point2s, Point3),
-                new EVInfo(HeatReleaserSpecificMassFlow, Point3, Point4))
-            .Result;
+            this,
+            indoor,
+            outdoor,
+            new EvaporatorInfo(EvaporatorSpecificMassFlow, Point4, Point1),
+            new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point2s, Point3),
+            new EVInfo(HeatReleaserSpecificMassFlow, Point3, Point4)
+        ).Result;
 }

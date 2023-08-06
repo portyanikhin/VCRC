@@ -1,7 +1,12 @@
 ﻿namespace VCRC;
 
-internal record MixingInfo(Refrigerant Outlet, Ratio FirstSpecificMassFlow, Refrigerant First,
-    Ratio SecondSpecificMassFlow, Refrigerant Second)
+internal record MixingInfo(
+    Refrigerant Outlet,
+    Ratio FirstSpecificMassFlow,
+    Refrigerant First,
+    Ratio SecondSpecificMassFlow,
+    Refrigerant Second
+)
 {
     public Refrigerant Outlet { get; } = Outlet;
     public Ratio FirstSpecificMassFlow { get; } = FirstSpecificMassFlow;
@@ -10,11 +15,16 @@ internal record MixingInfo(Refrigerant Outlet, Ratio FirstSpecificMassFlow, Refr
     public Refrigerant Second { get; } = Second;
 
     internal SpecificEnergy EnergyLoss(Temperature hotSource) =>
-        (hotSource.Kelvins *
-         ((FirstSpecificMassFlow +
-           SecondSpecificMassFlow).DecimalFractions * Outlet.Entropy -
-          (FirstSpecificMassFlow.DecimalFractions * First.Entropy +
-           SecondSpecificMassFlow.DecimalFractions * Second.Entropy))
-         .JoulesPerKilogramKelvin)
-        .JoulesPerKilogram();
+        (
+            hotSource.Kelvins
+            * (
+                (
+                    FirstSpecificMassFlow + SecondSpecificMassFlow
+                ).DecimalFractions * Outlet.Entropy
+                - (
+                    FirstSpecificMassFlow.DecimalFractions * First.Entropy
+                    + SecondSpecificMassFlow.DecimalFractions * Second.Entropy
+                )
+            ).JoulesPerKilogramKelvin
+        ).JoulesPerKilogram();
 }

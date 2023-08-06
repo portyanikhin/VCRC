@@ -12,15 +12,26 @@ public record Condenser : IHeatReleaser
     /// <param name="temperature">Condensing temperature (bubble point).</param>
     /// <param name="subcooling">Subcooling in the condenser.</param>
     /// <exception cref="ValidationException">
-    ///     Condensing temperature should be in ({TripleTemperature};{CriticalTemperature}) °C!
+    ///     Condensing temperature should be in
+    ///     ({TripleTemperature};{CriticalTemperature}) °C!
     /// </exception>
-    /// <exception cref="ValidationException">Subcooling in the condenser should be in [0;50] K!</exception>
-    public Condenser(FluidsList refrigerantName, Temperature temperature, TemperatureDelta subcooling)
+    /// <exception cref="ValidationException">
+    ///     Subcooling in the condenser should be in [0;50] K!
+    /// </exception>
+    public Condenser(
+        FluidsList refrigerantName,
+        Temperature temperature,
+        TemperatureDelta subcooling
+    )
     {
-        (RefrigerantName, Temperature, Subcooling) =
-            (refrigerantName, temperature.ToUnit(TemperatureUnit.DegreeCelsius),
-                subcooling.ToUnit(TemperatureDeltaUnit.Kelvin));
-        new CondenserValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
+        (RefrigerantName, Temperature, Subcooling) = (
+            refrigerantName,
+            temperature.ToUnit(TemperatureUnit.DegreeCelsius),
+            subcooling.ToUnit(TemperatureDeltaUnit.Kelvin)
+        );
+        new CondenserValidator(
+            new Refrigerant(RefrigerantName)
+        ).ValidateAndThrow(this);
     }
 
     /// <summary>
@@ -47,6 +58,5 @@ public record Condenser : IHeatReleaser
     ///     Condenser outlet.
     /// </summary>
     public Refrigerant Outlet =>
-        new Refrigerant(RefrigerantName)
-            .Subcooled(Temperature, Subcooling);
+        new Refrigerant(RefrigerantName).Subcooled(Temperature, Subcooling);
 }

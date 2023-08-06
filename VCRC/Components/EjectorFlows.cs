@@ -11,17 +11,34 @@ public class EjectorFlows
     /// <param name="ejector">Ejector.</param>
     /// <param name="nozzleInlet">Nozzle inlet.</param>
     /// <param name="suctionInlet">Suction section inlet.</param>
-    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
-    ///     Ejector nozzle inlet pressure should be greater than suction inlet pressure!
+    ///     Only one refrigerant should be selected!
     /// </exception>
-    public EjectorFlows(Ejector ejector, Refrigerant nozzleInlet, Refrigerant suctionInlet)
+    /// <exception cref="ValidationException">
+    ///     Ejector nozzle inlet pressure
+    ///     should be greater than suction inlet pressure!
+    /// </exception>
+    public EjectorFlows(
+        Ejector ejector,
+        Refrigerant nozzleInlet,
+        Refrigerant suctionInlet
+    )
     {
         Refrigerant = new Refrigerant(nozzleInlet.Name);
-        (Ejector, NozzleInlet, SuctionInlet) = (ejector, nozzleInlet, suctionInlet);
+        (Ejector, NozzleInlet, SuctionInlet) = (
+            ejector,
+            nozzleInlet,
+            suctionInlet
+        );
         new EjectorFlowsValidator().ValidateAndThrow(this);
-        NozzleOutlet = NozzleInlet.ExpansionTo(MixingPressure, Ejector.NozzleEfficiency);
-        SuctionOutlet = SuctionInlet.ExpansionTo(MixingPressure, Ejector.SuctionEfficiency);
+        NozzleOutlet = NozzleInlet.ExpansionTo(
+            MixingPressure,
+            Ejector.NozzleEfficiency
+        );
+        SuctionOutlet = SuctionInlet.ExpansionTo(
+            MixingPressure,
+            Ejector.SuctionEfficiency
+        );
         CalculateFlowRatio();
     }
 
@@ -32,14 +49,15 @@ public class EjectorFlows
     private Pressure MixingPressure => 0.9 * SuctionInlet.Pressure;
 
     private Speed MixingInletSpeed =>
-        FlowRatio.DecimalFractions *
-        CalculateOutletSpeed(NozzleInlet, NozzleOutlet) +
-        (1 - FlowRatio.DecimalFractions) *
-        CalculateOutletSpeed(SuctionInlet, SuctionOutlet);
+        FlowRatio.DecimalFractions
+            * CalculateOutletSpeed(NozzleInlet, NozzleOutlet)
+        + (1 - FlowRatio.DecimalFractions)
+            * CalculateOutletSpeed(SuctionInlet, SuctionOutlet);
 
     private SpecificEnergy MixingInletKineticEnergy =>
-        (Math.Pow(MixingInletSpeed.MetersPerSecond, 2) / 2.0)
-        .JoulesPerKilogram();
+        (
+            Math.Pow(MixingInletSpeed.MetersPerSecond, 2) / 2.0
+        ).JoulesPerKilogram();
 
     /// <summary>
     ///     Nozzle inlet.
@@ -84,25 +102,46 @@ public class EjectorFlows
             MixingInlet = Refrigerant.WithState(
                 Input.Pressure(MixingPressure),
                 Input.Enthalpy(
-                    FlowRatio.DecimalFractions * NozzleInlet.Enthalpy +
-                    (1 - FlowRatio.DecimalFractions) * SuctionInlet.Enthalpy -
-                    MixingInletKineticEnergy));
+                    FlowRatio.DecimalFractions * NozzleInlet.Enthalpy
+                        + (1 - FlowRatio.DecimalFractions)
+                            * SuctionInlet.Enthalpy
+                        - MixingInletKineticEnergy
+                )
+            );
             DiffuserOutlet = Refrigerant.WithState(
                 Input.Pressure(
-                    Refrigerant.WithState(
-                        Input.Entropy(MixingInlet.Entropy),
-                        Input.Enthalpy(
-                            MixingInlet.Enthalpy +
-                            Ejector.DiffuserEfficiency.DecimalFractions *
-                            MixingInletKineticEnergy)).Pressure),
-                Input.Enthalpy(MixingInlet.Enthalpy + MixingInletKineticEnergy));
+                    Refrigerant
+                        .WithState(
+                            Input.Entropy(MixingInlet.Entropy),
+                            Input.Enthalpy(
+                                MixingInlet.Enthalpy
+                                    + Ejector
+                                        .DiffuserEfficiency
+                                        .DecimalFractions
+                                        * MixingInletKineticEnergy
+                            )
+                        )
+                        .Pressure
+                ),
+                Input.Enthalpy(MixingInlet.Enthalpy + MixingInletKineticEnergy)
+            );
             return (DiffuserOutlet.Quality!.Value - FlowRatio).Percent;
         }
 
         NewtonRaphson.FindRootNearGuess(
-            ToSolve, Differentiate.FirstDerivativeFunc(ToSolve), 50, 1e-9, 100 - 1e-9, 1e-6);
+            ToSolve,
+            Differentiate.FirstDerivativeFunc(ToSolve),
+            50,
+            1e-9,
+            100 - 1e-9,
+            1e-6
+        );
     }
 
-    private static Speed CalculateOutletSpeed(AbstractFluid inlet, AbstractFluid outlet) =>
-        Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram).MetersPerSecond();
+    private static Speed CalculateOutletSpeed(
+        AbstractFluid inlet,
+        AbstractFluid outlet
+    ) =>
+        Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram)
+            .MetersPerSecond();
 }
