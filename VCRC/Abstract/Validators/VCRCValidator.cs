@@ -1,8 +1,8 @@
 ﻿namespace VCRC;
 
-internal class AbstractVCRCValidator : AbstractValidator<AbstractVCRC>
+internal class VCRCValidator : AbstractValidator<IVCRC>
 {
-    internal AbstractVCRCValidator()
+    public VCRCValidator()
     {
         RuleFor(vcrc => vcrc.Evaporator.RefrigerantName)
             .Equal(vcrc => vcrc.HeatReleaser.RefrigerantName)

@@ -3,7 +3,7 @@
 /// <summary>
 ///     Two-stage VCRC with complete intercooling.
 /// </summary>
-public class VCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalysable
+public class VCRCWithCIC : AbstractTwoStageVCRC, IVCRCWithCIC
 {
     /// <summary>
     ///     Two-stage VCRC with complete intercooling.
@@ -22,8 +22,8 @@ public class VCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     Refrigerant should be a single component or an azeotropic blend!
     /// </exception>
     public VCRCWithCIC(
-        Evaporator evaporator,
-        Compressor compressor,
+        IEvaporator evaporator,
+        ICompressor compressor,
         IHeatReleaser heatReleaser
     )
         : base(evaporator, compressor, heatReleaser)
@@ -45,68 +45,57 @@ public class VCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalysable
         );
     }
 
-    /// <summary>
-    ///     Point 1 – evaporator outlet / first compression stage suction.
-    /// </summary>
-    public Refrigerant Point1 => Evaporator.Outlet;
-
-    /// <summary>
-    ///     Point 2s – first isentropic compression stage discharge.
-    /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point2s { get; }
-
-    /// <summary>
-    ///     Point 2 – first compression stage discharge.
-    /// </summary>
-    public Refrigerant Point2 { get; }
-
-    /// <summary>
-    ///     Point 3 – separator vapor outlet / second compression stage suction.
-    /// </summary>
-    public Refrigerant Point3 { get; }
-
-    /// <summary>
-    ///     Point 4s – second isentropic compression stage discharge.
-    /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point4s { get; }
-
-    /// <summary>
-    ///     Point 4 – second compression stage discharge /
-    ///     condenser or gas cooler inlet.
-    /// </summary>
-    public Refrigerant Point4 { get; }
-
-    /// <summary>
-    ///     Point 5 – condenser or gas cooler outlet / first EV inlet.
-    /// </summary>
-    public Refrigerant Point5 => HeatReleaser.Outlet;
-
-    /// <summary>
-    ///     Point 6 – first EV outlet / separator inlet.
-    /// </summary>
-    public Refrigerant Point6 { get; }
-
-    /// <summary>
-    ///     Point 7 – separator liquid outlet / second EV inlet.
-    /// </summary>
-    public Refrigerant Point7 { get; }
-
-    /// <summary>
-    ///     Point 8 – second EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point8 { get; }
-
-    public sealed override Pressure IntermediatePressure =>
-        base.IntermediatePressure;
-
     private Ratio BarbotageSpecificMassFlow =>
         EvaporatorSpecificMassFlow
         * (
             (Point2.Enthalpy - Point3.Enthalpy)
             / (Point3.Enthalpy - Point7.Enthalpy)
         );
+
+    private IEntropyAnalyzer Analyzer =>
+        new EntropyAnalyzer(
+            this,
+            new EvaporatorNode(EvaporatorSpecificMassFlow, Point8, Point1),
+            new HeatReleaserNode(HeatReleaserSpecificMassFlow, Point4s, Point5),
+            new EVNode(HeatReleaserSpecificMassFlow, Point5, Point6),
+            new EVNode(EvaporatorSpecificMassFlow, Point7, Point8),
+            null,
+            null,
+            null,
+            null,
+            new MixingNode(
+                Point3,
+                EvaporatorSpecificMassFlow,
+                Point2,
+                BarbotageSpecificMassFlow,
+                Point7
+            )
+        );
+
+    public IRefrigerant Point1 => Evaporator.Outlet;
+
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public IRefrigerant Point2s { get; }
+
+    public IRefrigerant Point2 { get; }
+
+    public IRefrigerant Point3 { get; }
+
+    [SuppressMessage("ReSharper", "InconsistentNaming")]
+    public IRefrigerant Point4s { get; }
+
+    public IRefrigerant Point4 { get; }
+
+    public IRefrigerant Point5 => HeatReleaser.Outlet;
+
+    public IRefrigerant Point6 { get; }
+
+    public IRefrigerant Point7 { get; }
+
+    public IRefrigerant Point8 { get; }
+
+    public sealed override Pressure IntermediatePressure =>
+        base.IntermediatePressure;
 
     public sealed override Ratio IntermediateSpecificMassFlow =>
         HeatReleaserSpecificMassFlow;
@@ -128,28 +117,8 @@ public class VCRCWithCIC : AbstractTwoStageVCRC, IEntropyAnalysable
         HeatReleaserSpecificMassFlow.DecimalFractions
         * (Point4.Enthalpy - Point5.Enthalpy);
 
-    public EntropyAnalysisResult EntropyAnalysis(
+    public override IEntropyAnalysisResult EntropyAnalysis(
         Temperature indoor,
         Temperature outdoor
-    ) =>
-        new EntropyAnalyzer(
-            this,
-            indoor,
-            outdoor,
-            new EvaporatorInfo(EvaporatorSpecificMassFlow, Point8, Point1),
-            new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point4s, Point5),
-            new EVInfo(HeatReleaserSpecificMassFlow, Point5, Point6),
-            new EVInfo(EvaporatorSpecificMassFlow, Point7, Point8),
-            null,
-            null,
-            null,
-            null,
-            new MixingInfo(
-                Point3,
-                EvaporatorSpecificMassFlow,
-                Point2,
-                BarbotageSpecificMassFlow,
-                Point7
-            )
-        ).Result;
+    ) => Analyzer.PerformAnalysis(indoor, outdoor);
 }

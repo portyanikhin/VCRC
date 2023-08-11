@@ -3,12 +3,12 @@
 namespace VCRC;
 
 /// <summary>
-///     Gas cooler as a transcritical VCRC component.
+///     Gas cooler.
 /// </summary>
 public record GasCooler : IHeatReleaser
 {
     /// <summary>
-    ///     Gas cooler as a transcritical VCRC component.
+    ///     Gas cooler.
     /// </summary>
     /// <remarks>
     ///     For R744, the absolute pressure in the gas cooler is optional.
@@ -25,17 +25,16 @@ public record GasCooler : IHeatReleaser
     ///     Gas cooler absolute pressure (optional for R744).
     /// </param>
     /// <exception cref="ArgumentException">
-    ///     It is impossible to automatically calculate
-    ///     the absolute pressure in the gas cooler!
-    ///     It is necessary to define it.
+    ///     It is impossible to automatically calculate the absolute pressure
+    ///     in the gas cooler! It is necessary to define it.
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Gas cooler outlet temperature
-    ///     should be greater than {CriticalTemperature} °C!
+    ///     should be greater than <c>{CriticalTemperature}</c> °C!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Gas cooler absolute pressure
-    ///     should be greater than {CriticalPressure} MPa!
+    ///     should be greater than <c>{CriticalPressure}</c> MPa!
     /// </exception>
     public GasCooler(
         FluidsList refrigerantName,
@@ -43,10 +42,8 @@ public record GasCooler : IHeatReleaser
         Pressure? pressure = null
     )
     {
-        (RefrigerantName, Temperature) = (
-            refrigerantName,
-            outletTemperature.ToUnit(TemperatureUnit.DegreeCelsius)
-        );
+        RefrigerantName = refrigerantName;
+        Temperature = outletTemperature.ToUnit(TemperatureUnit.DegreeCelsius);
         if (pressure.HasValue)
             Pressure = pressure.Value.ToUnit(PressureUnit.Kilopascal);
         else if (
@@ -67,25 +64,13 @@ public record GasCooler : IHeatReleaser
         ).ValidateAndThrow(this);
     }
 
-    /// <summary>
-    ///     Selected refrigerant name.
-    /// </summary>
     public FluidsList RefrigerantName { get; }
 
-    /// <summary>
-    ///     Gas cooler outlet temperature.
-    /// </summary>
     public Temperature Temperature { get; }
 
-    /// <summary>
-    ///     Gas cooler absolute pressure.
-    /// </summary>
     public Pressure Pressure { get; }
 
-    /// <summary>
-    ///     Gas cooler outlet.
-    /// </summary>
-    public Refrigerant Outlet =>
+    public IRefrigerant Outlet =>
         new Refrigerant(RefrigerantName).WithState(
             Input.Pressure(Pressure),
             Input.Temperature(Temperature)

@@ -1,17 +1,17 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Economizer as a VCRC component.
+///     Economizer.
 /// </summary>
-public record Economizer : EconomizerWithTPI
+public record Economizer : EconomizerWithTPI, IEconomizer
 {
     /// <summary>
-    ///     Economizer as a VCRC component.
+    ///     Economizer.
     /// </summary>
     /// <param name="temperatureDifference">
-    ///     Temperature difference at economizer "cold" side.
+    ///     Temperature difference at the "cold" side.
     /// </param>
-    /// <param name="superheat">Superheat in the economizer.</param>
+    /// <param name="superheat">Superheat.</param>
     /// <exception cref="ValidationException">
     ///     Temperature difference at the economizer 'cold' side
     ///     should be in (0;50) K!
@@ -29,8 +29,5 @@ public record Economizer : EconomizerWithTPI
         new EconomizerValidator().ValidateAndThrow(this);
     }
 
-    /// <summary>
-    ///     Superheat in the economizer.
-    /// </summary>
     public TemperatureDelta Superheat { get; }
 }

@@ -3,7 +3,7 @@
 /// <summary>
 ///     Ejector flows.
 /// </summary>
-public class EjectorFlows
+public class EjectorFlows : IEjectorFlows
 {
     /// <summary>
     ///     Ejector flows.
@@ -19,17 +19,15 @@ public class EjectorFlows
     ///     should be greater than suction inlet pressure!
     /// </exception>
     public EjectorFlows(
-        Ejector ejector,
-        Refrigerant nozzleInlet,
-        Refrigerant suctionInlet
+        IEjector ejector,
+        IRefrigerant nozzleInlet,
+        IRefrigerant suctionInlet
     )
     {
         Refrigerant = new Refrigerant(nozzleInlet.Name);
-        (Ejector, NozzleInlet, SuctionInlet) = (
-            ejector,
-            nozzleInlet,
-            suctionInlet
-        );
+        Ejector = ejector;
+        NozzleInlet = nozzleInlet;
+        SuctionInlet = suctionInlet;
         new EjectorFlowsValidator().ValidateAndThrow(this);
         NozzleOutlet = NozzleInlet.ExpansionTo(
             MixingPressure,
@@ -42,9 +40,9 @@ public class EjectorFlows
         CalculateFlowRatio();
     }
 
-    private Refrigerant Refrigerant { get; }
+    private IRefrigerant Refrigerant { get; }
 
-    private Ejector Ejector { get; }
+    private IEjector Ejector { get; }
 
     private Pressure MixingPressure => 0.9 * SuctionInlet.Pressure;
 
@@ -59,43 +57,32 @@ public class EjectorFlows
             Math.Pow(MixingInletSpeed.MetersPerSecond, 2) / 2.0
         ).JoulesPerKilogram();
 
-    /// <summary>
-    ///     Nozzle inlet.
-    /// </summary>
-    public Refrigerant NozzleInlet { get; }
+    public IRefrigerant NozzleInlet { get; }
 
-    /// <summary>
-    ///     Suction section inlet.
-    /// </summary>
-    public Refrigerant SuctionInlet { get; }
+    public IRefrigerant SuctionInlet { get; }
 
-    /// <summary>
-    ///     Nozzle outlet.
-    /// </summary>
-    public Refrigerant NozzleOutlet { get; }
+    public IRefrigerant MixingInlet { get; private set; } = null!;
 
-    /// <summary>
-    ///     Suction section outlet.
-    /// </summary>
-    public Refrigerant SuctionOutlet { get; }
+    public IRefrigerant NozzleOutlet { get; }
 
-    /// <summary>
-    ///     Mixing section inlet.
-    /// </summary>
-    public Refrigerant MixingInlet { get; private set; } = null!;
+    public IRefrigerant SuctionOutlet { get; }
 
-    /// <summary>
-    ///     Diffuser outlet.
-    /// </summary>
-    public Refrigerant DiffuserOutlet { get; private set; } = null!;
+    public IRefrigerant DiffuserOutlet { get; private set; } = null!;
 
-    /// <summary>
-    ///     Flow ratio.
-    /// </summary>
     public Ratio FlowRatio { get; private set; }
 
     private void CalculateFlowRatio()
     {
+        NewtonRaphson.FindRootNearGuess(
+            ToSolve,
+            Differentiate.FirstDerivativeFunc(ToSolve),
+            50,
+            1e-9,
+            100 - 1e-9,
+            1e-6
+        );
+        return;
+
         double ToSolve(double flowRatio)
         {
             FlowRatio = flowRatio.Percent();
@@ -127,20 +114,11 @@ public class EjectorFlows
             );
             return (DiffuserOutlet.Quality!.Value - FlowRatio).Percent;
         }
-
-        NewtonRaphson.FindRootNearGuess(
-            ToSolve,
-            Differentiate.FirstDerivativeFunc(ToSolve),
-            50,
-            1e-9,
-            100 - 1e-9,
-            1e-6
-        );
     }
 
     private static Speed CalculateOutletSpeed(
-        AbstractFluid inlet,
-        AbstractFluid outlet
+        IFluidState inlet,
+        IFluidState outlet
     ) =>
         Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram)
             .MetersPerSecond();

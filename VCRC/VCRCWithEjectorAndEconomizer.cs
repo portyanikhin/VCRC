@@ -1,16 +1,17 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Two-stage VCRC with an ejector
-///     as an expansion device and economizer.
+///     Two-stage VCRC with an ejector as an expansion device and economizer.
 /// </summary>
 public class VCRCWithEjectorAndEconomizer
     : AbstractTwoStageVCRC,
-        IEntropyAnalysable
+        IVCRCWithEjectorAndEconomizer
 {
+    private Pressure _diffuserOutletPressure;
+    private IEjectorFlows _ejectorFlows = default!;
+
     /// <summary>
-    ///     Two-stage VCRC with an ejector
-    ///     as an expansion device and economizer.
+    ///     Two-stage VCRC with an ejector as an expansion device and economizer.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
@@ -28,24 +29,25 @@ public class VCRCWithEjectorAndEconomizer
     ///     Refrigerant should be a single component or an azeotropic blend!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at economizer 'hot' side!
+    ///     Wrong temperature difference at the economizer 'hot' side!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Too high temperature difference at economizer 'cold' side!
+    ///     Too high temperature difference at the economizer 'cold' side!
     /// </exception>
     public VCRCWithEjectorAndEconomizer(
-        Evaporator evaporator,
-        Compressor compressor,
+        IEvaporator evaporator,
+        ICompressor compressor,
         IHeatReleaser heatReleaser,
-        Ejector ejector,
-        Economizer economizer
+        IEjector ejector,
+        IEconomizer economizer
     )
         : base(evaporator, compressor, heatReleaser)
     {
         new RefrigerantTypeValidator().ValidateAndThrow(Refrigerant);
-        (Ejector, Economizer) = (ejector, economizer);
+        Ejector = ejector;
+        Economizer = economizer;
         CalculateDiffuserOutletPressure();
-        Point1 = Refrigerant.DewPointAt(EjectorFlows.DiffuserOutlet.Pressure);
+        Point1 = Refrigerant.DewPointAt(_ejectorFlows.DiffuserOutlet.Pressure);
         Point2s = Point1.IsentropicCompressionTo(IntermediatePressure);
         Point2 = Point1.CompressionTo(
             IntermediatePressure,
@@ -63,118 +65,87 @@ public class VCRCWithEjectorAndEconomizer
             Compressor.Efficiency
         );
         Point12 = Refrigerant.BubblePointAt(
-            EjectorFlows.DiffuserOutlet.Pressure
+            _ejectorFlows.DiffuserOutlet.Pressure
         );
         Point13 = Point12.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
-    private EjectorFlows EjectorFlows { get; set; } = null!;
+    private IEntropyAnalyzer Analyzer =>
+        new EntropyAnalyzer(
+            this,
+            new EvaporatorNode(EvaporatorSpecificMassFlow, Point13, Point14),
+            new HeatReleaserNode(HeatReleaserSpecificMassFlow, Point4s, Point5),
+            new EVNode(IntermediateSpecificMassFlow, Point5, Point6),
+            new EVNode(EvaporatorSpecificMassFlow, Point12, Point13),
+            null,
+            new EjectorNode(
+                Point11,
+                HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow,
+                Point8,
+                EvaporatorSpecificMassFlow,
+                Point14
+            ),
+            null,
+            new EconomizerNode(
+                IntermediateSpecificMassFlow,
+                Point6,
+                Point7,
+                HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow,
+                Point5,
+                Point8
+            ),
+            new MixingNode(
+                Point3,
+                HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow,
+                Point2,
+                IntermediateSpecificMassFlow,
+                Point7
+            )
+        );
 
-    private Pressure DiffuserOutletPressure { get; set; }
+    public IEjector Ejector { get; }
 
-    /// <summary>
-    ///     Ejector as a VCRC component.
-    /// </summary>
-    public Ejector Ejector { get; }
+    public IEconomizer Economizer { get; }
 
-    /// <summary>
-    ///     Economizer as a VCRC component.
-    /// </summary>
-    public Economizer Economizer { get; }
+    public IRefrigerant Point1 { get; }
 
-    /// <summary>
-    ///     Point 1 - separator vapor outlet / first compression stage suction.
-    /// </summary>
-    public Refrigerant Point1 { get; }
-
-    /// <summary>
-    ///     Point 2s – first isentropic compression stage discharge.
-    /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point2s { get; }
+    public IRefrigerant Point2s { get; }
 
-    /// <summary>
-    ///     Point 2 – first compression stage discharge.
-    /// </summary>
-    public Refrigerant Point2 { get; }
+    public IRefrigerant Point2 { get; }
 
-    /// <summary>
-    ///     Point 3 – second compression stage suction.
-    /// </summary>
-    public Refrigerant Point3 { get; }
+    public IRefrigerant Point3 { get; }
 
-    /// <summary>
-    ///     Point 4s – second isentropic compression stage discharge.
-    /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point4s { get; }
+    public IRefrigerant Point4s { get; }
 
-    /// <summary>
-    ///     Point 4 – second compression stage discharge /
-    ///     condenser or gas cooler inlet.
-    /// </summary>
-    public Refrigerant Point4 { get; }
+    public IRefrigerant Point4 { get; }
 
-    /// <summary>
-    ///     Point 5 – condenser or gas cooler outlet /
-    ///     first EV inlet / economizer "hot" inlet.
-    /// </summary>
-    public Refrigerant Point5 => HeatReleaser.Outlet;
+    public IRefrigerant Point5 => HeatReleaser.Outlet;
 
-    /// <summary>
-    ///     Point 6 – first EV outlet / economizer "cold" inlet.
-    /// </summary>
-    public Refrigerant Point6 { get; private set; } = null!;
+    public IRefrigerant Point6 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 7 – economizer "cold" outlet /
-    ///     injection of cooled vapor into the compressor.
-    /// </summary>
-    public Refrigerant Point7 { get; private set; } = null!;
+    public IRefrigerant Point7 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 8 – economizer "hot" outlet / ejector nozzle inlet.
-    /// </summary>
-    public Refrigerant Point8 { get; private set; } = null!;
+    public IRefrigerant Point8 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 9 – ejector nozzle outlet.
-    /// </summary>
-    public Refrigerant Point9 => EjectorFlows.NozzleOutlet;
+    public IRefrigerant Point9 => _ejectorFlows.NozzleOutlet;
 
-    /// <summary>
-    ///     Point 10 – ejector mixing section inlet.
-    /// </summary>
-    public Refrigerant Point10 => EjectorFlows.MixingInlet;
+    public IRefrigerant Point10 => _ejectorFlows.MixingInlet;
 
-    /// <summary>
-    ///     Point 11 – ejector diffuser outlet / separator inlet.
-    /// </summary>
-    public Refrigerant Point11 => EjectorFlows.DiffuserOutlet;
+    public IRefrigerant Point11 => _ejectorFlows.DiffuserOutlet;
 
-    /// <summary>
-    ///     Point 12 – separator liquid outlet / second EV inlet.
-    /// </summary>
-    public Refrigerant Point12 { get; }
+    public IRefrigerant Point12 { get; }
 
-    /// <summary>
-    ///     Point 13 – second EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point13 { get; }
+    public IRefrigerant Point13 { get; }
 
-    /// <summary>
-    ///     Point 14 – evaporator outlet / ejector suction section inlet.
-    /// </summary>
-    public Refrigerant Point14 => Evaporator.Outlet;
+    public IRefrigerant Point14 => Evaporator.Outlet;
 
-    /// <summary>
-    ///     Point 15 – ejector suction section outlet.
-    /// </summary>
-    public Refrigerant Point15 => EjectorFlows.SuctionOutlet;
+    public IRefrigerant Point15 => _ejectorFlows.SuctionOutlet;
 
     public sealed override Pressure IntermediatePressure =>
         CalculateIntermediatePressure(
-            DiffuserOutletPressure,
+            _diffuserOutletPressure,
             HeatReleaser.Pressure
         );
 
@@ -212,49 +183,26 @@ public class VCRCWithEjectorAndEconomizer
         HeatReleaserSpecificMassFlow.DecimalFractions
         * (Point4.Enthalpy - Point5.Enthalpy);
 
-    public EntropyAnalysisResult EntropyAnalysis(
+    public override IEntropyAnalysisResult EntropyAnalysis(
         Temperature indoor,
         Temperature outdoor
-    ) =>
-        new EntropyAnalyzer(
-            this,
-            indoor,
-            outdoor,
-            new EvaporatorInfo(EvaporatorSpecificMassFlow, Point13, Point14),
-            new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point4s, Point5),
-            new EVInfo(IntermediateSpecificMassFlow, Point5, Point6),
-            new EVInfo(EvaporatorSpecificMassFlow, Point12, Point13),
-            null,
-            new EjectorInfo(
-                Point11,
-                HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow,
-                Point8,
-                EvaporatorSpecificMassFlow,
-                Point14
-            ),
-            null,
-            new EconomizerInfo(
-                IntermediateSpecificMassFlow,
-                Point6,
-                Point7,
-                HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow,
-                Point5,
-                Point8
-            ),
-            new MixingInfo(
-                Point3,
-                HeatReleaserSpecificMassFlow - IntermediateSpecificMassFlow,
-                Point2,
-                IntermediateSpecificMassFlow,
-                Point7
-            )
-        ).Result;
+    ) => Analyzer.PerformAnalysis(indoor, outdoor);
 
     private void CalculateDiffuserOutletPressure()
     {
+        NewtonRaphson.FindRootNearGuess(
+            ToSolve,
+            Differentiate.FirstDerivativeFunc(ToSolve),
+            Evaporator.Pressure.Pascals + 100,
+            Evaporator.Pressure.Pascals + 1,
+            HeatReleaser.Pressure.Pascals - 1,
+            10
+        );
+        return;
+
         double ToSolve(double diffuserOutletPressure)
         {
-            DiffuserOutletPressure = diffuserOutletPressure.Pascals();
+            _diffuserOutletPressure = diffuserOutletPressure.Pascals();
             Point6 = Point5.IsenthalpicExpansionTo(IntermediatePressure);
             Point7 = Refrigerant.Superheated(
                 IntermediatePressure,
@@ -264,19 +212,10 @@ public class VCRCWithEjectorAndEconomizer
             Point8 = Point5.CoolingTo(
                 Point6.Temperature + Economizer.TemperatureDifference
             );
-            EjectorFlows = Ejector.CalculateFlows(Point8, Point14);
+            _ejectorFlows = Ejector.CalculateFlows(Point8, Point14);
             return (
-                EjectorFlows.DiffuserOutlet.Pressure - DiffuserOutletPressure
+                _ejectorFlows.DiffuserOutlet.Pressure - _diffuserOutletPressure
             ).Pascals;
         }
-
-        NewtonRaphson.FindRootNearGuess(
-            ToSolve,
-            Differentiate.FirstDerivativeFunc(ToSolve),
-            Evaporator.Pressure.Pascals + 100,
-            Evaporator.Pressure.Pascals + 1,
-            HeatReleaser.Pressure.Pascals - 1,
-            10
-        );
     }
 }

@@ -4,17 +4,19 @@ namespace VCRC.Tests;
 
 public class EvaporatorTests : IClassFixture<ComparisonFixture>
 {
-    private static readonly Refrigerant Refrigerant = new(FluidsList.R407C);
-    private static readonly Temperature Temperature = 278.15.Kelvins();
-    private static readonly TemperatureDelta Superheat =
-        TemperatureDelta.FromDegreesCelsius(8);
     private readonly ComparisonFixture _comparison;
-    private readonly Evaporator _evaporator;
+    private readonly IRefrigerant _refrigerant;
+    private readonly TemperatureDelta _superheat;
+    private readonly IEvaporator _sut;
+    private readonly Temperature _temperature;
 
     public EvaporatorTests(ComparisonFixture comparison)
     {
         _comparison = comparison;
-        _evaporator = new Evaporator(Refrigerant.Name, Temperature, Superheat);
+        _refrigerant = new Refrigerant(FluidsList.R407C);
+        _temperature = 278.15.Kelvins();
+        _superheat = TemperatureDelta.FromDegreesCelsius(8);
+        _sut = new Evaporator(_refrigerant.Name, _temperature, _superheat);
     }
 
     [Theory]
@@ -27,9 +29,9 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
             _ = new Evaporator(
-                Refrigerant.Name,
+                _refrigerant.Name,
                 temperature.DegreesCelsius(),
-                Superheat
+                _superheat
             );
         action
             .Should()
@@ -48,8 +50,8 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     {
         Action action = () =>
             _ = new Evaporator(
-                Refrigerant.Name,
-                Temperature,
+                _refrigerant.Name,
+                _temperature,
                 TemperatureDelta.FromKelvins(superheat)
             );
         action
@@ -62,41 +64,41 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void RefrigerantName_Always_ReturnsEnteredName() =>
-        _evaporator.RefrigerantName.Should().Be(Refrigerant.Name);
+        _sut.RefrigerantName.Should().Be(_refrigerant.Name);
 
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _evaporator.Temperature
-            .Equals(Temperature, _comparison.Tolerance.DegreesCelsius())
+        _sut.Temperature
+            .Equals(_temperature, _comparison.Tolerance.DegreesCelsius())
             .Should()
             .BeTrue();
-        _evaporator.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
+        _sut.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
 
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        _evaporator.Superheat
+        _sut.Superheat
             .Equals(
-                Superheat,
+                _superheat,
                 TemperatureDelta.FromKelvins(_comparison.Tolerance)
             )
             .Should()
             .BeTrue();
-        _evaporator.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
+        _sut.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 
     [Fact]
     public void Pressure_Always_ReturnsOutletPressureInKilopascals()
     {
-        _evaporator.Pressure.Should().Be(_evaporator.Outlet.Pressure);
-        _evaporator.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
+        _sut.Pressure.Should().Be(_sut.Outlet.Pressure);
+        _sut.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
 
     [Fact]
     public void Outlet_Always_ReturnsSuperheatedRefrigerant() =>
-        _evaporator.Outlet
+        _sut.Outlet
             .Should()
-            .Be(Refrigerant.Superheated(Temperature, Superheat));
+            .Be(_refrigerant.Superheated(_temperature, _superheat));
 }

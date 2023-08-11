@@ -1,9 +1,8 @@
 ﻿namespace VCRC;
 
-internal class RefrigerantTypeValidator : AbstractValidator<Refrigerant>
+internal class RefrigerantTypeValidator : AbstractValidator<IRefrigerant>
 {
-    internal RefrigerantTypeValidator()
-    {
+    public RefrigerantTypeValidator() =>
         RuleFor(refrigerant => refrigerant)
             .Must(
                 refrigerant =>
@@ -14,5 +13,4 @@ internal class RefrigerantTypeValidator : AbstractValidator<Refrigerant>
                 "Refrigerant should be "
                     + "a single component or an azeotropic blend!"
             );
-    }
 }

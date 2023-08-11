@@ -2,19 +2,22 @@
 
 public class EjectorTests : IClassFixture<ComparisonFixture>
 {
-    private static readonly Ratio NozzleEfficiency = 0.9.DecimalFractions();
-    private static readonly Ratio SuctionEfficiency = 0.9.DecimalFractions();
-    private static readonly Ratio DiffuserEfficiency = 0.8.DecimalFractions();
     private readonly ComparisonFixture _comparison;
-    private readonly Ejector _ejector;
+    private readonly Ratio _diffuserEfficiency;
+    private readonly Ratio _nozzleEfficiency;
+    private readonly Ratio _suctionEfficiency;
+    private readonly IEjector _sut;
 
     public EjectorTests(ComparisonFixture comparison)
     {
         _comparison = comparison;
-        _ejector = new Ejector(
-            NozzleEfficiency,
-            SuctionEfficiency,
-            DiffuserEfficiency
+        _nozzleEfficiency = 0.9.DecimalFractions();
+        _suctionEfficiency = 0.9.DecimalFractions();
+        _diffuserEfficiency = 0.8.DecimalFractions();
+        _sut = new Ejector(
+            _nozzleEfficiency,
+            _suctionEfficiency,
+            _diffuserEfficiency
         );
     }
 
@@ -93,31 +96,31 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void NozzleEfficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _ejector.NozzleEfficiency
-            .Equals(NozzleEfficiency, _comparison.Tolerance.Percent())
+        _sut.NozzleEfficiency
+            .Equals(_nozzleEfficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
-        _ejector.NozzleEfficiency.Unit.Should().Be(RatioUnit.Percent);
+        _sut.NozzleEfficiency.Unit.Should().Be(RatioUnit.Percent);
     }
 
     [Fact]
     public void SuctionEfficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _ejector.SuctionEfficiency
-            .Equals(SuctionEfficiency, _comparison.Tolerance.Percent())
+        _sut.SuctionEfficiency
+            .Equals(_suctionEfficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
-        _ejector.SuctionEfficiency.Unit.Should().Be(RatioUnit.Percent);
+        _sut.SuctionEfficiency.Unit.Should().Be(RatioUnit.Percent);
     }
 
     [Fact]
     public void DiffuserEfficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _ejector.DiffuserEfficiency
-            .Equals(DiffuserEfficiency, _comparison.Tolerance.Percent())
+        _sut.DiffuserEfficiency
+            .Equals(_diffuserEfficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
-        _ejector.DiffuserEfficiency.Unit.Should().Be(RatioUnit.Percent);
+        _sut.DiffuserEfficiency.Unit.Should().Be(RatioUnit.Percent);
     }
 
     [Fact]

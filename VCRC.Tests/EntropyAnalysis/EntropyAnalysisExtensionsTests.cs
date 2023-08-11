@@ -4,10 +4,10 @@ namespace VCRC.Tests;
 
 public class EntropyAnalysisExtensionsTests
 {
-    private readonly List<IEntropyAnalysable> _cycles;
-    private readonly List<Temperature> _indoor;
-    private readonly List<Temperature> _indoorExtended;
-    private readonly List<Temperature> _outdoor;
+    private readonly IList<IEntropyAnalysable> _cycles;
+    private readonly IList<Temperature> _indoor;
+    private readonly IList<Temperature> _indoorExtended;
+    private readonly IList<Temperature> _outdoor;
 
     public EntropyAnalysisExtensionsTests()
     {
@@ -48,7 +48,8 @@ public class EntropyAnalysisExtensionsTests
             .Be(
                 _cycles
                     .Select(
-                        (c, i) => c.EntropyAnalysis(_indoor[i], _outdoor[i])
+                        (cycle, i) =>
+                            cycle.EntropyAnalysis(_indoor[i], _outdoor[i])
                     )
                     .ToList()
                     .Average()

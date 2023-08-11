@@ -2,7 +2,7 @@
 
 internal class GasCoolerValidator : AbstractValidator<GasCooler>
 {
-    internal GasCoolerValidator(Refrigerant refrigerant)
+    public GasCoolerValidator(IRefrigerant refrigerant)
     {
         RuleFor(gasCooler => gasCooler.Temperature)
             .GreaterThan(refrigerant.CriticalTemperature)

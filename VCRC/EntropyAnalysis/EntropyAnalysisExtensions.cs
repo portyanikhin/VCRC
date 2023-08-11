@@ -3,7 +3,7 @@
 public static class EntropyAnalysisExtensions
 {
     /// <summary>
-    ///     Performs entropy analysis of the VCRC in range of temperatures.
+    ///     Performs VCRC entropy analysis over a range of temperatures.
     /// </summary>
     /// <param name="cycles">List of VCRCs.</param>
     /// <param name="indoor">List of indoor temperatures.</param>
@@ -14,14 +14,16 @@ public static class EntropyAnalysisExtensions
     /// <exception cref="ArgumentException">
     ///     The lists should have the same length!
     /// </exception>
-    public static EntropyAnalysisResult EntropyAnalysis(
-        this List<IEntropyAnalysable> cycles,
-        List<Temperature> indoor,
-        List<Temperature> outdoor
+    public static IEntropyAnalysisResult EntropyAnalysis(
+        this IList<IEntropyAnalysable> cycles,
+        IList<Temperature> indoor,
+        IList<Temperature> outdoor
     ) =>
         cycles.Count == indoor.Count && indoor.Count == outdoor.Count
             ? cycles
-                .Select((с, i) => с.EntropyAnalysis(indoor[i], outdoor[i]))
+                .Select(
+                    (cycle, i) => cycle.EntropyAnalysis(indoor[i], outdoor[i])
+                )
                 .ToList()
                 .Average()
             : throw new ArgumentException(
@@ -33,10 +35,10 @@ public static class EntropyAnalysisExtensions
     /// </summary>
     /// <param name="results">List of the entropy analysis results.</param>
     /// <returns>The average.</returns>
-    public static EntropyAnalysisResult Average(
-        this List<EntropyAnalysisResult> results
+    public static IEntropyAnalysisResult Average(
+        this IList<IEntropyAnalysisResult> results
     ) =>
-        new(
+        new EntropyAnalysisResult(
             results
                 .Select(i => i.ThermodynamicPerfection.Percent)
                 .Average()

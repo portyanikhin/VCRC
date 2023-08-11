@@ -3,7 +3,7 @@
 /// <summary>
 ///     Single-stage VCRC with recuperator.
 /// </summary>
-public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
+public class VCRCWithRecuperator : AbstractVCRC, IVCRCWithRecuperator
 {
     /// <summary>
     ///     Single-stage VCRC with recuperator.
@@ -20,12 +20,12 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
     ///     should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Too high temperature difference at recuperator 'hot' side!
+    ///     Too high temperature difference at the recuperator 'hot' side!
     /// </exception>
     public VCRCWithRecuperator(
-        Evaporator evaporator,
-        Recuperator recuperator,
-        Compressor compressor,
+        IEvaporator evaporator,
+        IAuxiliaryHeatExchanger recuperator,
+        ICompressor compressor,
         IHeatReleaser heatReleaser
     )
         : base(evaporator, compressor, heatReleaser)
@@ -46,47 +46,41 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
         Point6 = Point5.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
-    /// <summary>
-    ///     Recuperator as a VCRC component.
-    /// </summary>
-    public Recuperator Recuperator { get; }
+    private IEntropyAnalyzer Analyzer =>
+        new EntropyAnalyzer(
+            this,
+            new EvaporatorNode(EvaporatorSpecificMassFlow, Point6, Point1),
+            new HeatReleaserNode(HeatReleaserSpecificMassFlow, Point3s, Point4),
+            new EVNode(HeatReleaserSpecificMassFlow, Point5, Point6),
+            null,
+            null,
+            null,
+            new RecuperatorNode(
+                EvaporatorSpecificMassFlow,
+                Point1,
+                Point2,
+                HeatReleaserSpecificMassFlow,
+                Point4,
+                Point5
+            )
+        );
 
-    /// <summary>
-    ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
-    /// </summary>
-    public Refrigerant Point1 => Evaporator.Outlet;
+    public IAuxiliaryHeatExchanger Recuperator { get; }
 
-    /// <summary>
-    ///     Point 2 – recuperator "cold" outlet / compression stage suction.
-    /// </summary>
-    public Refrigerant Point2 { get; }
+    public IRefrigerant Point1 => Evaporator.Outlet;
 
-    /// <summary>
-    ///     Point 3s – isentropic compression stage discharge.
-    /// </summary>
+    public IRefrigerant Point2 { get; }
+
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point3s { get; }
+    public IRefrigerant Point3s { get; }
 
-    /// <summary>
-    ///     Point 3 – compression stage discharge /
-    ///     condenser or gas cooler inlet.
-    /// </summary>
-    public Refrigerant Point3 { get; }
+    public IRefrigerant Point3 { get; }
 
-    /// <summary>
-    ///     Point 4 – condenser or gas cooler outlet / recuperator "hot" inlet.
-    /// </summary>
-    public Refrigerant Point4 => HeatReleaser.Outlet;
+    public IRefrigerant Point4 => HeatReleaser.Outlet;
 
-    /// <summary>
-    ///     Point 5 – recuperator "hot" outlet / EV inlet.
-    /// </summary>
-    public Refrigerant Point5 { get; }
+    public IRefrigerant Point5 { get; }
 
-    /// <summary>
-    ///     Point 6 – EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point6 { get; }
+    public IRefrigerant Point6 { get; }
 
     public sealed override Ratio HeatReleaserSpecificMassFlow { get; } =
         100.Percent();
@@ -100,27 +94,8 @@ public class VCRCWithRecuperator : AbstractVCRC, IEntropyAnalysable
     public sealed override SpecificEnergy SpecificHeatingCapacity =>
         Point3.Enthalpy - Point4.Enthalpy;
 
-    public EntropyAnalysisResult EntropyAnalysis(
+    public override IEntropyAnalysisResult EntropyAnalysis(
         Temperature indoor,
         Temperature outdoor
-    ) =>
-        new EntropyAnalyzer(
-            this,
-            indoor,
-            outdoor,
-            new EvaporatorInfo(EvaporatorSpecificMassFlow, Point6, Point1),
-            new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point3s, Point4),
-            new EVInfo(HeatReleaserSpecificMassFlow, Point5, Point6),
-            null,
-            null,
-            null,
-            new RecuperatorInfo(
-                EvaporatorSpecificMassFlow,
-                Point1,
-                Point2,
-                HeatReleaserSpecificMassFlow,
-                Point4,
-                Point5
-            )
-        ).Result;
+    ) => Analyzer.PerformAnalysis(indoor, outdoor);
 }

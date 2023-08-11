@@ -1,19 +1,19 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Condenser as a subcritical VCRC component.
+///     Condenser.
 /// </summary>
-public record Condenser : IHeatReleaser
+public record Condenser : ICondenser
 {
     /// <summary>
-    ///     Condenser as a subcritical VCRC component.
+    ///     Condenser.
     /// </summary>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
     /// <param name="temperature">Condensing temperature (bubble point).</param>
-    /// <param name="subcooling">Subcooling in the condenser.</param>
+    /// <param name="subcooling">Subcooling.</param>
     /// <exception cref="ValidationException">
     ///     Condensing temperature should be in
-    ///     ({TripleTemperature};{CriticalTemperature}) °C!
+    ///     <c>({TripleTemperature};{CriticalTemperature})</c> °C!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Subcooling in the condenser should be in [0;50] K!
@@ -24,39 +24,22 @@ public record Condenser : IHeatReleaser
         TemperatureDelta subcooling
     )
     {
-        (RefrigerantName, Temperature, Subcooling) = (
-            refrigerantName,
-            temperature.ToUnit(TemperatureUnit.DegreeCelsius),
-            subcooling.ToUnit(TemperatureDeltaUnit.Kelvin)
-        );
+        RefrigerantName = refrigerantName;
+        Temperature = temperature.ToUnit(TemperatureUnit.DegreeCelsius);
+        Subcooling = subcooling.ToUnit(TemperatureDeltaUnit.Kelvin);
         new CondenserValidator(
             new Refrigerant(RefrigerantName)
         ).ValidateAndThrow(this);
     }
 
-    /// <summary>
-    ///     Subcooling in the condenser.
-    /// </summary>
     public TemperatureDelta Subcooling { get; }
 
-    /// <summary>
-    ///     Selected refrigerant name.
-    /// </summary>
     public FluidsList RefrigerantName { get; }
 
-    /// <summary>
-    ///     Condensing temperature (bubble point).
-    /// </summary>
     public Temperature Temperature { get; }
 
-    /// <summary>
-    ///     Absolute condensing pressure.
-    /// </summary>
     public Pressure Pressure => Outlet.Pressure;
 
-    /// <summary>
-    ///     Condenser outlet.
-    /// </summary>
-    public Refrigerant Outlet =>
+    public IRefrigerant Outlet =>
         new Refrigerant(RefrigerantName).Subcooled(Temperature, Subcooling);
 }

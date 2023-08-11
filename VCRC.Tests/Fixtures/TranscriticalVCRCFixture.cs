@@ -5,7 +5,7 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 namespace VCRC.Tests;
 
 public sealed class TranscriticalVCRCFixture<T> : VCRCFixture<T>
-    where T : AbstractVCRC, IEntropyAnalysable
+    where T : class, IVCRC
 {
     public TranscriticalVCRCFixture()
         : base(FluidsList.R744)
@@ -17,5 +17,5 @@ public sealed class TranscriticalVCRCFixture<T> : VCRCFixture<T>
     }
 
     public override T Instance { get; }
-    public GasCooler GasCooler { get; }
+    public IHeatReleaser GasCooler { get; }
 }

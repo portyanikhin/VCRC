@@ -1,12 +1,12 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Two-stage VCRC base class.
+///     Two-stage vapor-compression refrigeration cycle.
 /// </summary>
-public abstract class AbstractTwoStageVCRC : AbstractVCRC
+public abstract class AbstractTwoStageVCRC : AbstractVCRC, ITwoStageVCRC
 {
     /// <summary>
-    ///     Two-stage VCRC base class.
+    ///     Two-stage vapor-compression refrigeration cycle.
     /// </summary>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
@@ -15,28 +15,22 @@ public abstract class AbstractTwoStageVCRC : AbstractVCRC
     ///     Only one refrigerant should be selected!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Condensing temperature should be
-    ///     greater than evaporating temperature!
+    ///     Condensing temperature
+    ///     should be greater than evaporating temperature!
     /// </exception>
     protected AbstractTwoStageVCRC(
-        Evaporator evaporator,
-        Compressor compressor,
+        IEvaporator evaporator,
+        ICompressor compressor,
         IHeatReleaser heatReleaser
     )
         : base(evaporator, compressor, heatReleaser) { }
 
-    /// <summary>
-    ///     Intermediate pressure.
-    /// </summary>
     public virtual Pressure IntermediatePressure =>
         CalculateIntermediatePressure(
             Evaporator.Pressure,
             HeatReleaser.Pressure
         );
 
-    /// <summary>
-    ///     Specific mass flow rate of the intermediate circuit.
-    /// </summary>
     public virtual Ratio IntermediateSpecificMassFlow =>
         HeatReleaserSpecificMassFlow - EvaporatorSpecificMassFlow;
 

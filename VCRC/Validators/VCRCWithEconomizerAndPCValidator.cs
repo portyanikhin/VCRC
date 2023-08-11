@@ -1,14 +1,14 @@
 ﻿namespace VCRC;
 
 internal class VCRCWithEconomizerAndPCValidator
-    : AbstractValidator<VCRCWithEconomizerAndPC>
+    : AbstractValidator<IVCRCWithEconomizerAndPC>
 {
-    internal VCRCWithEconomizerAndPCValidator()
+    public VCRCWithEconomizerAndPCValidator()
     {
         RuleFor(vcrc => vcrc.Point3.Temperature)
             .LessThan(vcrc => vcrc.Point6.Temperature)
             .WithMessage(
-                "Wrong temperature difference at economizer 'hot' side!"
+                "Wrong temperature difference at the economizer 'hot' side!"
             );
         RuleFor(
                 vcrc =>
@@ -17,7 +17,7 @@ internal class VCRCWithEconomizerAndPCValidator
             )
             .LessThan(vcrc => vcrc.Point6.Temperature)
             .WithMessage(
-                "Too high temperature difference at economizer 'cold' side!"
+                "Too high temperature difference at the economizer 'cold' side!"
             );
     }
 }

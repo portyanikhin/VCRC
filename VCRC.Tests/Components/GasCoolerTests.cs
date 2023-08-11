@@ -4,28 +4,31 @@ namespace VCRC.Tests;
 
 public class GasCoolerTests : IClassFixture<ComparisonFixture>
 {
-    private static readonly Refrigerant Refrigerant = new(FluidsList.R744);
-    private static readonly Temperature Temperature = 308.15.Kelvins();
-    private static readonly Pressure Pressure = 8.Megapascals();
     private readonly ComparisonFixture _comparison;
-    private readonly GasCooler _gasCooler;
-    private readonly GasCooler _gasCoolerWithSpecifiedPressure;
+    private readonly Pressure _pressure;
+    private readonly IRefrigerant _refrigerant;
+    private readonly IHeatReleaser _sut;
+    private readonly IHeatReleaser _sutWithSpecifiedPressure;
+    private readonly Temperature _temperature;
 
     public GasCoolerTests(ComparisonFixture comparison)
     {
         _comparison = comparison;
-        _gasCooler = new GasCooler(Refrigerant.Name, Temperature);
-        _gasCoolerWithSpecifiedPressure = new GasCooler(
-            Refrigerant.Name,
-            Temperature,
-            Pressure
+        _refrigerant = new Refrigerant(FluidsList.R744);
+        _temperature = 308.15.Kelvins();
+        _pressure = 8.Megapascals();
+        _sut = new GasCooler(_refrigerant.Name, _temperature);
+        _sutWithSpecifiedPressure = new GasCooler(
+            _refrigerant.Name,
+            _temperature,
+            _pressure
         );
     }
 
     [Fact]
     public void GasCooler_AnyRefrigerantOtherThanR744WithUnspecifiedPressure_ThrowsArgumentException()
     {
-        Action action = () => _ = new GasCooler(FluidsList.R729, Temperature);
+        Action action = () => _ = new GasCooler(FluidsList.R729, _temperature);
         action
             .Should()
             .Throw<ArgumentException>()
@@ -41,7 +44,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new GasCooler(Refrigerant.Name, 30.DegreesCelsius());
+            _ = new GasCooler(_refrigerant.Name, 30.DegreesCelsius());
         action
             .Should()
             .Throw<ValidationException>()
@@ -56,7 +59,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new GasCooler(Refrigerant.Name, Temperature, Pressure.Zero);
+            _ = new GasCooler(_refrigerant.Name, _temperature, Pressure.Zero);
         action
             .Should()
             .Throw<ValidationException>()
@@ -68,51 +71,51 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void RefrigerantName_Always_ReturnsEnteredName() =>
-        _gasCooler.RefrigerantName.Should().Be(Refrigerant.Name);
+        _sut.RefrigerantName.Should().Be(_refrigerant.Name);
 
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _gasCooler.Temperature
-            .Equals(Temperature, _comparison.Tolerance.DegreesCelsius())
+        _sut.Temperature
+            .Equals(_temperature, _comparison.Tolerance.DegreesCelsius())
             .Should()
             .BeTrue();
-        _gasCooler.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
+        _sut.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
     }
 
     [Fact]
     public void Pressure_IfUnspecified_ReturnsOptimalValueByYangEtAlInKilopascals()
     {
-        _gasCooler.Pressure
+        _sut.Pressure
             .Equals(
-                (2.759 * _gasCooler.Temperature.DegreesCelsius - 9.912).Bars(),
+                (2.759 * _sut.Temperature.DegreesCelsius - 9.912).Bars(),
                 _comparison.Tolerance.Pascals()
             )
             .Should()
             .BeTrue();
-        _gasCooler.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
+        _sut.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
 
     [Fact]
     public void Pressure_IfSpecified_ReturnsSpecifiedValueInKilopascals()
     {
-        _gasCoolerWithSpecifiedPressure.Pressure
-            .Equals(Pressure, _comparison.Tolerance.Pascals())
+        _sutWithSpecifiedPressure.Pressure
+            .Equals(_pressure, _comparison.Tolerance.Pascals())
             .Should()
             .BeTrue();
-        _gasCoolerWithSpecifiedPressure.Pressure.Unit
+        _sutWithSpecifiedPressure.Pressure.Unit
             .Should()
             .Be(PressureUnit.Kilopascal);
     }
 
     [Fact]
     public void Outlet_Always_ReturnsRefrigerantAtPressureAndTemperature() =>
-        _gasCooler.Outlet
+        _sut.Outlet
             .Should()
             .Be(
-                Refrigerant.WithState(
-                    Input.Pressure(_gasCooler.Pressure),
-                    Input.Temperature(Temperature)
+                _refrigerant.WithState(
+                    Input.Pressure(_sut.Pressure),
+                    Input.Temperature(_temperature)
                 )
             );
 }

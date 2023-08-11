@@ -7,7 +7,9 @@
 ///     Two-stage subcritical VCRC with economizer,
 ///     recuperator and two-phase injection into the compressor.
 /// </remarks>
-public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
+public class VCRCMitsubishiZubadan
+    : AbstractTwoStageVCRC,
+        IVCRCMitsubishiZubadan
 {
     /// <summary>
     ///     Mitsubishi Zubadan VCRC (subcritical only).
@@ -33,23 +35,24 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
     ///     at the recuperator 'hot' inlet!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'hot' side!
+    ///     Wrong temperature difference at the recuperator 'hot' side!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Wrong temperature difference at recuperator 'cold' side!
+    ///     Wrong temperature difference at the recuperator 'cold' side!
     /// </exception>
     /// <exception cref="ValidationException">
-    ///     Too high temperature difference at economizer 'cold' side!
+    ///     Too high temperature difference at the economizer 'cold' side!
     /// </exception>
     public VCRCMitsubishiZubadan(
-        Evaporator evaporator,
-        Compressor compressor,
-        Condenser condenser,
-        EconomizerWithTPI economizer
+        IEvaporator evaporator,
+        ICompressor compressor,
+        ICondenser condenser,
+        IAuxiliaryHeatExchanger economizer
     )
         : base(evaporator, compressor, condenser)
     {
-        (Condenser, Economizer) = (condenser, economizer);
+        Condenser = condenser;
+        Economizer = economizer;
         CalculateInjectionQuality();
         new VCRCMitsubishiZubadanValidator().ValidateAndThrow(this);
         Point5s = Point4!.IsentropicCompressionTo(Condenser.Pressure);
@@ -62,100 +65,77 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
         );
     }
 
-    /// <summary>
-    ///     Condenser as a subcritical VCRC component.
-    /// </summary>
-    public new Condenser Condenser { get; }
+    private IEntropyAnalyzer Analyzer =>
+        new EntropyAnalyzer(
+            this,
+            new EvaporatorNode(EvaporatorSpecificMassFlow, Point12, Point1),
+            new HeatReleaserNode(HeatReleaserSpecificMassFlow, Point5s, Point6),
+            new EVNode(HeatReleaserSpecificMassFlow, Point6, Point7),
+            new EVNode(IntermediateSpecificMassFlow, Point8, Point9),
+            new EVNode(EvaporatorSpecificMassFlow, Point11, Point12),
+            null,
+            new RecuperatorNode(
+                EvaporatorSpecificMassFlow,
+                Point1,
+                Point2,
+                HeatReleaserSpecificMassFlow,
+                Point7,
+                Point8
+            ),
+            new EconomizerNode(
+                IntermediateSpecificMassFlow,
+                Point9,
+                Point10,
+                EvaporatorSpecificMassFlow,
+                Point8,
+                Point11
+            ),
+            new MixingNode(
+                Point4,
+                EvaporatorSpecificMassFlow,
+                Point3,
+                IntermediateSpecificMassFlow,
+                Point10
+            )
+        );
 
-    /// <summary>
-    ///     Recuperator as a VCRC component.
-    /// </summary>
-    public Recuperator Recuperator { get; }
+    public new ICondenser Condenser { get; }
 
-    /// <summary>
-    ///     Economizer as a VCRC component.
-    /// </summary>
-    public EconomizerWithTPI Economizer { get; }
+    public IAuxiliaryHeatExchanger Recuperator { get; }
 
-    /// <summary>
-    ///     Absolute recuperator high pressure.
-    /// </summary>
+    public IAuxiliaryHeatExchanger Economizer { get; }
+
     public Pressure RecuperatorHighPressure { get; private set; }
 
-    /// <summary>
-    ///     Point 1 – evaporator outlet / recuperator "cold" inlet.
-    /// </summary>
-    public Refrigerant Point1 => Evaporator.Outlet;
+    public IRefrigerant Point1 => Evaporator.Outlet;
 
-    /// <summary>
-    ///     Point 2 – recuperator "cold" outlet /
-    ///     first compression stage suction.
-    /// </summary>
-    public Refrigerant Point2 { get; private set; }
+    public IRefrigerant Point2 { get; private set; }
 
-    /// <summary>
-    ///     Point 3s – first isentropic compression stage discharge.
-    /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point3s { get; private set; } = null!;
+    public IRefrigerant Point3s { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 3 – first compression stage discharge.
-    /// </summary>
-    public Refrigerant Point3 { get; private set; } = null!;
+    public IRefrigerant Point3 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 4 – second compression stage suction.
-    /// </summary>
-    public Refrigerant Point4 { get; private set; }
+    public IRefrigerant Point4 { get; private set; }
 
-    /// <summary>
-    ///     Point 5s – second isentropic compression stage discharge.
-    /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point5s { get; }
+    public IRefrigerant Point5s { get; }
 
-    /// <summary>
-    ///     Point 5 – second compression stage discharge / condenser inlet.
-    /// </summary>
-    public Refrigerant Point5 { get; }
+    public IRefrigerant Point5 { get; }
 
-    /// <summary>
-    ///     Point 6 – condenser outlet / first EV inlet.
-    /// </summary>
-    public Refrigerant Point6 => HeatReleaser.Outlet;
+    public IRefrigerant Point6 => HeatReleaser.Outlet;
 
-    /// <summary>
-    ///     Point 7 – first EV outlet / recuperator "hot" inlet.
-    /// </summary>
-    public Refrigerant Point7 { get; private set; }
+    public IRefrigerant Point7 { get; private set; }
 
-    /// <summary>
-    ///     Point 8 – recuperator "hot" outlet /
-    ///     second EV inlet / economizer "hot" inlet.
-    /// </summary>
-    public Refrigerant Point8 { get; private set; } = null!;
+    public IRefrigerant Point8 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 9 – second EV outlet / economizer "cold" inlet.
-    /// </summary>
-    public Refrigerant Point9 { get; private set; } = null!;
+    public IRefrigerant Point9 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 10 – economizer "cold" outlet /
-    ///     injection of two-phase refrigerant into the compressor.
-    /// </summary>
-    public Refrigerant Point10 { get; private set; } = null!;
+    public IRefrigerant Point10 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 11 – economizer "hot" outlet / third EV inlet.
-    /// </summary>
-    public Refrigerant Point11 { get; private set; } = null!;
+    public IRefrigerant Point11 { get; private set; } = default!;
 
-    /// <summary>
-    ///     Point 12 – third EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point12 { get; private set; } = null!;
+    public IRefrigerant Point12 { get; private set; } = default!;
 
     public sealed override Pressure IntermediatePressure =>
         base.IntermediatePressure;
@@ -184,75 +164,13 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
         HeatReleaserSpecificMassFlow.DecimalFractions
         * (Point5.Enthalpy - Point6.Enthalpy);
 
-    public EntropyAnalysisResult EntropyAnalysis(
+    public override IEntropyAnalysisResult EntropyAnalysis(
         Temperature indoor,
         Temperature outdoor
-    ) =>
-        new EntropyAnalyzer(
-            this,
-            indoor,
-            outdoor,
-            new EvaporatorInfo(EvaporatorSpecificMassFlow, Point12, Point1),
-            new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point5s, Point6),
-            new EVInfo(HeatReleaserSpecificMassFlow, Point6, Point7),
-            new EVInfo(IntermediateSpecificMassFlow, Point8, Point9),
-            new EVInfo(EvaporatorSpecificMassFlow, Point11, Point12),
-            null,
-            new RecuperatorInfo(
-                EvaporatorSpecificMassFlow,
-                Point1,
-                Point2,
-                HeatReleaserSpecificMassFlow,
-                Point7,
-                Point8
-            ),
-            new EconomizerInfo(
-                IntermediateSpecificMassFlow,
-                Point9,
-                Point10,
-                EvaporatorSpecificMassFlow,
-                Point8,
-                Point11
-            ),
-            new MixingInfo(
-                Point4,
-                EvaporatorSpecificMassFlow,
-                Point3,
-                IntermediateSpecificMassFlow,
-                Point10
-            )
-        ).Result;
+    ) => Analyzer.PerformAnalysis(indoor, outdoor);
 
     private void CalculateInjectionQuality()
     {
-        double ToSolve(double injectionQuality)
-        {
-            Point10 = Refrigerant.TwoPhasePointAt(
-                IntermediatePressure,
-                injectionQuality.Percent()
-            );
-            Point2 = Point1.HeatingTo(
-                Point1.Enthalpy
-                    + HeatReleaserSpecificMassFlow
-                        / EvaporatorSpecificMassFlow
-                        * (Point7.Enthalpy - Point8.Enthalpy)
-            );
-            Point3s = Point2.IsentropicCompressionTo(IntermediatePressure);
-            Point3 = Point2.CompressionTo(
-                IntermediatePressure,
-                Compressor.Efficiency
-            );
-            return (
-                Point10.Enthalpy
-                - (
-                    Point4.Enthalpy
-                    - EvaporatorSpecificMassFlow
-                        / IntermediateSpecificMassFlow
-                        * (Point3.Enthalpy - Point4.Enthalpy)
-                )
-            ).JoulesPerKilogram;
-        }
-
         RecuperatorHighPressure = CalculateIntermediatePressure(
             IntermediatePressure,
             HeatReleaser.Pressure
@@ -290,5 +208,35 @@ public class VCRCMitsubishiZubadan : AbstractTwoStageVCRC, IEntropyAnalysable
                     Condenser.Pressure
                 );
         } while (!validator.Validate(this).IsValid);
+
+        return;
+
+        double ToSolve(double injectionQuality)
+        {
+            Point10 = Refrigerant.TwoPhasePointAt(
+                IntermediatePressure,
+                injectionQuality.Percent()
+            );
+            Point2 = Point1.HeatingTo(
+                Point1.Enthalpy
+                    + HeatReleaserSpecificMassFlow
+                        / EvaporatorSpecificMassFlow
+                        * (Point7.Enthalpy - Point8.Enthalpy)
+            );
+            Point3s = Point2.IsentropicCompressionTo(IntermediatePressure);
+            Point3 = Point2.CompressionTo(
+                IntermediatePressure,
+                Compressor.Efficiency
+            );
+            return (
+                Point10.Enthalpy
+                - (
+                    Point4.Enthalpy
+                    - EvaporatorSpecificMassFlow
+                        / IntermediateSpecificMassFlow
+                        * (Point3.Enthalpy - Point4.Enthalpy)
+                )
+            ).JoulesPerKilogram;
+        }
     }
 }
