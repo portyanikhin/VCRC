@@ -3,7 +3,8 @@
 public static class EntropyAnalysisExtensions
 {
     /// <summary>
-    ///     Performs VCRC entropy analysis over a range of temperatures.
+    ///     Performs VCRC entropy analysis over a range
+    ///     of indoor and outdoor temperatures.
     /// </summary>
     /// <param name="cycles">List of VCRCs.</param>
     /// <param name="indoor">List of indoor temperatures.</param>
