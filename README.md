@@ -1417,4 +1417,4 @@ Console.WriteLine(result.AnalysisRelativeError);          // 1.27e-13 %
 ```
 
 In addition, you can perform entropy analysis in the range of indoor and outdoor temperatures
-([see example](https://github.com/portyanikhin/VCRC/blob/main/VCRC.Tests/Extensions/EntropyAnalysisExtensionsTests.cs)).
+([see an example](https://github.com/portyanikhin/VCRC/blob/main/VCRC.Tests/EntropyAnalysis/EntropyAnalysisExtensionsTests.cs)).
