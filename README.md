@@ -79,7 +79,10 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 ```
 
 ### Compressor
@@ -108,7 +111,10 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 ```
 
 ### Gas cooler (for transcritical VCRCs)
@@ -132,10 +138,12 @@ using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
-var gasCooler = new GasCooler(
-    FluidsList.R744, (40).DegreesCelsius());
+var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var gasCoolerWithSpecifiedPressure = new GasCooler(
-    FluidsList.R744, (40).DegreesCelsius(), (105).Bars());
+    FluidsList.R744,
+    (40).DegreesCelsius(),
+    (105).Bars()
+);
 Console.WriteLine(gasCooler.Pressure.Bars);                      // 100.448
 Console.WriteLine(gasCoolerWithSpecifiedPressure.Pressure.Bars); // 105
 ```
@@ -144,7 +152,7 @@ Console.WriteLine(gasCoolerWithSpecifiedPressure.Pressure.Bars); // 105
 
 Ejector with _90 %_ isentropic efficiency of the nozzle, suction section and diffuser:
 
-```csharp
+```c#
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC;
 
@@ -154,7 +162,7 @@ var ejector = new Ejector((90).Percent());
 Ejector with _90 %_ isentropic efficiency of the nozzle and suction section and 
 _80 %_ isentropic efficiency of the diffuser:
 
-```csharp
+```c#
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC;
 
@@ -181,7 +189,9 @@ using UnitsNet;
 using VCRC;
 
 var economizer = new Economizer(
-    TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 ```
 
 ### Economizer with two-phase injection into the compressor
@@ -230,10 +240,16 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var cycle = new SimpleVCRC(evaporator, compressor, condenser);
 Console.WriteLine(cycle.EER);                // 4.348012113427724
 Console.WriteLine(cycle.COP);                // 5.348012113427722
@@ -242,7 +258,7 @@ Console.WriteLine(cycle.Point2.Temperature); // 88.76 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -250,7 +266,10 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var cycle = new SimpleVCRC(evaporator, compressor, gasCooler);
@@ -296,13 +315,23 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var cycle = new VCRCWithRecuperator(
-    evaporator, recuperator, compressor, condenser);
+    evaporator,
+    recuperator,
+    compressor,
+    condenser
+);
 Console.WriteLine(cycle.EER);                // 4.201006672315493
 Console.WriteLine(cycle.COP);                // 5.201006672315493
 Console.WriteLine(cycle.Point3.Temperature); // 120.68 °C
@@ -310,7 +339,7 @@ Console.WriteLine(cycle.Point3.Temperature); // 120.68 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -318,12 +347,19 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var cycle = new VCRCWithRecuperator(
-    evaporator, recuperator, compressor, gasCooler);
+    evaporator,
+    recuperator,
+    compressor,
+    gasCooler
+);
 Console.WriteLine(cycle.EER);                // 2.711892365925208
 Console.WriteLine(cycle.COP);                // 3.7118923659252077
 Console.WriteLine(cycle.Point3.Temperature); // 120.88 °C
@@ -370,10 +406,16 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var cycle = new VCRCWithIIC(evaporator, compressor, condenser);
 Console.WriteLine(cycle.EER);                // 4.617699450573777
 Console.WriteLine(cycle.COP);                // 5.617699450573777
@@ -383,7 +425,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 85.53 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -391,7 +433,10 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var cycle = new VCRCWithIIC(evaporator, compressor, gasCooler);
@@ -441,10 +486,16 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var cycle = new VCRCWithCIC(evaporator, compressor, condenser);
 Console.WriteLine(cycle.EER);                // 4.726096383578692
 Console.WriteLine(cycle.COP);                // 5.7260963835786916
@@ -454,7 +505,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 62.48 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -462,7 +513,10 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var cycle = new VCRCWithCIC(evaporator, compressor, gasCooler);
@@ -513,10 +567,16 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var cycle = new VCRCWithPC(evaporator, compressor, condenser);
 Console.WriteLine(cycle.EER);                // 4.678905539800198
 Console.WriteLine(cycle.COP);                // 5.678905539800197
@@ -526,7 +586,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 62.48 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -534,7 +594,10 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var cycle = new VCRCWithPC(evaporator, compressor, gasCooler);
@@ -585,14 +648,26 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var economizer = new Economizer(
-    TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEconomizer(
-    evaporator, compressor, condenser, economizer);
+    evaporator,
+    compressor,
+    condenser,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 4.53620654385269
 Console.WriteLine(cycle.COP);                // 5.53620654385269
 Console.WriteLine(cycle.Point2.Temperature); // 47.65 °C
@@ -601,7 +676,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 87.14 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -609,13 +684,22 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var economizer = new Economizer(
-    TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEconomizer(
-    evaporator, compressor, gasCooler, economizer);
+    evaporator,
+    compressor,
+    gasCooler,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 2.972706326019418
 Console.WriteLine(cycle.COP);                // 3.972706326019418
 Console.WriteLine(cycle.Point2.Temperature); // 47.43 °C
@@ -644,7 +728,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 81.12 °C
 - `Point 4` - second compression stage discharge.
 - `Point 5` - condenser or gas cooler inlet.
 - `Point 6` - condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
-- `Point 7` -  first EV outlet / economizer "cold" inlet.
+- `Point 7` - first EV outlet / economizer "cold" inlet.
 - `Point 8` - economizer "hot" outlet / second EV inlet.
 - `Point 9` - second EV outlet / evaporator inlet.
 
@@ -663,14 +747,26 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var economizer = new Economizer(
-    TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEconomizerAndPC(
-    evaporator, compressor, condenser, economizer);
+    evaporator,
+    compressor,
+    condenser,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 4.596749553808057
 Console.WriteLine(cycle.COP);                // 5.596749553808058
 Console.WriteLine(cycle.Point2.Temperature); // 88.76 °C
@@ -679,7 +775,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 68.27 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -687,13 +783,22 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var economizer = new Economizer(
-    TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEconomizerAndPC(
-    evaporator, compressor, gasCooler, economizer);
+    evaporator,
+    compressor,
+    gasCooler,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 3.0072874874974658
 Console.WriteLine(cycle.COP);                // 4.007287487497467
 Console.WriteLine(cycle.Point2.Temperature); // 88.36 °C
@@ -741,14 +846,26 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var economizer = new Economizer(
-    TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEconomizerAndTPI(
-    evaporator, compressor, condenser, economizer);
+    evaporator,
+    compressor,
+    condenser,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 4.646833169057064
 Console.WriteLine(cycle.COP);                // 5.646833169057064
 Console.WriteLine(cycle.Point2.Temperature); // 47.65 °C
@@ -757,7 +874,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 62.48 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -765,13 +882,22 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var economizer = new Economizer(
-    TemperatureDelta.FromKelvins(5), TemperatureDelta.FromKelvins(5));
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEconomizerAndTPI(
-    evaporator, compressor, gasCooler, economizer);
+    evaporator,
+    compressor,
+    gasCooler,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 2.778725656175372
 Console.WriteLine(cycle.COP);                // 3.778725656175373
 Console.WriteLine(cycle.Point2.Temperature); // 47.43 °C
@@ -819,13 +945,18 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
-var cycle = new VCRCWithEjector(
-    evaporator, compressor, condenser, ejector);
+var cycle = new VCRCWithEjector(evaporator, compressor, condenser, ejector);
 Console.WriteLine(cycle.EER);                // 4.832330373984365
 Console.WriteLine(cycle.COP);                // 5.832251779509525
 Console.WriteLine(cycle.Point2.Temperature); // 79.05 °C
@@ -833,7 +964,7 @@ Console.WriteLine(cycle.Point2.Temperature); // 79.05 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -841,12 +972,14 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
-var cycle = new VCRCWithEjector(
-    evaporator, compressor, gasCooler, ejector);
+var cycle = new VCRCWithEjector(evaporator, compressor, gasCooler, ejector);
 Console.WriteLine(cycle.EER);                // 3.404191144711264
 Console.WriteLine(cycle.COP);                // 4.404140144895948
 Console.WriteLine(cycle.Point2.Temperature); // 69.77 °C
@@ -899,15 +1032,28 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
-var economizer = new Economizer(TemperatureDelta.FromKelvins(5),
-    TemperatureDelta.FromKelvins(5));
+var economizer = new Economizer(
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEjectorAndEconomizer(
-    evaporator, compressor, condenser, ejector, economizer);
+    evaporator,
+    compressor,
+    condenser,
+    ejector,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 4.780603519591169
 Console.WriteLine(cycle.COP);                // 5.780519699589865
 Console.WriteLine(cycle.Point2.Temperature); // 41.82 °C
@@ -916,7 +1062,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 79.97 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -924,14 +1070,24 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
-var economizer = new Economizer(TemperatureDelta.FromKelvins(5),
-    TemperatureDelta.FromKelvins(5));
+var economizer = new Economizer(
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEjectorAndEconomizer(
-    evaporator, compressor, gasCooler, ejector, economizer);
+    evaporator,
+    compressor,
+    gasCooler,
+    ejector,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 3.4970089179388735
 Console.WriteLine(cycle.COP);                // 4.496949450753824
 Console.WriteLine(cycle.Point2.Temperature); // 40.93 °C
@@ -985,15 +1141,28 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
-var economizer = new Economizer(TemperatureDelta.FromKelvins(5),
-    TemperatureDelta.FromKelvins(5));
+var economizer = new Economizer(
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEjectorEconomizerAndPC(
-    evaporator, compressor, condenser, ejector, economizer);
+    evaporator,
+    compressor,
+    condenser,
+    ejector,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 4.84250403965006
 Console.WriteLine(cycle.COP);                // 5.8424191343251834
 Console.WriteLine(cycle.Point2.Temperature); // 80.82 °C
@@ -1002,7 +1171,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 67.52 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -1010,14 +1179,24 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
-var economizer = new Economizer(TemperatureDelta.FromKelvins(5),
-    TemperatureDelta.FromKelvins(5));
+var economizer = new Economizer(
+    TemperatureDelta.FromKelvins(5),
+    TemperatureDelta.FromKelvins(5)
+);
 var cycle = new VCRCWithEjectorEconomizerAndPC(
-    evaporator, compressor, gasCooler, ejector, economizer);
+    evaporator,
+    compressor,
+    gasCooler,
+    ejector,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 3.5310640266642546
 Console.WriteLine(cycle.COP);                // 4.53100398036674
 Console.WriteLine(cycle.Point2.Temperature); // 73.07 °C
@@ -1071,14 +1250,25 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
 var economizer = new EconomizerWithTPI(TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithEjectorEconomizerAndTPI(
-    evaporator, compressor, condenser, ejector, economizer);
+    evaporator,
+    compressor,
+    condenser,
+    ejector,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 4.874001351966284
 Console.WriteLine(cycle.COP);                // 5.873917103015547
 Console.WriteLine(cycle.Point2.Temperature); // 41.82 °C
@@ -1087,7 +1277,7 @@ Console.WriteLine(cycle.Point4.Temperature); // 61.76 °C
 
 **_For the transcritical cycle_**
 
-```csharp
+```c#
 using SharpProp;
 using UnitsNet;
 using UnitsNet.NumberExtensions.NumberToRatio;
@@ -1095,13 +1285,21 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R744, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R744,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
 var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
 var economizer = new EconomizerWithTPI(TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithEjectorEconomizerAndTPI(
-    evaporator, compressor, gasCooler, ejector, economizer);
+    evaporator,
+    compressor,
+    gasCooler,
+    ejector,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 3.1791454424406136
 Console.WriteLine(cycle.COP);                // 4.179085189888726
 Console.WriteLine(cycle.Point2.Temperature); // 40.93 °C
@@ -1148,13 +1346,23 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var economizer = new EconomizerWithTPI(TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCMitsubishiZubadan(
-    evaporator, compressor, condenser, economizer);
+    evaporator,
+    compressor,
+    condenser,
+    economizer
+);
 Console.WriteLine(cycle.EER);                // 4.392768334506883
 Console.WriteLine(cycle.COP);                // 5.392751672812034
 Console.WriteLine(cycle.Point3.Temperature); // 67.82 °C
@@ -1179,12 +1387,21 @@ using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
 var evaporator = new Evaporator(
-    FluidsList.R32, (5).DegreesCelsius(), TemperatureDelta.FromKelvins(5));
+    FluidsList.R32,
+    (5).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(5)
+);
 var compressor = new Compressor((80).Percent());
 var condenser = new Condenser(
-    FluidsList.R32, (45).DegreesCelsius(), TemperatureDelta.FromKelvins(3));
+    FluidsList.R32,
+    (45).DegreesCelsius(),
+    TemperatureDelta.FromKelvins(3)
+);
 var cycle = new SimpleVCRC(evaporator, compressor, condenser);
-var result = cycle.EntropyAnalysis((18).DegreesCelsius(), (35).DegreesCelsius());
+var result = cycle.EntropyAnalysis(
+    (18).DegreesCelsius(),
+    (35).DegreesCelsius()
+);
 Console.WriteLine(result.ThermodynamicPerfection);        // 25.39 %
 Console.WriteLine(result.MinSpecificWorkRatio);           // 25.39 %
 Console.WriteLine(result.CompressorEnergyLossRatio);      // 20 %
