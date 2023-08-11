@@ -1,16 +1,14 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Compressor as a VCRC component.
+///     Compressor.
 /// </summary>
-public record Compressor
+public record Compressor : ICompressor
 {
     /// <summary>
-    ///     Compressor as a VCRC component.
+    ///     Compressor.
     /// </summary>
-    /// <param name="efficiency">
-    ///     Isentropic efficiency of the compressor.
-    /// </param>
+    /// <param name="efficiency">Isentropic efficiency.</param>
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the compressor should be in (0;100) %!
     /// </exception>
@@ -20,8 +18,5 @@ public record Compressor
         new CompressorValidator().ValidateAndThrow(this);
     }
 
-    /// <summary>
-    ///     Isentropic efficiency of the compressor.
-    /// </summary>
     public Ratio Efficiency { get; }
 }

@@ -1,8 +1,8 @@
 ﻿namespace VCRC;
 
-internal class EjectorFlowsValidator : AbstractValidator<EjectorFlows>
+internal class EjectorFlowsValidator : AbstractValidator<IEjectorFlows>
 {
-    internal EjectorFlowsValidator()
+    public EjectorFlowsValidator()
     {
         RuleFor(flows => flows.NozzleInlet.Name)
             .Equal(flows => flows.SuctionInlet.Name)

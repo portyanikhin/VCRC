@@ -4,15 +4,15 @@ namespace VCRC.Tests;
 
 public class EconomizerWithTPITests : IClassFixture<ComparisonFixture>
 {
-    private static readonly TemperatureDelta TemperatureDifference =
-        5.DegreesCelsius();
     private readonly ComparisonFixture _comparison;
-    private readonly EconomizerWithTPI _economizer;
+    private readonly IAuxiliaryHeatExchanger _sut;
+    private readonly TemperatureDelta _temperatureDifference;
 
     public EconomizerWithTPITests(ComparisonFixture comparison)
     {
         _comparison = comparison;
-        _economizer = new EconomizerWithTPI(TemperatureDifference);
+        _temperatureDifference = 5.DegreesCelsius();
+        _sut = new EconomizerWithTPI(_temperatureDifference);
     }
 
     [Theory]
@@ -36,11 +36,11 @@ public class EconomizerWithTPITests : IClassFixture<ComparisonFixture>
     [Fact]
     public void TemperatureDifference_Always_ReturnsEnteredValueInKelvins()
     {
-        _economizer.TemperatureDifference
-            .Equals(TemperatureDifference, _comparison.Tolerance.Kelvins())
+        _sut.TemperatureDifference
+            .Equals(_temperatureDifference, _comparison.Tolerance.Kelvins())
             .Should()
             .BeTrue();
-        _economizer.TemperatureDifference.Unit
+        _sut.TemperatureDifference.Unit
             .Should()
             .Be(TemperatureDeltaUnit.Kelvin);
     }

@@ -1,9 +1,9 @@
 ﻿namespace VCRC;
 
 internal class VCRCWithEconomizerAndTPIValidator
-    : AbstractValidator<VCRCWithEconomizerAndTPI>
+    : AbstractValidator<IVCRCWithEconomizerAndTPI>
 {
-    internal VCRCWithEconomizerAndTPIValidator()
+    public VCRCWithEconomizerAndTPIValidator()
     {
         RuleFor(
                 vcrc =>
@@ -12,7 +12,7 @@ internal class VCRCWithEconomizerAndTPIValidator
             )
             .LessThan(vcrc => vcrc.Point5.Temperature)
             .WithMessage(
-                "Too high temperature difference at economizer 'cold' side!"
+                "Too high temperature difference at the economizer 'cold' side!"
             );
     }
 }

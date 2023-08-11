@@ -1,17 +1,15 @@
 ﻿namespace VCRC;
 
 /// <summary>
-///     Economizer as a component
-///     of VCRC with two-phase injection into the compressor.
+///     Economizer with two-phase injection into the compressor.
 /// </summary>
-public record EconomizerWithTPI
+public record EconomizerWithTPI : IAuxiliaryHeatExchanger
 {
     /// <summary>
-    ///     Economizer as a component
-    ///     of VCRC with two-phase injection into the compressor.
+    ///     Economizer with two-phase injection into the compressor.
     /// </summary>
     /// <param name="temperatureDifference">
-    ///     Temperature difference at economizer "cold" side.
+    ///     Temperature difference at the "cold" side.
     /// </param>
     /// <exception cref="ValidationException">
     ///     Temperature difference at the economizer 'cold' side
@@ -25,8 +23,5 @@ public record EconomizerWithTPI
         new EconomizerWithTPIValidator().ValidateAndThrow(this);
     }
 
-    /// <summary>
-    ///     Temperature difference at economizer "cold" side.
-    /// </summary>
     public TemperatureDelta TemperatureDifference { get; }
 }

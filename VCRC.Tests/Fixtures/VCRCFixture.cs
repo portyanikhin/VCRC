@@ -1,9 +1,11 @@
-﻿using UnitsNet.NumberExtensions.NumberToTemperature;
+﻿// ReSharper disable All
+
+using UnitsNet.NumberExtensions.NumberToTemperature;
 
 namespace VCRC.Tests;
 
 public abstract class VCRCFixture<T>
-    where T : AbstractVCRC, IEntropyAnalysable
+    where T : class, IVCRC
 {
     protected VCRCFixture(FluidsList refrigerantName)
     {
@@ -23,67 +25,70 @@ public abstract class VCRCFixture<T>
     }
 
     public abstract T Instance { get; }
-    public EntropyAnalysisResult AnalysisResult { get; protected set; } = null!;
-    public Refrigerant Refrigerant { get; }
-    public Evaporator Evaporator { get; }
-    public Recuperator Recuperator { get; }
-    public Compressor Compressor { get; }
-    public Economizer Economizer { get; }
-    public Ejector Ejector { get; }
-    public EjectorFlows EjectorFlows { get; protected set; } = null!;
+
+    public IEntropyAnalysisResult AnalysisResult { get; protected set; } =
+        default!;
+
+    public IRefrigerant Refrigerant { get; }
+    public IEvaporator Evaporator { get; }
+    public IAuxiliaryHeatExchanger Recuperator { get; }
+    public ICompressor Compressor { get; }
+    public IEconomizer Economizer { get; }
+    public IEjector Ejector { get; }
+    public IEjectorFlows EjectorFlows { get; protected set; } = null!;
 
     protected T CreateVCRC(IHeatReleaser heatReleaser) =>
         (
             typeof(T) switch
             {
-                var type when type == typeof(SimpleVCRC)
+                var type when type == typeof(ISimpleVCRC)
                     => new SimpleVCRC(Evaporator, Compressor, heatReleaser)
                         as T,
-                var type when type == typeof(VCRCWithRecuperator)
+                var type when type == typeof(IVCRCWithRecuperator)
                     => new VCRCWithRecuperator(
                         Evaporator,
                         Recuperator,
                         Compressor,
                         heatReleaser
                     ) as T,
-                var type when type == typeof(VCRCWithIIC)
+                var type when type == typeof(IVCRCWithIIC)
                     => new VCRCWithIIC(Evaporator, Compressor, heatReleaser)
                         as T,
-                var type when type == typeof(VCRCWithCIC)
+                var type when type == typeof(IVCRCWithCIC)
                     => new VCRCWithCIC(Evaporator, Compressor, heatReleaser)
                         as T,
-                var type when type == typeof(VCRCWithPC)
+                var type when type == typeof(IVCRCWithPC)
                     => new VCRCWithPC(Evaporator, Compressor, heatReleaser)
                         as T,
-                var type when type == typeof(VCRCWithEconomizer)
+                var type when type == typeof(IVCRCWithEconomizer)
                     => new VCRCWithEconomizer(
                         Evaporator,
                         Compressor,
                         heatReleaser,
                         Economizer
                     ) as T,
-                var type when type == typeof(VCRCWithEconomizerAndPC)
+                var type when type == typeof(IVCRCWithEconomizerAndPC)
                     => new VCRCWithEconomizerAndPC(
                         Evaporator,
                         Compressor,
                         heatReleaser,
                         Economizer
                     ) as T,
-                var type when type == typeof(VCRCWithEconomizerAndTPI)
+                var type when type == typeof(IVCRCWithEconomizerAndTPI)
                     => new VCRCWithEconomizerAndTPI(
                         Evaporator,
                         Compressor,
                         heatReleaser,
                         Economizer
                     ) as T,
-                var type when type == typeof(VCRCWithEjector)
+                var type when type == typeof(IVCRCWithEjector)
                     => new VCRCWithEjector(
                         Evaporator,
                         Compressor,
                         heatReleaser,
                         Ejector
                     ) as T,
-                var type when type == typeof(VCRCWithEjectorAndEconomizer)
+                var type when type == typeof(IVCRCWithEjectorAndEconomizer)
                     => new VCRCWithEjectorAndEconomizer(
                         Evaporator,
                         Compressor,
@@ -91,7 +96,7 @@ public abstract class VCRCFixture<T>
                         Ejector,
                         Economizer
                     ) as T,
-                var type when type == typeof(VCRCWithEjectorEconomizerAndPC)
+                var type when type == typeof(IVCRCWithEjectorEconomizerAndPC)
                     => new VCRCWithEjectorEconomizerAndPC(
                         Evaporator,
                         Compressor,
@@ -99,7 +104,7 @@ public abstract class VCRCFixture<T>
                         Ejector,
                         Economizer
                     ) as T,
-                var type when type == typeof(VCRCWithEjectorEconomizerAndTPI)
+                var type when type == typeof(IVCRCWithEjectorEconomizerAndTPI)
                     => new VCRCWithEjectorEconomizerAndTPI(
                         Evaporator,
                         Compressor,
@@ -117,32 +122,32 @@ public abstract class VCRCFixture<T>
             }
         )!;
 
-    protected EjectorFlows CalculateEjectorFlowsIfNecessary() =>
+    protected IEjectorFlows CalculateEjectorFlowsIfNecessary() =>
         typeof(T) switch
         {
-            var type when type == typeof(VCRCWithEjector)
+            var type when type == typeof(IVCRCWithEjector)
                 => Ejector.CalculateFlows(
-                    (Instance as VCRCWithEjector)!.Point3,
-                    (Instance as VCRCWithEjector)!.Point9
+                    (Instance as IVCRCWithEjector)!.Point3,
+                    (Instance as IVCRCWithEjector)!.Point9
                 ),
-            var type when type == typeof(VCRCWithEjectorAndEconomizer)
+            var type when type == typeof(IVCRCWithEjectorAndEconomizer)
                 => Ejector.CalculateFlows(
-                    (Instance as VCRCWithEjectorAndEconomizer)!.Point8,
-                    (Instance as VCRCWithEjectorAndEconomizer)!.Point14
+                    (Instance as IVCRCWithEjectorAndEconomizer)!.Point8,
+                    (Instance as IVCRCWithEjectorAndEconomizer)!.Point14
                 ),
-            var type when type == typeof(VCRCWithEjectorEconomizerAndPC)
+            var type when type == typeof(IVCRCWithEjectorEconomizerAndPC)
                 => Ejector.CalculateFlows(
-                    (Instance as VCRCWithEjectorEconomizerAndPC)!.Point8,
-                    (Instance as VCRCWithEjectorEconomizerAndPC)!.Point14
+                    (Instance as IVCRCWithEjectorEconomizerAndPC)!.Point8,
+                    (Instance as IVCRCWithEjectorEconomizerAndPC)!.Point14
                 ),
-            var type when type == typeof(VCRCWithEjectorEconomizerAndTPI)
+            var type when type == typeof(IVCRCWithEjectorEconomizerAndTPI)
                 => Ejector.CalculateFlows(
-                    (Instance as VCRCWithEjectorEconomizerAndTPI)!.Point8,
-                    (Instance as VCRCWithEjectorEconomizerAndTPI)!.Point14
+                    (Instance as IVCRCWithEjectorEconomizerAndTPI)!.Point8,
+                    (Instance as IVCRCWithEjectorEconomizerAndTPI)!.Point14
                 ),
-            _ => null!
+            _ => default!
         };
 
-    protected EntropyAnalysisResult PerformEntropyAnalysis() =>
+    protected IEntropyAnalysisResult PerformEntropyAnalysis() =>
         Instance.EntropyAnalysis(18.DegreesCelsius(), 35.DegreesCelsius());
 }

@@ -4,32 +4,27 @@ namespace VCRC.Tests;
 
 public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
 {
-    private static readonly Refrigerant Refrigerant = new(FluidsList.R32);
-    private static readonly Ejector Ejector =
-        new(90.Percent(), 90.Percent(), 80.Percent());
-    private static readonly Refrigerant NozzleInlet = Refrigerant.BubblePointAt(
-        45.DegreesCelsius()
-    );
-    private static readonly Refrigerant SuctionInlet = Refrigerant.DewPointAt(
-        5.DegreesCelsius()
-    );
     private readonly ComparisonFixture _comparison;
-    private readonly EjectorFlows _ejectorFlows;
+    private readonly IEjector _ejector;
     private readonly SpecificEnergy _mixingInletKineticEnergy;
+    private readonly IRefrigerant _nozzleInlet;
+    private readonly IRefrigerant _refrigerant;
+    private readonly IRefrigerant _suctionInlet;
+    private readonly IEjectorFlows _sut;
 
     public EjectorFlowsTests(ComparisonFixture comparison)
     {
         _comparison = comparison;
-        _comparison.Tolerance = 1e-3;
-        _ejectorFlows = Ejector.CalculateFlows(NozzleInlet, SuctionInlet);
+        _refrigerant = new Refrigerant(FluidsList.R32);
+        _ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
+        _nozzleInlet = _refrigerant.BubblePointAt(45.DegreesCelsius());
+        _suctionInlet = _refrigerant.DewPointAt(5.DegreesCelsius());
+        _sut = _ejector.CalculateFlows(_nozzleInlet, _suctionInlet);
         var mixingInletSpeed =
-            _ejectorFlows.FlowRatio.DecimalFractions
-                * CalculateOutletSpeed(NozzleInlet, _ejectorFlows.NozzleOutlet)
-            + (1 - _ejectorFlows.FlowRatio.DecimalFractions)
-                * CalculateOutletSpeed(
-                    SuctionInlet,
-                    _ejectorFlows.SuctionOutlet
-                );
+            _sut.FlowRatio.DecimalFractions
+                * CalculateOutletSpeed(_nozzleInlet, _sut.NozzleOutlet)
+            + (1 - _sut.FlowRatio.DecimalFractions)
+                * CalculateOutletSpeed(_suctionInlet, _sut.SuctionOutlet);
         _mixingInletKineticEnergy = (
             Math.Pow(mixingInletSpeed.MetersPerSecond, 2) / 2.0
         ).JoulesPerKilogram();
@@ -39,11 +34,11 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     public void EjectorFlows_WrongRefrigerants_ThrowsValidationException()
     {
         Action action = () =>
-            _ = Ejector.CalculateFlows(
+            _ = _ejector.CalculateFlows(
                 new Refrigerant(FluidsList.R22).BubblePointAt(
                     45.DegreesCelsius()
                 ),
-                SuctionInlet
+                _suctionInlet
             );
         action
             .Should()
@@ -55,7 +50,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     public void EjectorFlows_WrongPressures_ThrowsValidationException()
     {
         Action action = () =>
-            _ = Ejector.CalculateFlows(SuctionInlet, NozzleInlet);
+            _ = _ejector.CalculateFlows(_suctionInlet, _nozzleInlet);
         action
             .Should()
             .Throw<ValidationException>()
@@ -67,73 +62,69 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void NozzleInlet_Always_ReturnsSpecifiedNozzleInletPoint() =>
-        _ejectorFlows.NozzleInlet.Should().Be(NozzleInlet);
+        _sut.NozzleInlet.Should().Be(_nozzleInlet);
 
     [Fact]
     public void SuctionInlet_Always_ReturnsSpecifiedSuctionInletPoint() =>
-        _ejectorFlows.SuctionInlet.Should().Be(SuctionInlet);
+        _sut.SuctionInlet.Should().Be(_suctionInlet);
 
     [Fact]
     public void NozzleOutlet_Always_ReturnsNozzleInletAfterExpansionToMixingPressure()
     {
-        _ejectorFlows.NozzleOutlet
+        _sut.NozzleOutlet
             .Should()
             .Be(
-                _ejectorFlows.NozzleInlet.ExpansionTo(
-                    _ejectorFlows.MixingInlet.Pressure,
-                    Ejector.NozzleEfficiency
+                _sut.NozzleInlet.ExpansionTo(
+                    _sut.MixingInlet.Pressure,
+                    _ejector.NozzleEfficiency
                 )
             );
-        _ejectorFlows.NozzleOutlet.Phase.Should().Be(Phases.TwoPhase);
+        _sut.NozzleOutlet.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void SuctionOutlet_Always_ReturnsSuctionInletAfterExpansionToMixingPressure()
     {
-        _ejectorFlows.SuctionOutlet
+        _sut.SuctionOutlet
             .Should()
             .Be(
-                _ejectorFlows.SuctionInlet.ExpansionTo(
-                    _ejectorFlows.MixingInlet.Pressure,
-                    Ejector.SuctionEfficiency
+                _sut.SuctionInlet.ExpansionTo(
+                    _sut.MixingInlet.Pressure,
+                    _ejector.SuctionEfficiency
                 )
             );
-        _ejectorFlows.SuctionOutlet.Phase.Should().Be(Phases.TwoPhase);
+        _sut.SuctionOutlet.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void MixingInlet_Always_ReturnsPointMixPointAt90PercentsOfSuctionPressure()
     {
-        _ejectorFlows.MixingInlet.Pressure
-            .Should()
-            .Be(0.9 * SuctionInlet.Pressure);
-        _ejectorFlows.MixingInlet.Enthalpy
+        _sut.MixingInlet.Pressure.Should().Be(0.9 * _suctionInlet.Pressure);
+        _sut.MixingInlet.Enthalpy
             .Should()
             .Be(
-                _ejectorFlows.FlowRatio.DecimalFractions * NozzleInlet.Enthalpy
-                    + (1 - _ejectorFlows.FlowRatio.DecimalFractions)
-                        * SuctionInlet.Enthalpy
+                _sut.FlowRatio.DecimalFractions * _nozzleInlet.Enthalpy
+                    + (1 - _sut.FlowRatio.DecimalFractions)
+                        * _suctionInlet.Enthalpy
                     - _mixingInletKineticEnergy
             );
-        _ejectorFlows.MixingInlet.Phase.Should().Be(Phases.TwoPhase);
+        _sut.MixingInlet.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void DiffuserOutlet_Always_ReturnsCompressedMixPoint()
     {
-        _ejectorFlows.DiffuserOutlet
+        _sut.DiffuserOutlet
             .Should()
             .Be(
-                Refrigerant.WithState(
+                _refrigerant.WithState(
                     Input.Pressure(
-                        Refrigerant
+                        _refrigerant
                             .WithState(
-                                Input.Entropy(
-                                    _ejectorFlows.MixingInlet.Entropy
-                                ),
+                                Input.Entropy(_sut.MixingInlet.Entropy),
                                 Input.Enthalpy(
-                                    _ejectorFlows.MixingInlet.Enthalpy
-                                        + Ejector
+                                    _sut.MixingInlet.Enthalpy
+                                        + _ejector
                                             .DiffuserEfficiency
                                             .DecimalFractions
                                             * _mixingInletKineticEnergy
@@ -142,27 +133,26 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
                             .Pressure
                     ),
                     Input.Enthalpy(
-                        _ejectorFlows.MixingInlet.Enthalpy
-                            + _mixingInletKineticEnergy
+                        _sut.MixingInlet.Enthalpy + _mixingInletKineticEnergy
                     )
                 )
             );
-        _ejectorFlows.DiffuserOutlet.Phase.Should().Be(Phases.TwoPhase);
+        _sut.DiffuserOutlet.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void FlowRatio_Always_ReturnsApproximatelyDiffuserOutletVaporQuality() =>
-        _ejectorFlows.FlowRatio
+        _sut.FlowRatio
             .Equals(
-                _ejectorFlows.DiffuserOutlet.Quality!.Value,
+                _sut.DiffuserOutlet.Quality!.Value,
                 _comparison.Tolerance.Percent()
             )
             .Should()
             .BeTrue();
 
     private static Speed CalculateOutletSpeed(
-        AbstractFluid inlet,
-        AbstractFluid outlet
+        IFluidState inlet,
+        IFluidState outlet
     ) =>
         Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram)
             .MetersPerSecond();

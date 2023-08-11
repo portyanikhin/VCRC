@@ -2,7 +2,7 @@
 
 public static class EntropyAnalysisResultExtensions
 {
-    public static Ratio Sum(this EntropyAnalysisResult result) =>
+    public static Ratio Sum(this IEntropyAnalysisResult result) =>
         result.MinSpecificWorkRatio
         + result.CompressorEnergyLossRatio
         + result.CondenserEnergyLossRatio

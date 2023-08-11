@@ -2,14 +2,15 @@
 
 public class CompressorTests : IClassFixture<ComparisonFixture>
 {
-    private static readonly Ratio Efficiency = 0.8.DecimalFractions();
     private readonly ComparisonFixture _comparison;
-    private readonly Compressor _compressor;
+    private readonly Ratio _efficiency;
+    private readonly ICompressor _sut;
 
     public CompressorTests(ComparisonFixture comparison)
     {
         _comparison = comparison;
-        _compressor = new Compressor(Efficiency);
+        _efficiency = 0.8.DecimalFractions();
+        _sut = new Compressor(_efficiency);
     }
 
     [Theory]
@@ -32,10 +33,10 @@ public class CompressorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Efficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _compressor.Efficiency
-            .Equals(Efficiency, _comparison.Tolerance.Percent())
+        _sut.Efficiency
+            .Equals(_efficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
-        _compressor.Efficiency.Unit.Should().Be(RatioUnit.Percent);
+        _sut.Efficiency.Unit.Should().Be(RatioUnit.Percent);
     }
 }

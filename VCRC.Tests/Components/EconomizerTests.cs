@@ -4,16 +4,17 @@ namespace VCRC.Tests;
 
 public class EconomizerTests : IClassFixture<ComparisonFixture>
 {
-    private static readonly TemperatureDelta TemperatureDifference =
-        5.DegreesCelsius();
-    private static readonly TemperatureDelta Superheat = 5.DegreesCelsius();
     private readonly ComparisonFixture _comparison;
-    private readonly Economizer _economizer;
+    private readonly TemperatureDelta _superheat;
+    private readonly IEconomizer _sut;
+    private readonly TemperatureDelta _temperatureDifference;
 
     public EconomizerTests(ComparisonFixture comparison)
     {
         _comparison = comparison;
-        _economizer = new Economizer(TemperatureDifference, Superheat);
+        _superheat = 5.DegreesCelsius();
+        _temperatureDifference = 5.DegreesCelsius();
+        _sut = new Economizer(_temperatureDifference, _superheat);
     }
 
     [Theory]
@@ -24,7 +25,7 @@ public class EconomizerTests : IClassFixture<ComparisonFixture>
     )
     {
         Action action = () =>
-            _ = new Economizer(TemperatureDifference, superheat.Kelvins());
+            _ = new Economizer(_temperatureDifference, superheat.Kelvins());
         action
             .Should()
             .Throw<ValidationException>()
@@ -36,10 +37,10 @@ public class EconomizerTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        _economizer.Superheat
-            .Equals(Superheat, _comparison.Tolerance.Kelvins())
+        _sut.Superheat
+            .Equals(_superheat, _comparison.Tolerance.Kelvins())
             .Should()
             .BeTrue();
-        _economizer.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
+        _sut.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 }

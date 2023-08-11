@@ -1,8 +1,8 @@
 ﻿namespace VCRC;
 
-internal class EjectorValidator : AbstractValidator<Ejector>
+internal class EjectorValidator : AbstractValidator<IEjector>
 {
-    internal EjectorValidator()
+    public EjectorValidator()
     {
         RuleFor(ejector => ejector.NozzleEfficiency)
             .ExclusiveBetween(Ratio.Zero, 100.Percent())

@@ -2,9 +2,9 @@
 
 namespace VCRC;
 
-internal class CondenserValidator : AbstractValidator<Condenser>
+internal class CondenserValidator : AbstractValidator<ICondenser>
 {
-    internal CondenserValidator(Refrigerant refrigerant)
+    public CondenserValidator(IRefrigerant refrigerant)
     {
         RuleFor(condenser => condenser.Temperature)
             .ExclusiveBetween(

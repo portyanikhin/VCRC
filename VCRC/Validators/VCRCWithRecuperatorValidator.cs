@@ -1,9 +1,9 @@
 ﻿namespace VCRC;
 
 internal class VCRCWithRecuperatorValidator
-    : AbstractValidator<VCRCWithRecuperator>
+    : AbstractValidator<IVCRCWithRecuperator>
 {
-    internal VCRCWithRecuperatorValidator()
+    public VCRCWithRecuperatorValidator()
     {
         RuleFor(
                 vcrc =>
@@ -12,7 +12,7 @@ internal class VCRCWithRecuperatorValidator
             )
             .GreaterThan(vcrc => vcrc.Point1.Temperature)
             .WithMessage(
-                "Too high temperature difference at recuperator 'hot' side!"
+                "Too high temperature difference at the recuperator 'hot' side!"
             );
     }
 }

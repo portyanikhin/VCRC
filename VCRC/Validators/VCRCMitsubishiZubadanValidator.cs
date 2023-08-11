@@ -1,9 +1,9 @@
 ﻿namespace VCRC;
 
 internal class VCRCMitsubishiZubadanValidator
-    : AbstractValidator<VCRCMitsubishiZubadan>
+    : AbstractValidator<IVCRCMitsubishiZubadan>
 {
-    internal VCRCMitsubishiZubadanValidator()
+    public VCRCMitsubishiZubadanValidator()
     {
         RuleFor(vcrc => vcrc.Point7.Quality)
             .Must(quality => quality?.DecimalFractions is > 0 and < 1)
@@ -14,17 +14,17 @@ internal class VCRCMitsubishiZubadanValidator
         RuleFor(vcrc => vcrc.Point7.Temperature)
             .GreaterThan(vcrc => vcrc.Point2.Temperature)
             .WithMessage(
-                "Wrong temperature difference at recuperator 'hot' side!"
+                "Wrong temperature difference at the recuperator 'hot' side!"
             );
         RuleFor(vcrc => vcrc.Point8.Temperature)
             .GreaterThan(vcrc => vcrc.Point1.Temperature)
             .WithMessage(
-                "Wrong temperature difference at recuperator 'cold' side!"
+                "Wrong temperature difference at the recuperator 'cold' side!"
             );
         RuleFor(vcrc => vcrc.Point11.Temperature)
             .LessThan(vcrc => vcrc.Point8.Temperature)
             .WithMessage(
-                "Too high temperature difference at economizer 'cold' side!"
+                "Too high temperature difference at the economizer 'cold' side!"
             );
     }
 }

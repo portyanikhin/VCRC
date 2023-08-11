@@ -3,8 +3,10 @@
 /// <summary>
 ///     Single-stage VCRC with an ejector as an expansion device.
 /// </summary>
-public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
+public class VCRCWithEjector : AbstractVCRC, IVCRCWithEjector
 {
+    private readonly IEjectorFlows _ejectorFlows;
+
     /// <summary>
     ///     Single-stage VCRC with an ejector as an expansion device.
     /// </summary>
@@ -23,16 +25,16 @@ public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
     ///     Refrigerant should be a single component or an azeotropic blend!
     /// </exception>
     public VCRCWithEjector(
-        Evaporator evaporator,
-        Compressor compressor,
+        IEvaporator evaporator,
+        ICompressor compressor,
         IHeatReleaser heatReleaser,
-        Ejector ejector
+        IEjector ejector
     )
         : base(evaporator, compressor, heatReleaser)
     {
         new RefrigerantTypeValidator().ValidateAndThrow(Refrigerant);
         Ejector = ejector;
-        EjectorFlows = Ejector.CalculateFlows(Point3, Point9);
+        _ejectorFlows = Ejector.CalculateFlows(Point3, Point9);
         Point1 = Refrigerant.DewPointAt(Point6.Pressure);
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
         Point2 = Point1.CompressionTo(
@@ -43,69 +45,47 @@ public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
         Point8 = Point7.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
-    private EjectorFlows EjectorFlows { get; }
+    private IEntropyAnalyzer Analyzer =>
+        new EntropyAnalyzer(
+            this,
+            new EvaporatorNode(EvaporatorSpecificMassFlow, Point8, Point9),
+            new HeatReleaserNode(HeatReleaserSpecificMassFlow, Point2s, Point3),
+            new EVNode(EvaporatorSpecificMassFlow, Point7, Point8),
+            null,
+            null,
+            new EjectorNode(
+                Point6,
+                HeatReleaserSpecificMassFlow,
+                Point3,
+                EvaporatorSpecificMassFlow,
+                Point9
+            )
+        );
 
-    /// <summary>
-    ///     Ejector as a VCRC component.
-    /// </summary>
-    public Ejector Ejector { get; }
+    public IEjector Ejector { get; }
 
-    /// <summary>
-    ///     Point 1 - separator vapor outlet / compression stage suction.
-    /// </summary>
-    public Refrigerant Point1 { get; }
+    public IRefrigerant Point1 { get; }
 
-    /// <summary>
-    ///     Point 2s – isentropic compression stage discharge.
-    /// </summary>
     [SuppressMessage("ReSharper", "InconsistentNaming")]
-    public Refrigerant Point2s { get; }
+    public IRefrigerant Point2s { get; }
 
-    /// <summary>
-    ///     Point 2 – compression stage discharge /
-    ///     condenser or gas cooler inlet.
-    /// </summary>
-    public Refrigerant Point2 { get; }
+    public IRefrigerant Point2 { get; }
 
-    /// <summary>
-    ///     Point 3 – condenser or gas cooler outlet / ejector nozzle inlet.
-    /// </summary>
-    public Refrigerant Point3 => HeatReleaser.Outlet;
+    public IRefrigerant Point3 => HeatReleaser.Outlet;
 
-    /// <summary>
-    ///     Point 4 – ejector nozzle outlet.
-    /// </summary>
-    public Refrigerant Point4 => EjectorFlows.NozzleOutlet;
+    public IRefrigerant Point4 => _ejectorFlows.NozzleOutlet;
 
-    /// <summary>
-    ///     Point 5 – ejector mixing section inlet.
-    /// </summary>
-    public Refrigerant Point5 => EjectorFlows.MixingInlet;
+    public IRefrigerant Point5 => _ejectorFlows.MixingInlet;
 
-    /// <summary>
-    ///     Point 6 – ejector diffuser outlet / separator inlet.
-    /// </summary>
-    public Refrigerant Point6 => EjectorFlows.DiffuserOutlet;
+    public IRefrigerant Point6 => _ejectorFlows.DiffuserOutlet;
 
-    /// <summary>
-    ///     Point 7 – separator liquid outlet / EV inlet.
-    /// </summary>
-    public Refrigerant Point7 { get; }
+    public IRefrigerant Point7 { get; }
 
-    /// <summary>
-    ///     Point 8 – EV outlet / evaporator inlet.
-    /// </summary>
-    public Refrigerant Point8 { get; }
+    public IRefrigerant Point8 { get; }
 
-    /// <summary>
-    ///     Point 9 – evaporator outlet / ejector suction section inlet.
-    /// </summary>
-    public Refrigerant Point9 => Evaporator.Outlet;
+    public IRefrigerant Point9 => Evaporator.Outlet;
 
-    /// <summary>
-    ///     Point 10 – ejector suction section outlet.
-    /// </summary>
-    public Refrigerant Point10 => EjectorFlows.SuctionOutlet;
+    public IRefrigerant Point10 => _ejectorFlows.SuctionOutlet;
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow
@@ -125,25 +105,8 @@ public class VCRCWithEjector : AbstractVCRC, IEntropyAnalysable
         HeatReleaserSpecificMassFlow.DecimalFractions
         * (Point2.Enthalpy - Point3.Enthalpy);
 
-    public EntropyAnalysisResult EntropyAnalysis(
+    public override IEntropyAnalysisResult EntropyAnalysis(
         Temperature indoor,
         Temperature outdoor
-    ) =>
-        new EntropyAnalyzer(
-            this,
-            indoor,
-            outdoor,
-            new EvaporatorInfo(EvaporatorSpecificMassFlow, Point8, Point9),
-            new HeatReleaserInfo(HeatReleaserSpecificMassFlow, Point2s, Point3),
-            new EVInfo(EvaporatorSpecificMassFlow, Point7, Point8),
-            null,
-            null,
-            new EjectorInfo(
-                Point6,
-                HeatReleaserSpecificMassFlow,
-                Point3,
-                EvaporatorSpecificMassFlow,
-                Point9
-            )
-        ).Result;
+    ) => Analyzer.PerformAnalysis(indoor, outdoor);
 }

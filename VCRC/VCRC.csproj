@@ -36,4 +36,43 @@
         <PackageReference Include="SharpProp" Version="7.0.0"/>
     </ItemGroup>
 
+    <ItemGroup>
+        <Compile Update="**\*.cs">
+            <DependentUpon>$([System.String]::Copy(I%(Filename).cs))</DependentUpon>
+        </Compile>
+        <Compile Update="Components\ICondenser.cs">
+            <DependentUpon>IHeatReleaser.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Components\GasCooler.cs">
+            <DependentUpon>IHeatReleaser.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Components\IEvaporator.cs">
+            <DependentUpon>IMainHeatExchanger.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Components\IHeatReleaser.cs">
+            <DependentUpon>IMainHeatExchanger.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Components\IEconomizer.cs">
+            <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Components\EconomizerWithTPI.cs">
+            <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Components\Recuperator.cs">
+            <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Abstract\AbstractVCRC.cs">
+            <DependentUpon>IVCRC.cs</DependentUpon>
+        </Compile>
+        <Compile Update="Abstract\AbstractTwoStageVCRC.cs">
+            <DependentUpon>ITwoStageVCRC.cs</DependentUpon>
+        </Compile>
+        <Compile Update="EntropyAnalysis\Nodes\IEvaporatorNode.cs">
+            <DependentUpon>IMainHeatExchangerNode.cs</DependentUpon>
+        </Compile>
+        <Compile Update="EntropyAnalysis\Nodes\IHeatReleaserNode.cs">
+            <DependentUpon>IMainHeatExchangerNode.cs</DependentUpon>
+        </Compile>
+    </ItemGroup>
+
 </Project>
