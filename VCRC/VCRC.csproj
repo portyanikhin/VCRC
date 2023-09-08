@@ -18,7 +18,7 @@
         <PackageReadmeFile>NuGet.md</PackageReadmeFile>
         <PackageReleaseNotes>Release notes can be found at https://github.com/portyanikhin/VCRC/releases</PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>3.2.2</PackageVersion>
+        <PackageVersion>3.2.3</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
         <Summary>A cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <TargetFrameworks>netstandard2.0;netstandard2.1;net7.0</TargetFrameworks>
