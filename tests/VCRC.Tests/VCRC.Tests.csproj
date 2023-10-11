@@ -38,7 +38,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\VCRC\VCRC.csproj"/>
+        <ProjectReference Include="..\..\src\VCRC\VCRC.csproj"/>
     </ItemGroup>
 
 </Project>

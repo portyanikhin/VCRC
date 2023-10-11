@@ -27,7 +27,7 @@
 
     <ItemGroup>
         <None Include="$(PackageIconFullPath)" Pack="true" PackagePath="\"/>
-        <None Include="..\NuGet.md" Pack="true" PackagePath="\"/>
+        <None Include="..\..\NuGet.md" Pack="true" PackagePath="\"/>
     </ItemGroup>
 
     <ItemGroup>
