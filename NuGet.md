@@ -1,4 +1,4 @@
-# ![VCRC](https://raw.githubusercontent.com/portyanikhin/VCRC/main/VCRC/pictures/header.png)
+# ![VCRC](https://raw.githubusercontent.com/portyanikhin/VCRC/main/src/VCRC/pictures/header.png)
 
 [![Build & Tests](https://github.com/portyanikhin/VCRC/actions/workflows/build-tests.yml/badge.svg)](https://github.com/portyanikhin/VCRC/actions/workflows/build-tests.yml)
 [![CodeQL](https://github.com/portyanikhin/VCRC/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/portyanikhin/VCRC/actions/workflows/codeql-analysis.yml)
