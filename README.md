@@ -1,6 +1,6 @@
 # ![VCRC](https://raw.githubusercontent.com/portyanikhin/VCRC/main/src/VCRC/pictures/header.png)
 
-[![Build & Tests](https://github.com/portyanikhin/VCRC/actions/workflows/build-tests.yml/badge.svg)](https://github.com/portyanikhin/VCRC/actions/workflows/build-tests.yml)
+[![Build & Tests](https://github.com/portyanikhin/VCRC/actions/workflows/build-and-tests.yml/badge.svg)](https://github.com/portyanikhin/VCRC/actions/workflows/build-and-tests.yml)
 [![CodeQL](https://github.com/portyanikhin/VCRC/actions/workflows/codeql-analysis.yml/badge.svg)](https://github.com/portyanikhin/VCRC/actions/workflows/codeql-analysis.yml)
 [![NuGet](https://img.shields.io/nuget/v/VCRC)](https://www.nuget.org/packages/VCRC)
 ![Platform](https://img.shields.io/badge/platform-win--64%20%7C%20mac--64%20%7C%20linux--64-lightgrey)
