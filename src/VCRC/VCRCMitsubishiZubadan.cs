@@ -203,10 +203,12 @@ public class VCRCMitsubishiZubadan
             }
 
             if (!validator.Validate(this).IsValid)
+            {
                 RecuperatorHighPressure = CalculateIntermediatePressure(
                     RecuperatorHighPressure,
                     Condenser.Pressure
                 );
+            }
         } while (!validator.Validate(this).IsValid);
 
         return;

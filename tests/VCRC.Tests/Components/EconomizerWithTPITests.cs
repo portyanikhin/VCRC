@@ -40,7 +40,8 @@ public class EconomizerWithTPITests : IClassFixture<ComparisonFixture>
             .Equals(_temperatureDifference, _comparison.Tolerance.Kelvins())
             .Should()
             .BeTrue();
-        _sut.TemperatureDifference.Unit
+        _sut.TemperatureDifference
+            .Unit
             .Should()
             .Be(TemperatureDeltaUnit.Kelvin);
     }

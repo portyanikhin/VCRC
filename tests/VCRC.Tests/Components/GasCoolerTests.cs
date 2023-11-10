@@ -99,11 +99,14 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Pressure_IfSpecified_ReturnsSpecifiedValueInKilopascals()
     {
-        _sutWithSpecifiedPressure.Pressure
+        _sutWithSpecifiedPressure
+            .Pressure
             .Equals(_pressure, _comparison.Tolerance.Pascals())
             .Should()
             .BeTrue();
-        _sutWithSpecifiedPressure.Pressure.Unit
+        _sutWithSpecifiedPressure
+            .Pressure
+            .Unit
             .Should()
             .Be(PressureUnit.Kilopascal);
     }

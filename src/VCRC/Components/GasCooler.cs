@@ -45,20 +45,27 @@ public record GasCooler : IHeatReleaser
         RefrigerantName = refrigerantName;
         Temperature = outletTemperature.ToUnit(TemperatureUnit.DegreeCelsius);
         if (pressure.HasValue)
+        {
             Pressure = pressure.Value.ToUnit(PressureUnit.Kilopascal);
+        }
         else if (
             RefrigerantName is FluidsList.R744
             && Temperature <= 60.DegreesCelsius()
         )
+        {
             Pressure = (2.759 * Temperature.DegreesCelsius - 9.912)
                 .Bars()
                 .ToUnit(PressureUnit.Kilopascal);
+        }
         else
+        {
             throw new ArgumentException(
                 "It is impossible to automatically calculate "
                     + "the absolute pressure in the gas cooler! "
                     + "It is necessary to define it."
             );
+        }
+
         new GasCoolerValidator(
             new Refrigerant(RefrigerantName)
         ).ValidateAndThrow(this);

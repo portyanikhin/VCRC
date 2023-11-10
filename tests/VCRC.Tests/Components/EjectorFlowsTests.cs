@@ -100,7 +100,8 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     public void MixingInlet_Always_ReturnsPointMixPointAt90PercentsOfSuctionPressure()
     {
         _sut.MixingInlet.Pressure.Should().Be(0.9 * _suctionInlet.Pressure);
-        _sut.MixingInlet.Enthalpy
+        _sut.MixingInlet
+            .Enthalpy
             .Should()
             .Be(
                 _sut.FlowRatio.DecimalFractions * _nozzleInlet.Enthalpy
