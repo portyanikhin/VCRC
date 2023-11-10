@@ -128,12 +128,15 @@ public class SimpleVCRCSubcriticalTests
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point2s_Always_ReturnsIsentropicCompressionStageDischarge()
     {
-        _fixture.Instance.Point2s
+        _fixture
+            .Instance
+            .Point2s
             .Should()
             .Be(
-                _fixture.Instance.Point1.IsentropicCompressionTo(
-                    _fixture.Condenser.Pressure
-                )
+                _fixture
+                    .Instance
+                    .Point1
+                    .IsentropicCompressionTo(_fixture.Condenser.Pressure)
             );
         _fixture.Instance.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
     }
@@ -141,13 +144,18 @@ public class SimpleVCRCSubcriticalTests
     [Fact]
     public void Point2_Always_ReturnsCompressionStageDischarge()
     {
-        _fixture.Instance.Point2
+        _fixture
+            .Instance
+            .Point2
             .Should()
             .Be(
-                _fixture.Instance.Point1.CompressionTo(
-                    _fixture.Condenser.Pressure,
-                    _fixture.Compressor.Efficiency
-                )
+                _fixture
+                    .Instance
+                    .Point1
+                    .CompressionTo(
+                        _fixture.Condenser.Pressure,
+                        _fixture.Compressor.Efficiency
+                    )
             );
         _fixture.Instance.Point2.Phase.Should().Be(Phases.SupercriticalGas);
     }
@@ -162,19 +170,24 @@ public class SimpleVCRCSubcriticalTests
     [Fact]
     public void Point4_Always_ReturnsEvaporatorInlet()
     {
-        _fixture.Instance.Point4
+        _fixture
+            .Instance
+            .Point4
             .Should()
             .Be(
-                _fixture.Instance.Point3.IsenthalpicExpansionTo(
-                    _fixture.Evaporator.Pressure
-                )
+                _fixture
+                    .Instance
+                    .Point3
+                    .IsenthalpicExpansionTo(_fixture.Evaporator.Pressure)
             );
         _fixture.Instance.Point4.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void IsentropicSpecificWork_Always_ReturnsEnthalpyDifferenceForIsentropicCompression() =>
-        _fixture.Instance.IsentropicSpecificWork
+        _fixture
+            .Instance
+            .IsentropicSpecificWork
             .Equals(
                 _fixture.Instance.Point2s.Enthalpy
                     - _fixture.Instance.Point1.Enthalpy,
@@ -185,7 +198,9 @@ public class SimpleVCRCSubcriticalTests
 
     [Fact]
     public void SpecificWork_Always_ReturnsEnthalpyDifferenceForRealCompression() =>
-        _fixture.Instance.SpecificWork
+        _fixture
+            .Instance
+            .SpecificWork
             .Equals(
                 _fixture.Instance.IsentropicSpecificWork
                     / _fixture.Compressor.Efficiency.DecimalFractions,
@@ -196,7 +211,9 @@ public class SimpleVCRCSubcriticalTests
 
     [Fact]
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
-        _fixture.Instance.SpecificCoolingCapacity
+        _fixture
+            .Instance
+            .SpecificCoolingCapacity
             .Equals(
                 _fixture.Instance.Point1.Enthalpy
                     - _fixture.Instance.Point4.Enthalpy,
@@ -207,7 +224,9 @@ public class SimpleVCRCSubcriticalTests
 
     [Fact]
     public void SpecificHeatingCapacity_Always_ReturnsEnthalpyDifferenceInCondenser() =>
-        _fixture.Instance.SpecificHeatingCapacity
+        _fixture
+            .Instance
+            .SpecificHeatingCapacity
             .Equals(
                 _fixture.Instance.Point2.Enthalpy
                     - _fixture.Instance.Point3.Enthalpy,
@@ -219,13 +238,17 @@ public class SimpleVCRCSubcriticalTests
     [Fact]
     public void EER_Always_ReturnsRatioBetweenSpecificCoolingCapacityAndSpecificWork()
     {
-        _fixture.Instance.EER
+        _fixture
+            .Instance
+            .EER
             .Should()
             .Be(
                 _fixture.Instance.SpecificCoolingCapacity
                     / _fixture.Instance.SpecificWork
             );
-        _fixture.Instance.EER
+        _fixture
+            .Instance
+            .EER
             .Should()
             .BeApproximately(4.326011919496399, _comparison.Tolerance);
     }
@@ -233,38 +256,54 @@ public class SimpleVCRCSubcriticalTests
     [Fact]
     public void COP_Always_ReturnsRatioBetweenSpecificHeatingCapacityAndSpecificWork()
     {
-        _fixture.Instance.COP
+        _fixture
+            .Instance
+            .COP
             .Should()
             .Be(
                 _fixture.Instance.SpecificHeatingCapacity
                     / _fixture.Instance.SpecificWork
             );
-        _fixture.Instance.COP
+        _fixture
+            .Instance
+            .COP
             .Should()
             .BeApproximately(5.326011919496398, _comparison.Tolerance);
     }
 
     [Fact]
     public void ThermodynamicPerfection_ForThisCase_ReturnsAbout25() =>
-        _fixture.AnalysisResult.ThermodynamicPerfection.Percent
+        _fixture
+            .AnalysisResult
+            .ThermodynamicPerfection
+            .Percent
             .Should()
             .BeApproximately(25.259214367658867, _comparison.Tolerance);
 
     [Fact]
     public void MinSpecificWorkRatio_ForThisCase_ReturnsAbout25() =>
-        _fixture.AnalysisResult.MinSpecificWorkRatio.Percent
+        _fixture
+            .AnalysisResult
+            .MinSpecificWorkRatio
+            .Percent
             .Should()
             .BeApproximately(25.259214367658878, _comparison.Tolerance);
 
     [Fact]
     public void CompressorEnergyLossRatio_ForThisCase_Returns20() =>
-        _fixture.AnalysisResult.CompressorEnergyLossRatio.Percent
+        _fixture
+            .AnalysisResult
+            .CompressorEnergyLossRatio
+            .Percent
             .Should()
             .BeApproximately(20, _comparison.Tolerance);
 
     [Fact]
     public void CondenserEnergyLossRatio_ForThisCase_ReturnsAbout21() =>
-        _fixture.AnalysisResult.CondenserEnergyLossRatio.Percent
+        _fixture
+            .AnalysisResult
+            .CondenserEnergyLossRatio
+            .Percent
             .Should()
             .BeApproximately(21.46877321647669, _comparison.Tolerance);
 
@@ -274,7 +313,10 @@ public class SimpleVCRCSubcriticalTests
 
     [Fact]
     public void ExpansionValvesEnergyLossRatio_ForThisCase_ReturnsAbout12() =>
-        _fixture.AnalysisResult.ExpansionValvesEnergyLossRatio.Percent
+        _fixture
+            .AnalysisResult
+            .ExpansionValvesEnergyLossRatio
+            .Percent
             .Should()
             .BeApproximately(12.141693490520616, _comparison.Tolerance);
 
@@ -284,19 +326,28 @@ public class SimpleVCRCSubcriticalTests
 
     [Fact]
     public void EvaporatorEnergyLossRatio_ForThisCase_ReturnsAbout21() =>
-        _fixture.AnalysisResult.EvaporatorEnergyLossRatio.Percent
+        _fixture
+            .AnalysisResult
+            .EvaporatorEnergyLossRatio
+            .Percent
             .Should()
             .BeApproximately(21.13031892534382, _comparison.Tolerance);
 
     [Fact]
     public void RecuperatorEnergyLossRatio_Always_Returns0() =>
-        _fixture.AnalysisResult.RecuperatorEnergyLossRatio.Percent
+        _fixture
+            .AnalysisResult
+            .RecuperatorEnergyLossRatio
+            .Percent
             .Should()
             .Be(0);
 
     [Fact]
     public void EconomizerEnergyLossRatio_Always_Returns0() =>
-        _fixture.AnalysisResult.EconomizerEnergyLossRatio.Percent
+        _fixture
+            .AnalysisResult
+            .EconomizerEnergyLossRatio
+            .Percent
             .Should()
             .Be(0);
 
@@ -307,12 +358,17 @@ public class SimpleVCRCSubcriticalTests
     [Fact]
     public void AnalysisRelativeError_Always_ReturnsNegligibleValue()
     {
-        _fixture.AnalysisResult.AnalysisRelativeError.Percent
+        _fixture
+            .AnalysisResult
+            .AnalysisRelativeError
+            .Percent
             .Should()
             .BeApproximately(6.236322468275591e-14, _comparison.Tolerance);
-        _fixture.AnalysisResult
+        _fixture
+            .AnalysisResult
             .Sum()
-            .Percent.Should()
+            .Percent
+            .Should()
             .BeApproximately(100, _comparison.Tolerance);
     }
 }

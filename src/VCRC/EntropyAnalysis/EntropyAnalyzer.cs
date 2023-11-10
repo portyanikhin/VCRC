@@ -116,19 +116,28 @@ internal class EntropyAnalyzer : IEntropyAnalyzer
         _coldSource = UnitMath.Min(indoor, outdoor);
         _hotSource = UnitMath.Max(indoor, outdoor);
         if (_coldSource.Equals(_hotSource, 1e-3.DegreesCelsius()))
+        {
             throw new ArgumentException(
                 "Indoor and outdoor temperatures should not be equal!"
             );
+        }
+
         if (_coldSource <= _evaporatorNode.Outlet.Temperature)
+        {
             throw new ArgumentException(
                 "Wrong temperature difference in the evaporator! "
                     + "Increase 'cold' source temperature."
             );
+        }
+
         if (_hotSource >= _heatReleaserNode.Outlet.Temperature)
+        {
             throw new ArgumentException(
                 "Wrong temperature difference in the condenser or gas cooler! "
                     + "Decrease 'hot' source temperature."
             );
+        }
+
         return new EntropyAnalysisResult(
             ThermodynamicPerfection,
             EnergyLossRatio(MinSpecificWork),
