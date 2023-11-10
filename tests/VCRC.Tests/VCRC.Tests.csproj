@@ -1,26 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Authors>Vladimir Portyanikhin</Authors>
-        <Copyright>Copyright (c) Vladimir Portyanikhin 2021</Copyright>
         <Description>Unit tests for the VCRC</Description>
-        <ImplicitUsings>enable</ImplicitUsings>
-        <IsPackable>false</IsPackable>
-        <LangVersion>11.0</LangVersion>
         <NoWarn>$(NoWarn);xUnit1033</NoWarn>
-        <Nullable>enable</Nullable>
-        <PackageLicenseExpression>MIT</PackageLicenseExpression>
-        <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
-        <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
+        <Summary>Unit tests for the VCRC</Summary>
         <Title>VCRC.Tests</Title>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(OS)' != 'Windows_NT'">
-        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
-    </PropertyGroup>
-
-    <PropertyGroup Condition="'$(OS)' == 'Windows_NT'">
-        <TargetFrameworks>net48;net6.0;net7.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
