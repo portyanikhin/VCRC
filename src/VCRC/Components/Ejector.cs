@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Ejector.
-/// </summary>
+/// <inheritdoc cref="IEjector"/>
 public record Ejector : IEjector
 {
-    /// <summary>
-    ///     Ejector.
-    /// </summary>
+    /// <inheritdoc cref="Ejector"/>
     /// <param name="efficiency">
     ///     Isentropic efficiency of the nozzle, suction section and diffuser.
     /// </param>
@@ -23,9 +19,7 @@ public record Ejector : IEjector
     public Ejector(Ratio efficiency)
         : this(efficiency, efficiency, efficiency) { }
 
-    /// <summary>
-    ///     Ejector as a VCRC component.
-    /// </summary>
+    /// <inheritdoc cref="Ejector"/>
     /// <param name="nozzleEfficiency">
     ///     Isentropic efficiency of the nozzle.
     /// </param>

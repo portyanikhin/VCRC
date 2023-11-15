@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Vapor-compression refrigeration cycle.
-/// </summary>
+/// <inheritdoc cref="IVCRC"/>
 public abstract class AbstractVCRC : IVCRC
 {
-    /// <summary>
-    ///     Vapor-compression refrigeration cycle.
-    /// </summary>
+    /// <inheritdoc cref="AbstractVCRC"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

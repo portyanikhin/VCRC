@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Economizer.
-/// </summary>
+/// <inheritdoc cref="IEconomizer"/>
 public record Economizer : EconomizerWithTPI, IEconomizer
 {
-    /// <summary>
-    ///     Economizer.
-    /// </summary>
+    /// <inheritdoc cref="Economizer"/>
     /// <param name="temperatureDifference">
     ///     Temperature difference at the "cold" side.
     /// </param>

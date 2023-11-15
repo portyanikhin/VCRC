@@ -1,5 +1,6 @@
 ﻿namespace VCRC;
 
+#pragma warning disable CA1866
 internal class RefrigerantValidator : AbstractValidator<IRefrigerant>
 {
     public RefrigerantValidator() =>
@@ -10,3 +11,4 @@ internal class RefrigerantValidator : AbstractValidator<IRefrigerant>
                     + "(its name should start with 'R')!"
             );
 }
+#pragma warning restore CA1866

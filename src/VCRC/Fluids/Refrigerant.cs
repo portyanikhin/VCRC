@@ -2,14 +2,10 @@ using UnitsNet.NumberExtensions.NumberToTemperatureDelta;
 
 namespace VCRC;
 
-/// <summary>
-///     VCRC working fluid.
-/// </summary>
+/// <inheritdoc cref="IRefrigerant"/>
 public class Refrigerant : Fluid, IRefrigerant
 {
-    /// <summary>
-    ///     VCRC working fluid.
-    /// </summary>
+    /// <inheritdoc cref="Refrigerant"/>
     /// <param name="name">Selected refrigerant name.</param>
     /// <exception cref="ValidationException">
     ///     The selected fluid is not a refrigerant

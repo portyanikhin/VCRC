@@ -1,249 +1,238 @@
 ﻿namespace VCRC.Tests;
 
-public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
+public class VCRCWithEjectorEconomizerAndTPITranscriticalTests(
+    ComparisonFixture comparison,
+    TranscriticalVCRCFixture<IVCRCWithEjectorEconomizerAndTPI> fixture
+)
     : IClassFixture<ComparisonFixture>,
         IClassFixture<
             TranscriticalVCRCFixture<IVCRCWithEjectorEconomizerAndTPI>
         >
 {
-    private readonly ComparisonFixture _comparison;
-    private readonly TranscriticalVCRCFixture<IVCRCWithEjectorEconomizerAndTPI> _fixture;
-
-    public VCRCWithEjectorEconomizerAndTPITranscriticalTests(
-        ComparisonFixture comparison,
-        TranscriticalVCRCFixture<IVCRCWithEjectorEconomizerAndTPI> fixture
-    )
-    {
-        _comparison = comparison;
-        _fixture = fixture;
-    }
-
     [Fact]
     public void Evaporator_Always_ReturnsEnteredValue() =>
-        _fixture.Instance.Evaporator.Should().Be(_fixture.Evaporator);
+        fixture.Instance.Evaporator.Should().Be(fixture.Evaporator);
 
     [Fact]
     public void Compressor_Always_ReturnsEnteredValue() =>
-        _fixture.Instance.Compressor.Should().Be(_fixture.Compressor);
+        fixture.Instance.Compressor.Should().Be(fixture.Compressor);
 
     [Fact]
     public void Condenser_ForThisCase_ReturnsNull() =>
-        _fixture.Instance.Condenser.Should().BeNull();
+        fixture.Instance.Condenser.Should().BeNull();
 
     [Fact]
     public void GasCooler_ForThisCase_ReturnsEnteredValue() =>
-        _fixture.Instance.GasCooler.Should().Be(_fixture.GasCooler);
+        fixture.Instance.GasCooler.Should().Be(fixture.GasCooler);
 
     [Fact]
     public void Ejector_Always_ReturnsEnteredValue()
     {
-        IHaveEjector sut = _fixture.Instance;
-        sut.Ejector.Should().Be(_fixture.Ejector);
+        IHaveEjector sut = fixture.Instance;
+        sut.Ejector.Should().Be(fixture.Ejector);
     }
 
     [Fact]
     public void Economizer_Always_ReturnsEnteredValue()
     {
-        IHaveEconomizerWithTPI sut = _fixture.Instance;
-        sut.Economizer.Should().Be(_fixture.Economizer);
+        IHaveEconomizerWithTPI sut = fixture.Instance;
+        sut.Economizer.Should().Be(fixture.Economizer);
     }
 
     [Fact]
     public void IsTranscritical_ForThisCase_ReturnsTrue() =>
-        _fixture.Instance.IsTranscritical.Should().BeTrue();
+        fixture.Instance.IsTranscritical.Should().BeTrue();
 
     [Fact]
     public void Point1_Always_ReturnsSeparatorVaporOutlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point1
             .Pressure
             .Pascals
             .Should()
             .BeApproximately(
-                _fixture.EjectorFlows.DiffuserOutlet.Pressure.Pascals,
+                fixture.EjectorFlows.DiffuserOutlet.Pressure.Pascals,
                 50
             );
-        _fixture
+        fixture
             .Instance
             .Point1
             .Should()
             .Be(
-                _fixture
-                    .Refrigerant
-                    .DewPointAt(_fixture.Instance.Point1.Pressure)
+                fixture.Refrigerant.DewPointAt(fixture.Instance.Point1.Pressure)
             );
-        _fixture.Instance.Point1.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point1.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point2s_Always_ReturnsFirstIsentropicCompressionStageDischarge()
     {
-        _fixture
+        fixture
             .Instance
             .Point2s
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point1
                     .IsentropicCompressionTo(
-                        _fixture.Instance.IntermediatePressure
+                        fixture.Instance.IntermediatePressure
                     )
             );
-        _fixture.Instance.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
+        fixture.Instance.Point2s.Phase.Should().Be(Phases.SupercriticalGas);
     }
 
     [Fact]
     public void Point2_Always_ReturnsFirstCompressionStageDischarge()
     {
-        _fixture
+        fixture
             .Instance
             .Point2
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point1
                     .CompressionTo(
-                        _fixture.Instance.IntermediatePressure,
-                        _fixture.Compressor.Efficiency
+                        fixture.Instance.IntermediatePressure,
+                        fixture.Compressor.Efficiency
                     )
             );
-        _fixture.Instance.Point2.Phase.Should().Be(Phases.SupercriticalGas);
+        fixture.Instance.Point2.Phase.Should().Be(Phases.SupercriticalGas);
     }
 
     [Fact]
     public void Point3_Always_ReturnsSecondCompressionStageSuction()
     {
-        _fixture
+        fixture
             .Instance
             .Point3
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Refrigerant
-                    .DewPointAt(_fixture.Instance.IntermediatePressure)
+                    .DewPointAt(fixture.Instance.IntermediatePressure)
             );
-        _fixture.Instance.Point3.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point4s_Always_ReturnsSecondIsentropicCompressionStageDischarge()
     {
-        _fixture
+        fixture
             .Instance
             .Point4s
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point3
-                    .IsentropicCompressionTo(_fixture.GasCooler.Pressure)
+                    .IsentropicCompressionTo(fixture.GasCooler.Pressure)
             );
-        _fixture.Instance.Point4s.Phase.Should().Be(Phases.Supercritical);
+        fixture.Instance.Point4s.Phase.Should().Be(Phases.Supercritical);
     }
 
     [Fact]
     public void Point4_Always_ReturnsSecondCompressionStageDischarge()
     {
-        _fixture
+        fixture
             .Instance
             .Point4
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point3
                     .CompressionTo(
-                        _fixture.GasCooler.Pressure,
-                        _fixture.Compressor.Efficiency
+                        fixture.GasCooler.Pressure,
+                        fixture.Compressor.Efficiency
                     )
             );
-        _fixture.Instance.Point4.Phase.Should().Be(Phases.Supercritical);
+        fixture.Instance.Point4.Phase.Should().Be(Phases.Supercritical);
     }
 
     [Fact]
     public void Point5_ForThisCase_ReturnsGasCoolerOutlet()
     {
-        _fixture.Instance.Point5.Should().Be(_fixture.GasCooler.Outlet);
-        _fixture.Instance.Point5.Phase.Should().Be(Phases.Supercritical);
+        fixture.Instance.Point5.Should().Be(fixture.GasCooler.Outlet);
+        fixture.Instance.Point5.Phase.Should().Be(Phases.Supercritical);
     }
 
     [Fact]
     public void Point6_Always_ReturnsEconomizerColdInlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point6
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point5
                     .IsenthalpicExpansionTo(
-                        _fixture.Instance.IntermediatePressure
+                        fixture.Instance.IntermediatePressure
                     )
             );
-        _fixture.Instance.Point6.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point7_Always_ReturnsEconomizerColdOutlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point7
             .Pressure
             .Equals(
-                _fixture.Instance.IntermediatePressure,
-                _comparison.Tolerance.Pascals()
+                fixture.Instance.IntermediatePressure,
+                comparison.Tolerance.Pascals()
             )
             .Should()
             .BeTrue();
-        _fixture
+        fixture
             .Instance
             .Point7
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point6
                     .HeatingTo(
                         (
                             (
-                                _fixture
+                                fixture
                                     .Instance
                                     .Point6
                                     .Enthalpy
                                     .JoulesPerKilogram
                                     * (
-                                        _fixture
+                                        fixture
                                             .Instance
                                             .Point2
                                             .Enthalpy
                                             .JoulesPerKilogram
-                                        - _fixture
+                                        - fixture
                                             .Instance
                                             .Point3
                                             .Enthalpy
                                             .JoulesPerKilogram
                                     )
-                                + _fixture
+                                + fixture
                                     .Instance
                                     .Point3
                                     .Enthalpy
                                     .JoulesPerKilogram
                                     * (
-                                        _fixture
+                                        fixture
                                             .Instance
                                             .Point5
                                             .Enthalpy
                                             .JoulesPerKilogram
-                                        - _fixture
+                                        - fixture
                                             .Instance
                                             .Point8
                                             .Enthalpy
@@ -251,22 +240,22 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
                                     )
                             )
                             / (
-                                _fixture
+                                fixture
                                     .Instance
                                     .Point2
                                     .Enthalpy
                                     .JoulesPerKilogram
-                                - _fixture
+                                - fixture
                                     .Instance
                                     .Point3
                                     .Enthalpy
                                     .JoulesPerKilogram
-                                + _fixture
+                                + fixture
                                     .Instance
                                     .Point5
                                     .Enthalpy
                                     .JoulesPerKilogram
-                                - _fixture
+                                - fixture
                                     .Instance
                                     .Point8
                                     .Enthalpy
@@ -275,123 +264,113 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
                         ).JoulesPerKilogram()
                     )
             );
-        _fixture.Instance.Point7.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point8_Always_ReturnsEconomizerHotOutlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point8
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point5
                     .CoolingTo(
-                        _fixture.Instance.Point6.Temperature
-                            + _fixture.Economizer.TemperatureDifference
+                        fixture.Instance.Point6.Temperature
+                            + fixture.Economizer.TemperatureDifference
                     )
             );
-        _fixture.Instance.Point8.Phase.Should().Be(Phases.Supercritical);
+        fixture.Instance.Point8.Phase.Should().Be(Phases.Supercritical);
     }
 
     [Fact]
     public void Point9_Always_ReturnsEjectorNozzleOutlet()
     {
-        _fixture
-            .Instance
-            .Point9
-            .Should()
-            .Be(_fixture.EjectorFlows.NozzleOutlet);
-        _fixture.Instance.Point9.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point9.Should().Be(fixture.EjectorFlows.NozzleOutlet);
+        fixture.Instance.Point9.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point10_Always_ReturnsEjectorMixingInlet()
     {
-        _fixture
-            .Instance
-            .Point10
-            .Should()
-            .Be(_fixture.EjectorFlows.MixingInlet);
-        _fixture.Instance.Point10.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point10.Should().Be(fixture.EjectorFlows.MixingInlet);
+        fixture.Instance.Point10.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point11_Always_ReturnsEjectorDiffuserOutlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point11
             .Should()
-            .Be(_fixture.EjectorFlows.DiffuserOutlet);
-        _fixture.Instance.Point11.Phase.Should().Be(Phases.TwoPhase);
+            .Be(fixture.EjectorFlows.DiffuserOutlet);
+        fixture.Instance.Point11.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point12_Always_ReturnsSeparatorLiquidOutlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point12
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Refrigerant
-                    .BubblePointAt(
-                        _fixture.EjectorFlows.DiffuserOutlet.Pressure
-                    )
+                    .BubblePointAt(fixture.EjectorFlows.DiffuserOutlet.Pressure)
             );
-        _fixture.Instance.Point12.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point12.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point13_Always_ReturnsEvaporatorInlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point13
             .Should()
             .Be(
-                _fixture
+                fixture
                     .Instance
                     .Point12
-                    .IsenthalpicExpansionTo(_fixture.Evaporator.Pressure)
+                    .IsenthalpicExpansionTo(fixture.Evaporator.Pressure)
             );
-        _fixture.Instance.Point13.Phase.Should().Be(Phases.TwoPhase);
+        fixture.Instance.Point13.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
     public void Point14_Always_ReturnsEvaporatorOutlet()
     {
-        _fixture.Instance.Point14.Should().Be(_fixture.Evaporator.Outlet);
-        _fixture.Instance.Point14.Phase.Should().Be(Phases.Gas);
+        fixture.Instance.Point14.Should().Be(fixture.Evaporator.Outlet);
+        fixture.Instance.Point14.Phase.Should().Be(Phases.Gas);
     }
 
     [Fact]
     public void Point15_Always_ReturnsEjectorSuctionOutlet()
     {
-        _fixture
+        fixture
             .Instance
             .Point15
             .Should()
-            .Be(_fixture.EjectorFlows.SuctionOutlet);
-        _fixture.Instance.Point15.Phase.Should().Be(Phases.Gas);
+            .Be(fixture.EjectorFlows.SuctionOutlet);
+        fixture.Instance.Point15.Phase.Should().Be(Phases.Gas);
     }
 
     [Fact]
     public void IntermediatePressure_ForThisCase_ReturnsMiddlePressureBetweenDiffuserOutletAndGasCoolerPressures() =>
-        _fixture
+        fixture
             .Instance
             .IntermediatePressure
             .Pascals
             .Should()
             .BeApproximately(
                 Math.Sqrt(
-                    _fixture.EjectorFlows.DiffuserOutlet.Pressure.Pascals
-                        * _fixture.GasCooler.Pressure.Pascals
+                    fixture.EjectorFlows.DiffuserOutlet.Pressure.Pascals
+                        * fixture.GasCooler.Pressure.Pascals
                 ),
                 50
             );
@@ -399,27 +378,22 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
     [Fact]
     public void SpecificMassFlows_Always_CalculatesAutomaticallyByHeatBalance()
     {
-        _fixture
+        fixture
             .Instance
             .EvaporatorSpecificMassFlow
-            .Equals(100.Percent(), _comparison.Tolerance.Percent())
+            .Equals(100.Percent(), comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
-        _fixture
+        fixture
             .Instance
             .HeatReleaserSpecificMassFlow
             .Equals(
-                _fixture.Instance.EvaporatorSpecificMassFlow
+                fixture.Instance.EvaporatorSpecificMassFlow
                     * (
-                        _fixture
-                            .Instance
-                            .Point11
-                            .Quality!
-                            .Value
-                            .DecimalFractions
+                        fixture.Instance.Point11.Quality!.Value.DecimalFractions
                         / (
                             1
-                            - _fixture
+                            - fixture
                                 .Instance
                                 .Point11
                                 .Quality!
@@ -430,26 +404,26 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
                     * (
                         1
                         + (
-                            _fixture.Instance.Point2.Enthalpy
-                            - _fixture.Instance.Point3.Enthalpy
+                            fixture.Instance.Point2.Enthalpy
+                            - fixture.Instance.Point3.Enthalpy
                         )
                             / (
-                                _fixture.Instance.Point3.Enthalpy
-                                - _fixture.Instance.Point7.Enthalpy
+                                fixture.Instance.Point3.Enthalpy
+                                - fixture.Instance.Point7.Enthalpy
                             )
                     ),
-                _comparison.Tolerance.Percent()
+                comparison.Tolerance.Percent()
             )
             .Should()
             .BeTrue();
-        _fixture
+        fixture
             .Instance
             .IntermediateSpecificMassFlow
             .Equals(
-                _fixture.Instance.HeatReleaserSpecificMassFlow
-                    - _fixture.Instance.EvaporatorSpecificMassFlow
+                fixture.Instance.HeatReleaserSpecificMassFlow
+                    - fixture.Instance.EvaporatorSpecificMassFlow
                         * (
-                            _fixture
+                            fixture
                                 .Instance
                                 .Point11
                                 .Quality!
@@ -457,7 +431,7 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
                                 .DecimalFractions
                             / (
                                 1
-                                - _fixture
+                                - fixture
                                     .Instance
                                     .Point11
                                     .Quality!
@@ -465,7 +439,7 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
                                     .DecimalFractions
                             )
                         ),
-                _comparison.Tolerance.Percent()
+                comparison.Tolerance.Percent()
             )
             .Should()
             .BeTrue();
@@ -473,69 +447,69 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
 
     [Fact]
     public void IsentropicSpecificWork_Always_ReturnsEnthalpyDifferenceForIsentropicCompression() =>
-        _fixture
+        fixture
             .Instance
             .IsentropicSpecificWork
             .Equals(
                 (
-                    _fixture.Instance.HeatReleaserSpecificMassFlow
-                    - _fixture.Instance.IntermediateSpecificMassFlow
+                    fixture.Instance.HeatReleaserSpecificMassFlow
+                    - fixture.Instance.IntermediateSpecificMassFlow
                 ).DecimalFractions
                     * (
-                        _fixture.Instance.Point2s.Enthalpy
-                        - _fixture.Instance.Point1.Enthalpy
+                        fixture.Instance.Point2s.Enthalpy
+                        - fixture.Instance.Point1.Enthalpy
                     )
-                    + _fixture
+                    + fixture
                         .Instance
                         .HeatReleaserSpecificMassFlow
                         .DecimalFractions
                         * (
-                            _fixture.Instance.Point4s.Enthalpy
-                            - _fixture.Instance.Point3.Enthalpy
+                            fixture.Instance.Point4s.Enthalpy
+                            - fixture.Instance.Point3.Enthalpy
                         ),
-                _comparison.Tolerance.JoulesPerKilogram()
+                comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
             .BeTrue();
 
     [Fact]
     public void SpecificWork_Always_ReturnsEnthalpyDifferenceForRealCompression() =>
-        _fixture
+        fixture
             .Instance
             .SpecificWork
             .Equals(
-                _fixture.Instance.IsentropicSpecificWork
-                    / _fixture.Compressor.Efficiency.DecimalFractions,
-                _comparison.Tolerance.JoulesPerKilogram()
+                fixture.Instance.IsentropicSpecificWork
+                    / fixture.Compressor.Efficiency.DecimalFractions,
+                comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
             .BeTrue();
 
     [Fact]
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
-        _fixture
+        fixture
             .Instance
             .SpecificCoolingCapacity
             .Equals(
-                _fixture.Instance.Point14.Enthalpy
-                    - _fixture.Instance.Point13.Enthalpy,
-                _comparison.Tolerance.JoulesPerKilogram()
+                fixture.Instance.Point14.Enthalpy
+                    - fixture.Instance.Point13.Enthalpy,
+                comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
             .BeTrue();
 
     [Fact]
     public void SpecificHeatingCapacity_Always_ReturnsEnthalpyDifferenceInCondenser() =>
-        _fixture
+        fixture
             .Instance
             .SpecificHeatingCapacity
             .Equals(
-                _fixture.Instance.HeatReleaserSpecificMassFlow.DecimalFractions
+                fixture.Instance.HeatReleaserSpecificMassFlow.DecimalFractions
                     * (
-                        _fixture.Instance.Point4.Enthalpy
-                        - _fixture.Instance.Point5.Enthalpy
+                        fixture.Instance.Point4.Enthalpy
+                        - fixture.Instance.Point5.Enthalpy
                     ),
-                _comparison.Tolerance.JoulesPerKilogram()
+                comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
             .BeTrue();
@@ -543,109 +517,109 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
     [Fact]
     public void EER_Always_ReturnsRatioBetweenSpecificCoolingCapacityAndSpecificWork()
     {
-        _fixture
+        fixture
             .Instance
             .EER
             .Should()
             .Be(
-                _fixture.Instance.SpecificCoolingCapacity
-                    / _fixture.Instance.SpecificWork
+                fixture.Instance.SpecificCoolingCapacity
+                    / fixture.Instance.SpecificWork
             );
-        _fixture
+        fixture
             .Instance
             .EER
             .Should()
-            .BeApproximately(3.1856966924103642, _comparison.Tolerance);
+            .BeApproximately(3.1856966924103642, comparison.Tolerance);
     }
 
     [Fact]
     public void COP_Always_ReturnsRatioBetweenSpecificHeatingCapacityAndSpecificWork()
     {
-        _fixture
+        fixture
             .Instance
             .COP
             .Should()
             .Be(
-                _fixture.Instance.SpecificHeatingCapacity
-                    / _fixture.Instance.SpecificWork
+                fixture.Instance.SpecificHeatingCapacity
+                    / fixture.Instance.SpecificWork
             );
-        _fixture
+        fixture
             .Instance
             .COP
             .Should()
-            .BeApproximately(4.1856342597396194, _comparison.Tolerance);
+            .BeApproximately(4.1856342597396194, comparison.Tolerance);
     }
 
     [Fact]
     public void ThermodynamicPerfection_ForThisCase_ReturnsAbout18() =>
-        _fixture
+        fixture
             .AnalysisResult
             .ThermodynamicPerfection
             .Percent
             .Should()
-            .BeApproximately(18.60101108396916, _comparison.Tolerance);
+            .BeApproximately(18.60101108396916, comparison.Tolerance);
 
     [Fact]
     public void MinSpecificWorkRatio_ForThisCase_ReturnsAbout18() =>
-        _fixture
+        fixture
             .AnalysisResult
             .MinSpecificWorkRatio
             .Percent
             .Should()
-            .BeApproximately(18.573237119700696, _comparison.Tolerance);
+            .BeApproximately(18.573237119700696, comparison.Tolerance);
 
     [Fact]
     public void CompressorEnergyLossRatio_ForThisCase_Returns20() =>
-        _fixture
+        fixture
             .AnalysisResult
             .CompressorEnergyLossRatio
             .Percent
             .Should()
-            .BeApproximately(20, _comparison.Tolerance);
+            .BeApproximately(20, comparison.Tolerance);
 
     [Fact]
     public void CondenserEnergyLossRatio_ForThisCase_Returns0() =>
-        _fixture.AnalysisResult.CondenserEnergyLossRatio.Percent.Should().Be(0);
+        fixture.AnalysisResult.CondenserEnergyLossRatio.Percent.Should().Be(0);
 
     [Fact]
     public void GasCoolerEnergyLossRatio_ForThisCase_ReturnsAbout13() =>
-        _fixture
+        fixture
             .AnalysisResult
             .GasCoolerEnergyLossRatio
             .Percent
             .Should()
-            .BeApproximately(13.752593268728353, _comparison.Tolerance);
+            .BeApproximately(13.752593268728353, comparison.Tolerance);
 
     [Fact]
     public void ExpansionValvesEnergyLossRatio_ForThisCase_ReturnsAbout16() =>
-        _fixture
+        fixture
             .AnalysisResult
             .ExpansionValvesEnergyLossRatio
             .Percent
             .Should()
-            .BeApproximately(16.69155493434279, _comparison.Tolerance);
+            .BeApproximately(16.69155493434279, comparison.Tolerance);
 
     [Fact]
     public void EjectorEnergyLossRatio_ForThisCase_ReturnsAbout11() =>
-        _fixture
+        fixture
             .AnalysisResult
             .EjectorEnergyLossRatio
             .Percent
             .Should()
-            .BeApproximately(11.405846909838836, _comparison.Tolerance);
+            .BeApproximately(11.405846909838836, comparison.Tolerance);
 
     [Fact]
     public void EvaporatorEnergyLossRatio_ForThisCase_ReturnsAbout15() =>
-        _fixture
+        fixture
             .AnalysisResult
             .EvaporatorEnergyLossRatio
             .Percent
             .Should()
-            .BeApproximately(15.39929916463049, _comparison.Tolerance);
+            .BeApproximately(15.39929916463049, comparison.Tolerance);
 
     [Fact]
     public void RecuperatorEnergyLossRatio_Always_Returns0() =>
-        _fixture
+        fixture
             .AnalysisResult
             .RecuperatorEnergyLossRatio
             .Percent
@@ -654,36 +628,36 @@ public class VCRCWithEjectorEconomizerAndTPITranscriticalTests
 
     [Fact]
     public void EconomizerEnergyLossRatio_ForThisCase_ReturnsAbout2() =>
-        _fixture
+        fixture
             .AnalysisResult
             .EconomizerEnergyLossRatio
             .Percent
             .Should()
-            .BeApproximately(2.1452842259096747, _comparison.Tolerance);
+            .BeApproximately(2.1452842259096747, comparison.Tolerance);
 
     [Fact]
     public void TestMixingEnergyLossRatio_ForThisCase_ReturnsAbout2() =>
-        _fixture
+        fixture
             .AnalysisResult
             .MixingEnergyLossRatio
             .Percent
             .Should()
-            .BeApproximately(2.0321843768491616, _comparison.Tolerance);
+            .BeApproximately(2.0321843768491616, comparison.Tolerance);
 
     [Fact]
     public void AnalysisRelativeError_Always_ReturnsNegligibleValue()
     {
-        _fixture
+        fixture
             .AnalysisResult
             .AnalysisRelativeError
             .Percent
             .Should()
-            .BeApproximately(0.1495375528210737, _comparison.Tolerance);
-        _fixture
+            .BeApproximately(0.1495375528210737, comparison.Tolerance);
+        fixture
             .AnalysisResult
             .Sum()
             .Percent
             .Should()
-            .BeApproximately(100, _comparison.Tolerance);
+            .BeApproximately(100, comparison.Tolerance);
     }
 }

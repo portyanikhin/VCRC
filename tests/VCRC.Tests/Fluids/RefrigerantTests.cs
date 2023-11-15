@@ -2,25 +2,21 @@
 
 namespace VCRC.Tests;
 
-public class RefrigerantTests : IClassFixture<ComparisonFixture>
+public class RefrigerantTests(ComparisonFixture comparison)
+    : IClassFixture<ComparisonFixture>
 {
-    private readonly ComparisonFixture _comparison;
-    private readonly SpecificEnergy _enthalpyDelta;
-    private readonly Ratio _isentropicEfficiency;
-    private readonly IRefrigerant _sut;
-    private readonly TemperatureDelta _temperatureDelta;
+    private readonly SpecificEnergy _enthalpyDelta = 50.KilojoulesPerKilogram();
+    private readonly Ratio _isentropicEfficiency = 80.Percent();
 
-    public RefrigerantTests(ComparisonFixture comparison)
-    {
-        _comparison = comparison;
-        _isentropicEfficiency = 80.Percent();
-        _temperatureDelta = TemperatureDelta.FromKelvins(10);
-        _enthalpyDelta = 50.KilojoulesPerKilogram();
-        _sut = new Refrigerant(FluidsList.R718).WithState(
-            Input.Pressure(1.Atmospheres()),
-            Input.Temperature(150.DegreesCelsius())
-        );
-    }
+    private readonly IRefrigerant _sut = new Refrigerant(
+        FluidsList.R718
+    ).WithState(
+        Input.Pressure(1.Atmospheres()),
+        Input.Temperature(150.DegreesCelsius())
+    );
+
+    private readonly TemperatureDelta _temperatureDelta =
+        TemperatureDelta.FromKelvins(10);
 
     private Pressure HighPressure => 2 * _sut.Pressure;
     private Pressure LowPressure => 0.5 * _sut.Pressure;
@@ -76,7 +72,7 @@ public class RefrigerantTests : IClassFixture<ComparisonFixture>
             .Glide
             .Kelvins
             .Should()
-            .BeApproximately(expected, _comparison.Tolerance);
+            .BeApproximately(expected, comparison.Tolerance);
     }
 
     [Theory]
@@ -92,7 +88,7 @@ public class RefrigerantTests : IClassFixture<ComparisonFixture>
             .Glide
             .Kelvins
             .Should()
-            .BeApproximately(expected, _comparison.Tolerance);
+            .BeApproximately(expected, comparison.Tolerance);
     }
 
     [Theory]

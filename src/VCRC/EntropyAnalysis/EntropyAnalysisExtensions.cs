@@ -1,5 +1,8 @@
 ﻿namespace VCRC;
 
+/// <summary>
+///     Entropy analysis extension methods.
+/// </summary>
 public static class EntropyAnalysisExtensions
 {
     /// <summary>

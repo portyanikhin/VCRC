@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Evaporator.
-/// </summary>
+/// <inheritdoc cref="IEvaporator"/>
 public record Evaporator : IEvaporator
 {
-    /// <summary>
-    ///     Evaporator.
-    /// </summary>
+    /// <inheritdoc cref="Evaporator"/>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
     /// <param name="temperature">Evaporating temperature (dew point).</param>
     /// <param name="superheat">Superheat.</param>

@@ -5,9 +5,7 @@
 /// </summary>
 public record EconomizerWithTPI : IAuxiliaryHeatExchanger
 {
-    /// <summary>
-    ///     Economizer with two-phase injection into the compressor.
-    /// </summary>
+    /// <inheritdoc cref="EconomizerWithTPI"/>
     /// <param name="temperatureDifference">
     ///     Temperature difference at the "cold" side.
     /// </param>

@@ -1,17 +1,11 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Two-stage VCRC with economizer
-///     and two-phase injection into the compressor.
-/// </summary>
+/// <inheritdoc cref="IVCRCWithEconomizerAndTPI"/>
 public class VCRCWithEconomizerAndTPI
     : AbstractTwoStageVCRC,
         IVCRCWithEconomizerAndTPI
 {
-    /// <summary>
-    ///     Two-stage VCRC with economizer
-    ///     and two-phase injection into the compressor.
-    /// </summary>
+    /// <inheritdoc cref="VCRCWithEconomizerAndTPI"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

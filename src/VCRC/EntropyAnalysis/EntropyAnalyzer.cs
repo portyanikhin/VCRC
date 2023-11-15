@@ -2,84 +2,54 @@
 
 namespace VCRC;
 
-internal class EntropyAnalyzer : IEntropyAnalyzer
+internal class EntropyAnalyzer(
+    IVCRC cycle,
+    IEvaporatorNode evaporatorNode,
+    IHeatReleaserNode heatReleaserNode,
+    IEntropyAnalysisNode firstEVNode,
+    IEntropyAnalysisNode? secondEVInfo = null,
+    IEntropyAnalysisNode? thirdEVInfo = null,
+    IEntropyAnalysisNode? ejectorInfo = null,
+    IEntropyAnalysisNode? recuperatorInfo = null,
+    IEntropyAnalysisNode? economizerInfo = null,
+    IEntropyAnalysisNode? mixingInfo = null
+) : IEntropyAnalyzer
 {
-    private readonly IVCRC _cycle;
-    private readonly IEntropyAnalysisNode? _economizerInfo;
-    private readonly IEntropyAnalysisNode? _ejectorInfo;
-    private readonly IEvaporatorNode _evaporatorNode;
-    private readonly IEntropyAnalysisNode _firstEVNode;
-    private readonly IHeatReleaserNode _heatReleaserNode;
-    private readonly IEntropyAnalysisNode? _mixingInfo;
-    private readonly IEntropyAnalysisNode? _recuperatorInfo;
-    private readonly IEntropyAnalysisNode? _secondEVInfo;
-    private readonly IEntropyAnalysisNode? _thirdEVInfo;
     private Temperature _coldSource;
     private Temperature _hotSource;
 
-    public EntropyAnalyzer(
-        IVCRC cycle,
-        IEvaporatorNode evaporatorNode,
-        IHeatReleaserNode heatReleaserNode,
-        IEntropyAnalysisNode firstEVNode,
-        IEntropyAnalysisNode? secondEVInfo = null,
-        IEntropyAnalysisNode? thirdEVInfo = null,
-        IEntropyAnalysisNode? ejectorInfo = null,
-        IEntropyAnalysisNode? recuperatorInfo = null,
-        IEntropyAnalysisNode? economizerInfo = null,
-        IEntropyAnalysisNode? mixingInfo = null
-    )
-    {
-        _cycle = cycle;
-        _evaporatorNode = evaporatorNode;
-        _heatReleaserNode = heatReleaserNode;
-        _firstEVNode = firstEVNode;
-        _secondEVInfo = secondEVInfo;
-        _thirdEVInfo = thirdEVInfo;
-        _ejectorInfo = ejectorInfo;
-        _recuperatorInfo = recuperatorInfo;
-        _economizerInfo = economizerInfo;
-        _mixingInfo = mixingInfo;
-    }
-
     private Ratio ThermodynamicPerfection =>
         Ratio
-            .FromDecimalFractions(MinSpecificWork / _cycle.SpecificWork)
+            .FromDecimalFractions(MinSpecificWork / cycle.SpecificWork)
             .ToUnit(RatioUnit.Percent);
 
     private SpecificEnergy MinSpecificWork =>
-        _cycle.SpecificCoolingCapacity
+        cycle.SpecificCoolingCapacity
         * (_hotSource - _coldSource).Kelvins
         / _coldSource.Kelvins;
 
     private SpecificEnergy HeatReleaserEnergyLoss =>
-        _heatReleaserNode.CalculateEnergyLoss(_hotSource);
+        heatReleaserNode.CalculateEnergyLoss(_hotSource);
 
     private SpecificEnergy ExpansionValvesEnergyLoss =>
-        _firstEVNode.CalculateEnergyLoss(_hotSource)
-        + (
-            _secondEVInfo?.CalculateEnergyLoss(_hotSource)
-            ?? SpecificEnergy.Zero
-        )
-        + (
-            _thirdEVInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero
-        );
+        firstEVNode.CalculateEnergyLoss(_hotSource)
+        + (secondEVInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero)
+        + (thirdEVInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero);
 
     private SpecificEnergy EjectorEnergyLoss =>
-        _ejectorInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero;
+        ejectorInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero;
 
     private SpecificEnergy EvaporatorEnergyLoss =>
-        _evaporatorNode.CalculateEnergyLoss(_coldSource, _hotSource);
+        evaporatorNode.CalculateEnergyLoss(_coldSource, _hotSource);
 
     private SpecificEnergy RecuperatorEnergyLoss =>
-        _recuperatorInfo?.CalculateEnergyLoss(_hotSource)
-        ?? SpecificEnergy.Zero;
+        recuperatorInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero;
 
     private SpecificEnergy EconomizerEnergyLoss =>
-        _economizerInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero;
+        economizerInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero;
 
     private SpecificEnergy MixingEnergyLoss =>
-        _mixingInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero;
+        mixingInfo?.CalculateEnergyLoss(_hotSource) ?? SpecificEnergy.Zero;
 
     private SpecificEnergy CalculatedIsentropicSpecificWork =>
         MinSpecificWork
@@ -93,7 +63,7 @@ internal class EntropyAnalyzer : IEntropyAnalyzer
 
     private SpecificEnergy CompressorEnergyLoss =>
         CalculatedIsentropicSpecificWork
-        * (1.0 / _cycle.Compressor.Efficiency.DecimalFractions - 1);
+        * (1.0 / cycle.Compressor.Efficiency.DecimalFractions - 1);
 
     private SpecificEnergy CalculatedSpecificWork =>
         CalculatedIsentropicSpecificWork + CompressorEnergyLoss;
@@ -103,8 +73,8 @@ internal class EntropyAnalyzer : IEntropyAnalyzer
             .FromDecimalFractions(
                 (
                     CalculatedIsentropicSpecificWork
-                    - _cycle.IsentropicSpecificWork
-                ).Abs() / _cycle.IsentropicSpecificWork
+                    - cycle.IsentropicSpecificWork
+                ).Abs() / cycle.IsentropicSpecificWork
             )
             .ToUnit(RatioUnit.Percent);
 
@@ -122,7 +92,7 @@ internal class EntropyAnalyzer : IEntropyAnalyzer
             );
         }
 
-        if (_coldSource <= _evaporatorNode.Outlet.Temperature)
+        if (_coldSource <= evaporatorNode.Outlet.Temperature)
         {
             throw new ArgumentException(
                 "Wrong temperature difference in the evaporator! "
@@ -130,7 +100,7 @@ internal class EntropyAnalyzer : IEntropyAnalyzer
             );
         }
 
-        if (_hotSource >= _heatReleaserNode.Outlet.Temperature)
+        if (_hotSource >= heatReleaserNode.Outlet.Temperature)
         {
             throw new ArgumentException(
                 "Wrong temperature difference in the condenser or gas cooler! "
@@ -142,10 +112,10 @@ internal class EntropyAnalyzer : IEntropyAnalyzer
             ThermodynamicPerfection,
             EnergyLossRatio(MinSpecificWork),
             EnergyLossRatio(CompressorEnergyLoss),
-            _cycle.HeatReleaser is Condenser
+            cycle.HeatReleaser is Condenser
                 ? EnergyLossRatio(HeatReleaserEnergyLoss)
                 : Ratio.Zero,
-            _cycle.HeatReleaser is GasCooler
+            cycle.HeatReleaser is GasCooler
                 ? EnergyLossRatio(HeatReleaserEnergyLoss)
                 : Ratio.Zero,
             EnergyLossRatio(ExpansionValvesEnergyLoss),

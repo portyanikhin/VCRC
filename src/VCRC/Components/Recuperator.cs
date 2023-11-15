@@ -5,9 +5,7 @@
 /// </summary>
 public record Recuperator : IAuxiliaryHeatExchanger
 {
-    /// <summary>
-    ///     Recuperator.
-    /// </summary>
+    /// <inheritdoc cref="Recuperator"/>
     /// <param name="temperatureDifference">
     ///     Temperature difference at the "hot" side.
     /// </param>

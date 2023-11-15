@@ -2,4 +2,4 @@
 
 internal interface IHeatReleaserNode
     : IMainHeatExchangerNode,
-        IEntropyAnalysisNode { }
+        IEntropyAnalysisNode;

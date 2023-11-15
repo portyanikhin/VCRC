@@ -1,9 +1,6 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Two-stage VCRC with an ejector as an expansion device,
-///     economizer and parallel compression.
-/// </summary>
+/// <inheritdoc cref="IVCRCWithEjectorEconomizerAndPC"/>
 public class VCRCWithEjectorEconomizerAndPC
     : AbstractTwoStageVCRC,
         IVCRCWithEjectorEconomizerAndPC
@@ -11,10 +8,7 @@ public class VCRCWithEjectorEconomizerAndPC
     private Pressure _diffuserOutletPressure;
     private IEjectorFlows _ejectorFlows = default!;
 
-    /// <summary>
-    ///     Two-stage VCRC with an ejector as an expansion device,
-    ///     economizer and parallel compression.
-    /// </summary>
+    /// <inheritdoc cref="VCRCWithEjectorEconomizerAndPC"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

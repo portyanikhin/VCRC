@@ -1,33 +1,23 @@
 ﻿namespace VCRC;
 
-internal class EvaporatorNode : IEvaporatorNode
+internal class EvaporatorNode(
+    Ratio specificMassFlow,
+    IRefrigerant inlet,
+    IRefrigerant outlet
+) : IEvaporatorNode
 {
-    private readonly IRefrigerant _inlet;
-    private readonly Ratio _specificMassFlow;
-
-    public EvaporatorNode(
-        Ratio specificMassFlow,
-        IRefrigerant inlet,
-        IRefrigerant outlet
-    )
-    {
-        _specificMassFlow = specificMassFlow;
-        _inlet = inlet;
-        Outlet = outlet;
-    }
-
-    public IRefrigerant Outlet { get; }
+    public IRefrigerant Outlet { get; } = outlet;
 
     public SpecificEnergy CalculateEnergyLoss(
         Temperature coldSource,
         Temperature hotSource
     ) =>
         (
-            _specificMassFlow.DecimalFractions
+            specificMassFlow.DecimalFractions
             * hotSource.Kelvins
             * (
-                (Outlet.Entropy - _inlet.Entropy).JoulesPerKilogramKelvin
-                - (Outlet.Enthalpy - _inlet.Enthalpy).JoulesPerKilogram
+                (Outlet.Entropy - inlet.Entropy).JoulesPerKilogramKelvin
+                - (Outlet.Enthalpy - inlet.Enthalpy).JoulesPerKilogram
                     / coldSource.Kelvins
             )
         ).JoulesPerKilogram();

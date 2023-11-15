@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Description>Cross-platform vapor-compression refrigeration cycles analysis tool</Description>
-        <NoWarn>$(NoWarn);1591</NoWarn>
+        <NoWarn>$(NoWarn);1591;CA1859</NoWarn>
         <Summary>A cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <Title>VCRC</Title>
     </PropertyGroup>
