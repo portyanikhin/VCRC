@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Two-stage VCRC with parallel compression.
-/// </summary>
+/// <inheritdoc cref="IVCRCWithPC"/>
 public class VCRCWithPC : AbstractTwoStageVCRC, IVCRCWithPC
 {
-    /// <summary>
-    ///     Two-stage VCRC with parallel compression.
-    /// </summary>
+    /// <inheritdoc cref="VCRCWithPC"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

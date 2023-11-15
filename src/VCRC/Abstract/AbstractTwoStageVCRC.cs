@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Two-stage vapor-compression refrigeration cycle.
-/// </summary>
+/// <inheritdoc cref="ITwoStageVCRC"/>
 public abstract class AbstractTwoStageVCRC : AbstractVCRC, ITwoStageVCRC
 {
-    /// <summary>
-    ///     Two-stage vapor-compression refrigeration cycle.
-    /// </summary>
+    /// <inheritdoc cref="AbstractTwoStageVCRC"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

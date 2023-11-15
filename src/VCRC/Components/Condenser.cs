@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Condenser.
-/// </summary>
+/// <inheritdoc cref="ICondenser"/>
 public record Condenser : ICondenser
 {
-    /// <summary>
-    ///     Condenser.
-    /// </summary>
+    /// <inheritdoc cref="Condenser"/>
     /// <param name="refrigerantName">Selected refrigerant name.</param>
     /// <param name="temperature">Condensing temperature (bubble point).</param>
     /// <param name="subcooling">Subcooling.</param>

@@ -1,23 +1,11 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Mitsubishi Zubadan VCRC (subcritical only).
-/// </summary>
-/// <remarks>
-///     Two-stage subcritical VCRC with economizer,
-///     recuperator and two-phase injection into the compressor.
-/// </remarks>
+/// <inheritdoc cref="IVCRCMitsubishiZubadan"/>
 public class VCRCMitsubishiZubadan
     : AbstractTwoStageVCRC,
         IVCRCMitsubishiZubadan
 {
-    /// <summary>
-    ///     Mitsubishi Zubadan VCRC (subcritical only).
-    /// </summary>
-    /// <remarks>
-    ///     Two-stage subcritical VCRC with economizer,
-    ///     recuperator and two-phase injection into the compressor.
-    /// </remarks>
+    /// <inheritdoc cref="VCRCMitsubishiZubadan"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="condenser">Condenser.</param>

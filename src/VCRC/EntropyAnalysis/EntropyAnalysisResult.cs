@@ -1,8 +1,6 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Result of the VCRC entropy analysis.
-/// </summary>
+/// <inheritdoc cref="IEntropyAnalysisResult"/>
 /// <param name="ThermodynamicPerfection">
 ///     Degree of thermodynamic perfection of the cycle (by default, %).
 /// </param>

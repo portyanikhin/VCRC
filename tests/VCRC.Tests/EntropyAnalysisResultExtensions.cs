@@ -1,6 +1,6 @@
 ﻿namespace VCRC.Tests;
 
-public static class EntropyAnalysisResultExtensions
+internal static class EntropyAnalysisResultExtensions
 {
     public static Ratio Sum(this IEntropyAnalysisResult result) =>
         result.MinSpecificWorkRatio

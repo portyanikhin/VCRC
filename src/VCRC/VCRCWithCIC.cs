@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Two-stage VCRC with complete intercooling.
-/// </summary>
+/// <inheritdoc cref="IVCRCWithCIC"/>
 public class VCRCWithCIC : AbstractTwoStageVCRC, IVCRCWithCIC
 {
-    /// <summary>
-    ///     Two-stage VCRC with complete intercooling.
-    /// </summary>
+    /// <inheritdoc cref="VCRCWithCIC"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

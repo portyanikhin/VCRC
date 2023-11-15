@@ -7,9 +7,7 @@ namespace VCRC;
 /// </summary>
 public record GasCooler : IHeatReleaser
 {
-    /// <summary>
-    ///     Gas cooler.
-    /// </summary>
+    /// <inheritdoc cref="GasCooler"/>
     /// <remarks>
     ///     For R744, the absolute pressure in the gas cooler is optional.
     ///     If it is not specified, then the optimal pressure

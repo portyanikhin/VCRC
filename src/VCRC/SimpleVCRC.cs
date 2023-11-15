@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Simple single-stage VCRC.
-/// </summary>
+/// <inheritdoc cref="ISimpleVCRC"/>
 public class SimpleVCRC : AbstractVCRC, ISimpleVCRC
 {
-    /// <summary>
-    ///     Simple single-stage VCRC.
-    /// </summary>
+    /// <inheritdoc cref="SimpleVCRC"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

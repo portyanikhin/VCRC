@@ -1,15 +1,11 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Single-stage VCRC with an ejector as an expansion device.
-/// </summary>
+/// <inheritdoc cref="IVCRCWithEjector"/>
 public class VCRCWithEjector : AbstractVCRC, IVCRCWithEjector
 {
     private readonly IEjectorFlows _ejectorFlows;
 
-    /// <summary>
-    ///     Single-stage VCRC with an ejector as an expansion device.
-    /// </summary>
+    /// <inheritdoc cref="VCRCWithEjector"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>

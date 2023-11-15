@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Compressor.
-/// </summary>
+/// <inheritdoc cref="ICompressor"/>
 public record Compressor : ICompressor
 {
-    /// <summary>
-    ///     Compressor.
-    /// </summary>
+    /// <inheritdoc cref="Compressor"/>
     /// <param name="efficiency">Isentropic efficiency.</param>
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the compressor should be in (0;100) %!

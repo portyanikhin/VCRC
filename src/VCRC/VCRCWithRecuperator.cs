@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Single-stage VCRC with recuperator.
-/// </summary>
+/// <inheritdoc cref="IVCRCWithRecuperator"/>
 public class VCRCWithRecuperator : AbstractVCRC, IVCRCWithRecuperator
 {
-    /// <summary>
-    ///     Single-stage VCRC with recuperator.
-    /// </summary>
+    /// <inheritdoc cref="VCRCWithRecuperator"/>
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="recuperator">Recuperator.</param>
     /// <param name="compressor">Compressor.</param>

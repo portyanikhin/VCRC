@@ -1,13 +1,9 @@
 ﻿namespace VCRC;
 
-/// <summary>
-///     Ejector flows.
-/// </summary>
+/// <inheritdoc cref="IEjectorFlows"/>
 public class EjectorFlows : IEjectorFlows
 {
-    /// <summary>
-    ///     Ejector flows.
-    /// </summary>
+    /// <inheritdoc cref="EjectorFlows"/>
     /// <param name="ejector">Ejector.</param>
     /// <param name="nozzleInlet">Nozzle inlet.</param>
     /// <param name="suctionInlet">Suction section inlet.</param>
