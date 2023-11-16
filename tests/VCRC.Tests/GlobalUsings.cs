@@ -1,8 +1,8 @@
-﻿global using FluentAssertions;
+﻿global using System.Diagnostics.CodeAnalysis;
+global using System.Globalization;
+global using FluentAssertions;
 global using FluentValidation;
 global using SharpProp;
-global using System.Diagnostics.CodeAnalysis;
-global using System.Globalization;
 global using UnitsNet;
 global using UnitsNet.NumberExtensions.NumberToPressure;
 global using UnitsNet.NumberExtensions.NumberToRatio;
