@@ -33,8 +33,7 @@ public class CompressorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Efficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _sut.Efficiency
-            .Equals(_efficiency, _comparison.Tolerance.Percent())
+        _sut.Efficiency.Equals(_efficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
         _sut.Efficiency.Unit.Should().Be(RatioUnit.Percent);
