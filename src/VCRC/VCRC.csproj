@@ -10,7 +10,7 @@
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="11.8.1"/>
         <PackageReference Include="MathNet.Numerics" Version="5.0.0"/>
-        <PackageReference Include="SharpProp" Version="7.2.1"/>
+        <PackageReference Include="SharpProp" Version="7.2.2"/>
     </ItemGroup>
 
     <ItemGroup>
