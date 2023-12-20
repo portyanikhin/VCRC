@@ -69,9 +69,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
         refrigerant
-            .Glide
-            .Kelvins
-            .Should()
+            .Glide.Kelvins.Should()
             .BeApproximately(expected, comparison.Tolerance);
     }
 
@@ -85,9 +83,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
         refrigerant
-            .Glide
-            .Kelvins
-            .Should()
+            .Glide.Kelvins.Should()
             .BeApproximately(expected, comparison.Tolerance);
     }
 

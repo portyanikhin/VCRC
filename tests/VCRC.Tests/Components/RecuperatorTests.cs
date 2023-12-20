@@ -36,14 +36,14 @@ public class RecuperatorTests : IClassFixture<ComparisonFixture>
     public void TemperatureDifference_Always_ReturnsEnteredValueInKelvins()
     {
         _recuperator
-            .TemperatureDifference
-            .Equals(_temperatureDifference, _comparison.Tolerance.Kelvins())
+            .TemperatureDifference.Equals(
+                _temperatureDifference,
+                _comparison.Tolerance.Kelvins()
+            )
             .Should()
             .BeTrue();
         _recuperator
-            .TemperatureDifference
-            .Unit
-            .Should()
+            .TemperatureDifference.Unit.Should()
             .Be(TemperatureDeltaUnit.Kelvin);
     }
 }

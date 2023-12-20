@@ -71,8 +71,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void NozzleOutlet_Always_ReturnsNozzleInletAfterExpansionToMixingPressure()
     {
-        _sut.NozzleOutlet
-            .Should()
+        _sut.NozzleOutlet.Should()
             .Be(
                 _sut.NozzleInlet.ExpansionTo(
                     _sut.MixingInlet.Pressure,
@@ -85,8 +84,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void SuctionOutlet_Always_ReturnsSuctionInletAfterExpansionToMixingPressure()
     {
-        _sut.SuctionOutlet
-            .Should()
+        _sut.SuctionOutlet.Should()
             .Be(
                 _sut.SuctionInlet.ExpansionTo(
                     _sut.MixingInlet.Pressure,
@@ -100,9 +98,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     public void MixingInlet_Always_ReturnsPointMixPointAt90PercentsOfSuctionPressure()
     {
         _sut.MixingInlet.Pressure.Should().Be(0.9 * _suctionInlet.Pressure);
-        _sut.MixingInlet
-            .Enthalpy
-            .Should()
+        _sut.MixingInlet.Enthalpy.Should()
             .Be(
                 _sut.FlowRatio.DecimalFractions * _nozzleInlet.Enthalpy
                     + (1 - _sut.FlowRatio.DecimalFractions)
@@ -115,8 +111,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void DiffuserOutlet_Always_ReturnsCompressedMixPoint()
     {
-        _sut.DiffuserOutlet
-            .Should()
+        _sut.DiffuserOutlet.Should()
             .Be(
                 _refrigerant.WithState(
                     Input.Pressure(
@@ -143,11 +138,10 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void FlowRatio_Always_ReturnsApproximatelyDiffuserOutletVaporQuality() =>
-        _sut.FlowRatio
-            .Equals(
-                _sut.DiffuserOutlet.Quality!.Value,
-                _comparison.Tolerance.Percent()
-            )
+        _sut.FlowRatio.Equals(
+            _sut.DiffuserOutlet.Quality!.Value,
+            _comparison.Tolerance.Percent()
+        )
             .Should()
             .BeTrue();
 

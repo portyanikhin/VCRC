@@ -69,8 +69,10 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _sut.Temperature
-            .Equals(_temperature, _comparison.Tolerance.DegreesCelsius())
+        _sut.Temperature.Equals(
+            _temperature,
+            _comparison.Tolerance.DegreesCelsius()
+        )
             .Should()
             .BeTrue();
         _sut.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
@@ -79,11 +81,10 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Subcooling_Always_ReturnsEnteredValueInKelvins()
     {
-        _sut.Subcooling
-            .Equals(
-                _subcooling,
-                TemperatureDelta.FromKelvins(_comparison.Tolerance)
-            )
+        _sut.Subcooling.Equals(
+            _subcooling,
+            TemperatureDelta.FromKelvins(_comparison.Tolerance)
+        )
             .Should()
             .BeTrue();
         _sut.Subcooling.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
@@ -92,8 +93,10 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Pressure_Always_ReturnsOutletPressureInKilopascals()
     {
-        _sut.Pressure
-            .Equals(_sut.Outlet.Pressure, _comparison.Tolerance.Pascals())
+        _sut.Pressure.Equals(
+            _sut.Outlet.Pressure,
+            _comparison.Tolerance.Pascals()
+        )
             .Should()
             .BeTrue();
         _sut.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
@@ -101,7 +104,6 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void Outlet_Always_ReturnsSubcooledRefrigerant() =>
-        _sut.Outlet
-            .Should()
+        _sut.Outlet.Should()
             .Be(_refrigerant.Subcooled(_temperature, _subcooling));
 }
