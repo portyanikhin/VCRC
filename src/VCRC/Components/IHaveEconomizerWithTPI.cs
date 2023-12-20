@@ -9,5 +9,5 @@ public interface IHaveEconomizerWithTPI
     /// <summary>
     ///     Economizer.
     /// </summary>
-    public IAuxiliaryHeatExchanger Economizer { get; }
+    IAuxiliaryHeatExchanger Economizer { get; }
 }

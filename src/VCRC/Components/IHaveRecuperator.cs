@@ -8,5 +8,5 @@ public interface IHaveRecuperator
     /// <summary>
     ///     Recuperator.
     /// </summary>
-    public IAuxiliaryHeatExchanger Recuperator { get; }
+    IAuxiliaryHeatExchanger Recuperator { get; }
 }

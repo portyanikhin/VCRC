@@ -2,7 +2,7 @@
 
 internal interface IEvaporatorNode : IMainHeatExchangerNode
 {
-    public SpecificEnergy CalculateEnergyLoss(
+    SpecificEnergy CalculateEnergyLoss(
         Temperature coldSource,
         Temperature hotSource
     );

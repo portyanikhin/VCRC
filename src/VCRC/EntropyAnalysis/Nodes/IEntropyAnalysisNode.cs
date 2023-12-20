@@ -2,5 +2,5 @@
 
 internal interface IEntropyAnalysisNode
 {
-    public SpecificEnergy CalculateEnergyLoss(Temperature hotSource);
+    SpecificEnergy CalculateEnergyLoss(Temperature hotSource);
 }

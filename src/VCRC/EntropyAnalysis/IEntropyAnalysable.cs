@@ -22,7 +22,7 @@ public interface IEntropyAnalysable
     ///     Wrong temperature difference in the condenser or gas cooler!
     ///     Decrease 'hot' source temperature.
     /// </exception>
-    public IEntropyAnalysisResult EntropyAnalysis(
+    IEntropyAnalysisResult EntropyAnalysis(
         Temperature indoor,
         Temperature outdoor
     );

@@ -8,5 +8,5 @@ public interface IHaveEjector
     /// <summary>
     ///     Ejector.
     /// </summary>
-    public IEjector Ejector { get; }
+    IEjector Ejector { get; }
 }

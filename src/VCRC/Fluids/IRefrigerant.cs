@@ -11,7 +11,7 @@ public interface IRefrigerant : IFluid
     /// <exception cref="NullReferenceException">
     ///     Invalid critical pressure!
     /// </exception>
-    public new Pressure CriticalPressure { get; }
+    new Pressure CriticalPressure { get; }
 
     /// <summary>
     ///     Temperature at the critical point (by default, °C).
@@ -19,7 +19,7 @@ public interface IRefrigerant : IFluid
     /// <exception cref="NullReferenceException">
     ///     Invalid critical temperature!
     /// </exception>
-    public new Temperature CriticalTemperature { get; }
+    new Temperature CriticalTemperature { get; }
 
     /// <summary>
     ///     Absolute pressure at the triple point (by default, kPa).
@@ -27,7 +27,7 @@ public interface IRefrigerant : IFluid
     /// <exception cref="NullReferenceException">
     ///     Invalid triple pressure!
     /// </exception>
-    public new Pressure TriplePressure { get; }
+    new Pressure TriplePressure { get; }
 
     /// <summary>
     ///     Temperature at the triple point (by default, °C).
@@ -35,32 +35,32 @@ public interface IRefrigerant : IFluid
     /// <exception cref="NullReferenceException">
     ///     Invalid triple temperature!
     /// </exception>
-    public new Temperature TripleTemperature { get; }
+    new Temperature TripleTemperature { get; }
 
     /// <summary>
     ///     Temperature glide at atmospheric pressure (by default, K).
     /// </summary>
-    public TemperatureDelta Glide { get; }
+    TemperatureDelta Glide { get; }
 
     /// <summary>
     ///     <c>true</c> if the refrigerant has a temperature glide.
     /// </summary>
-    public bool HasGlide { get; }
+    bool HasGlide { get; }
 
     /// <summary>
     ///     <c>true</c> if the refrigerant is a single component.
     /// </summary>
-    public bool IsSingleComponent { get; }
+    bool IsSingleComponent { get; }
 
     /// <summary>
     ///     <c>true</c> if the refrigerant is an azeotropic blend.
     /// </summary>
-    public bool IsAzeotropicBlend { get; }
+    bool IsAzeotropicBlend { get; }
 
     /// <summary>
     ///     <c>true</c> if the refrigerant is a zeotropic blend.
     /// </summary>
-    public bool IsZeotropicBlend { get; }
+    bool IsZeotropicBlend { get; }
 
     /// <summary>
     ///     Subcooled refrigerant.
@@ -69,7 +69,7 @@ public interface IRefrigerant : IFluid
     /// <param name="subcooling">Subcooling.</param>
     /// <returns>Subcooled refrigerant.</returns>
     /// <exception cref="ArgumentException">Invalid subcooling!</exception>
-    public IRefrigerant Subcooled(
+    IRefrigerant Subcooled(
         Temperature bubblePointTemperature,
         TemperatureDelta subcooling
     );
@@ -81,10 +81,7 @@ public interface IRefrigerant : IFluid
     /// <param name="subcooling">Subcooling.</param>
     /// <returns>Subcooled refrigerant.</returns>
     /// <exception cref="ArgumentException">Invalid subcooling!</exception>
-    public IRefrigerant Subcooled(
-        Pressure pressure,
-        TemperatureDelta subcooling
-    );
+    IRefrigerant Subcooled(Pressure pressure, TemperatureDelta subcooling);
 
     /// <summary>
     ///     Superheated refrigerant.
@@ -93,7 +90,7 @@ public interface IRefrigerant : IFluid
     /// <param name="superheat">Superheat.</param>
     /// <returns>Superheated refrigerant.</returns>
     /// <exception cref="ArgumentException">Invalid superheat!</exception>
-    public IRefrigerant Superheated(
+    IRefrigerant Superheated(
         Temperature dewPointTemperature,
         TemperatureDelta superheat
     );
@@ -105,79 +102,73 @@ public interface IRefrigerant : IFluid
     /// <param name="superheat">Superheat.</param>
     /// <returns>Superheated refrigerant.</returns>
     /// <exception cref="ArgumentException">Invalid superheat!</exception>
-    public IRefrigerant Superheated(
-        Pressure pressure,
-        TemperatureDelta superheat
-    );
+    IRefrigerant Superheated(Pressure pressure, TemperatureDelta superheat);
 
     /// <inheritdoc cref="IFluid.WithState"/>
-    public new IRefrigerant WithState(
+    new IRefrigerant WithState(
         IKeyedInput<Parameters> firstInput,
         IKeyedInput<Parameters> secondInput
     );
 
     /// <inheritdoc cref="IFluid.IsentropicCompressionTo"/>
-    public new IRefrigerant IsentropicCompressionTo(Pressure pressure);
+    new IRefrigerant IsentropicCompressionTo(Pressure pressure);
 
     /// <inheritdoc cref="IFluid.CompressionTo"/>
-    public new IRefrigerant CompressionTo(
+    new IRefrigerant CompressionTo(
         Pressure pressure,
         Ratio isentropicEfficiency
     );
 
     /// <inheritdoc cref="IFluid.IsenthalpicExpansionTo"/>
-    public new IRefrigerant IsenthalpicExpansionTo(Pressure pressure);
+    new IRefrigerant IsenthalpicExpansionTo(Pressure pressure);
 
     /// <inheritdoc cref="IFluid.IsentropicExpansionTo"/>
-    public new IRefrigerant IsentropicExpansionTo(Pressure pressure);
+    new IRefrigerant IsentropicExpansionTo(Pressure pressure);
 
     /// <inheritdoc cref="IFluid.ExpansionTo"/>
-    public new IRefrigerant ExpansionTo(
-        Pressure pressure,
-        Ratio isentropicEfficiency
-    );
+    new IRefrigerant ExpansionTo(Pressure pressure, Ratio isentropicEfficiency);
 
     /// <inheritdoc cref="IFluid.CoolingTo(Temperature, Pressure?)"/>
-    public new IRefrigerant CoolingTo(
+    new IRefrigerant CoolingTo(
         Temperature temperature,
         Pressure? pressureDrop = null
     );
 
     /// <inheritdoc cref="IFluid.CoolingTo(SpecificEnergy, Pressure?)"/>
-    public new IRefrigerant CoolingTo(
+    new IRefrigerant CoolingTo(
         SpecificEnergy enthalpy,
         Pressure? pressureDrop = null
     );
 
     /// <inheritdoc cref="IFluid.HeatingTo(Temperature, Pressure?)"/>
-    public new IRefrigerant HeatingTo(
+    new IRefrigerant HeatingTo(
         Temperature temperature,
         Pressure? pressureDrop = null
     );
 
     /// <inheritdoc cref="IFluid.HeatingTo(SpecificEnergy, Pressure?)"/>
-    public new IRefrigerant HeatingTo(
+    new IRefrigerant HeatingTo(
         SpecificEnergy enthalpy,
         Pressure? pressureDrop = null
     );
 
     /// <inheritdoc cref="IFluid.BubblePointAt(Pressure)"/>
-    public new IRefrigerant BubblePointAt(Pressure pressure);
+    new IRefrigerant BubblePointAt(Pressure pressure);
 
     /// <inheritdoc cref="IFluid.BubblePointAt(Temperature)"/>
-    public new IRefrigerant BubblePointAt(Temperature temperature);
+    new IRefrigerant BubblePointAt(Temperature temperature);
 
     /// <inheritdoc cref="IFluid.DewPointAt(Pressure)"/>
-    public new IRefrigerant DewPointAt(Pressure pressure);
+    new IRefrigerant DewPointAt(Pressure pressure);
 
     /// <inheritdoc cref="IFluid.DewPointAt(Temperature)"/>
-    public new IRefrigerant DewPointAt(Temperature temperature);
+    new IRefrigerant DewPointAt(Temperature temperature);
 
     /// <inheritdoc cref="IFluid.TwoPhasePointAt"/>
-    public new IRefrigerant TwoPhasePointAt(Pressure pressure, Ratio quality);
+    new IRefrigerant TwoPhasePointAt(Pressure pressure, Ratio quality);
 
     /// <inheritdoc cref="IFluid.Mixing"/>
-    public IRefrigerant Mixing(
+    IRefrigerant Mixing(
         Ratio firstSpecificMassFlow,
         IRefrigerant first,
         Ratio secondSpecificMassFlow,
@@ -185,8 +176,8 @@ public interface IRefrigerant : IFluid
     );
 
     /// <inheritdoc cref="IClonable{T}.Clone"/>
-    public new IRefrigerant Clone();
+    new IRefrigerant Clone();
 
     /// <inheritdoc cref="IFactory{T}.Factory"/>
-    public new IRefrigerant Factory();
+    new IRefrigerant Factory();
 }

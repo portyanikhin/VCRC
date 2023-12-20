@@ -8,5 +8,5 @@ public interface IHaveEconomizer
     /// <summary>
     ///     Economizer.
     /// </summary>
-    public IEconomizer Economizer { get; }
+    IEconomizer Economizer { get; }
 }

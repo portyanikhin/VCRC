@@ -10,5 +10,5 @@ public interface IAuxiliaryHeatExchanger
     ///     (at the "cold" side for the economizer;
     ///     at the "hot" side for the recuperator).
     /// </summary>
-    public TemperatureDelta TemperatureDifference { get; }
+    TemperatureDelta TemperatureDifference { get; }
 }

@@ -8,17 +8,17 @@ public interface IEjector
     /// <summary>
     ///     Isentropic efficiency of the nozzle.
     /// </summary>
-    public Ratio NozzleEfficiency { get; }
+    Ratio NozzleEfficiency { get; }
 
     /// <summary>
     ///     Isentropic efficiency of the suction section.
     /// </summary>
-    public Ratio SuctionEfficiency { get; }
+    Ratio SuctionEfficiency { get; }
 
     /// <summary>
     ///     Isentropic efficiency of the diffuser.
     /// </summary>
-    public Ratio DiffuserEfficiency { get; }
+    Ratio DiffuserEfficiency { get; }
 
     /// <summary>
     ///     Calculate ejector flows.
@@ -33,7 +33,7 @@ public interface IEjector
     ///     Ejector nozzle inlet pressure
     ///     should be greater than suction inlet pressure!
     /// </exception>
-    public IEjectorFlows CalculateFlows(
+    IEjectorFlows CalculateFlows(
         IRefrigerant nozzleInlet,
         IRefrigerant suctionInlet
     );

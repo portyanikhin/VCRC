@@ -8,5 +8,5 @@ public interface ICompressor
     /// <summary>
     ///     Isentropic efficiency.
     /// </summary>
-    public Ratio Efficiency { get; }
+    Ratio Efficiency { get; }
 }

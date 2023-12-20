@@ -8,7 +8,7 @@ public interface IMainHeatExchanger
     /// <summary>
     ///     Selected refrigerant name.
     /// </summary>
-    public FluidsList RefrigerantName { get; }
+    FluidsList RefrigerantName { get; }
 
     /// <summary>
     ///     Characteristic temperature
@@ -16,15 +16,15 @@ public interface IMainHeatExchanger
     ///     condensing temperature (bubble point) for the condenser;
     ///     outlet temperature for the gas cooler).
     /// </summary>
-    public Temperature Temperature { get; }
+    Temperature Temperature { get; }
 
     /// <summary>
     ///     Absolute pressure.
     /// </summary>
-    public Pressure Pressure { get; }
+    Pressure Pressure { get; }
 
     /// <summary>
     ///     Outlet.
     /// </summary>
-    public IRefrigerant Outlet { get; }
+    IRefrigerant Outlet { get; }
 }

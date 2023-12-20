@@ -2,5 +2,5 @@
 
 internal interface IMainHeatExchangerNode
 {
-    public IRefrigerant Outlet { get; }
+    IRefrigerant Outlet { get; }
 }
