@@ -1,7 +1,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
     <PropertyGroup>
-        <Description>Cross-platform vapor-compression refrigeration cycles analysis tool</Description>
+        <Description>A cross-platform vapor-compression refrigeration cycles analysis tool</Description>
         <NoWarn>$(NoWarn);1591;CA1859</NoWarn>
         <Summary>A cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
         <Title>VCRC</Title>
