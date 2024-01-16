@@ -5,10 +5,8 @@ internal class VCRCWithEjectorEconomizerAndTPIValidator
 {
     public VCRCWithEjectorEconomizerAndTPIValidator()
     {
-        RuleFor(
-                vcrc =>
-                    vcrc.Point6.Temperature
-                    + vcrc.Economizer.TemperatureDifference
+        RuleFor(vcrc =>
+                vcrc.Point6.Temperature + vcrc.Economizer.TemperatureDifference
             )
             .LessThan(vcrc => vcrc.Point5.Temperature)
             .WithMessage(
