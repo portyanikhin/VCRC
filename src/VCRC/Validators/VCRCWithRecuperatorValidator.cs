@@ -5,10 +5,8 @@ internal class VCRCWithRecuperatorValidator
 {
     public VCRCWithRecuperatorValidator()
     {
-        RuleFor(
-                vcrc =>
-                    vcrc.Point4.Temperature
-                    - vcrc.Recuperator.TemperatureDifference
+        RuleFor(vcrc =>
+                vcrc.Point4.Temperature - vcrc.Recuperator.TemperatureDifference
             )
             .GreaterThan(vcrc => vcrc.Point1.Temperature)
             .WithMessage(

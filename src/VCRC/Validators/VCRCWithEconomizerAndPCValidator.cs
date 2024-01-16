@@ -10,10 +10,8 @@ internal class VCRCWithEconomizerAndPCValidator
             .WithMessage(
                 "Wrong temperature difference at the economizer 'hot' side!"
             );
-        RuleFor(
-                vcrc =>
-                    vcrc.Point7.Temperature
-                    + vcrc.Economizer.TemperatureDifference
+        RuleFor(vcrc =>
+                vcrc.Point7.Temperature + vcrc.Economizer.TemperatureDifference
             )
             .LessThan(vcrc => vcrc.Point6.Temperature)
             .WithMessage(
