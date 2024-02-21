@@ -138,10 +138,11 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void FlowRatio_Always_ReturnsApproximatelyDiffuserOutletVaporQuality() =>
-        _sut.FlowRatio.Equals(
-            _sut.DiffuserOutlet.Quality!.Value,
-            _comparison.Tolerance.Percent()
-        )
+        _sut
+            .FlowRatio.Equals(
+                _sut.DiffuserOutlet.Quality!.Value,
+                _comparison.Tolerance.Percent()
+            )
             .Should()
             .BeTrue();
 

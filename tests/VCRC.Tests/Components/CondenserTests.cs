@@ -104,6 +104,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void Outlet_Always_ReturnsSubcooledRefrigerant() =>
-        _sut.Outlet.Should()
+        _sut
+            .Outlet.Should()
             .Be(_refrigerant.Subcooled(_temperature, _subcooling));
 }

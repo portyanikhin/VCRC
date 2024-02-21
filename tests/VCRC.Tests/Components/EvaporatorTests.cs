@@ -99,6 +99,7 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void Outlet_Always_ReturnsSuperheatedRefrigerant() =>
-        _sut.Outlet.Should()
+        _sut
+            .Outlet.Should()
             .Be(_refrigerant.Superheated(_temperature, _superheat));
 }
