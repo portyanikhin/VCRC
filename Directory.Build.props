@@ -2,7 +2,7 @@
 
     <PropertyGroup>
         <Authors>Vladimir Portyanikhin</Authors>
-        <Copyright>Copyright (c) Vladimir Portyanikhin 2021</Copyright>
+        <Copyright>Copyright (c) Vladimir Portyanikhin 2024</Copyright>
         <ImplicitUsings>enable</ImplicitUsings>
         <LangVersion>12.0</LangVersion>
         <Nullable>enable</Nullable>
@@ -10,7 +10,7 @@
         <PackageProjectUrl>https://github.com/portyanikhin/VCRC</PackageProjectUrl>
         <PackageReleaseNotes>Release notes can be found at https://github.com/portyanikhin/VCRC/releases</PackageReleaseNotes>
         <PackageTags>cross-platform vapor-compression refrigeration cycles systems analysis entropy production thermodynamics refrigerants CoolProp</PackageTags>
-        <PackageVersion>3.4.7</PackageVersion>
+        <PackageVersion>3.4.8</PackageVersion>
         <RepositoryUrl>https://github.com/portyanikhin/VCRC</RepositoryUrl>
     </PropertyGroup>
 
