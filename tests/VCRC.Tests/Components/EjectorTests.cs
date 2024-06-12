@@ -97,9 +97,9 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
     public void NozzleEfficiency_Always_ReturnsEnteredValueInPercents()
     {
         _sut.NozzleEfficiency.Equals(
-            _nozzleEfficiency,
-            _comparison.Tolerance.Percent()
-        )
+                _nozzleEfficiency,
+                _comparison.Tolerance.Percent()
+            )
             .Should()
             .BeTrue();
         _sut.NozzleEfficiency.Unit.Should().Be(RatioUnit.Percent);
@@ -109,9 +109,9 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
     public void SuctionEfficiency_Always_ReturnsEnteredValueInPercents()
     {
         _sut.SuctionEfficiency.Equals(
-            _suctionEfficiency,
-            _comparison.Tolerance.Percent()
-        )
+                _suctionEfficiency,
+                _comparison.Tolerance.Percent()
+            )
             .Should()
             .BeTrue();
         _sut.SuctionEfficiency.Unit.Should().Be(RatioUnit.Percent);
@@ -121,9 +121,9 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
     public void DiffuserEfficiency_Always_ReturnsEnteredValueInPercents()
     {
         _sut.DiffuserEfficiency.Equals(
-            _diffuserEfficiency,
-            _comparison.Tolerance.Percent()
-        )
+                _diffuserEfficiency,
+                _comparison.Tolerance.Percent()
+            )
             .Should()
             .BeTrue();
         _sut.DiffuserEfficiency.Unit.Should().Be(RatioUnit.Percent);

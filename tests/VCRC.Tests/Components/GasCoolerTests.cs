@@ -77,9 +77,9 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
         _sut.Temperature.Equals(
-            _temperature,
-            _comparison.Tolerance.DegreesCelsius()
-        )
+                _temperature,
+                _comparison.Tolerance.DegreesCelsius()
+            )
             .Should()
             .BeTrue();
         _sut.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
@@ -89,9 +89,9 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     public void Pressure_IfUnspecified_ReturnsOptimalValueByYangEtAlInKilopascals()
     {
         _sut.Pressure.Equals(
-            (2.759 * _sut.Temperature.DegreesCelsius - 9.912).Bars(),
-            _comparison.Tolerance.Pascals()
-        )
+                (2.759 * _sut.Temperature.DegreesCelsius - 9.912).Bars(),
+                _comparison.Tolerance.Pascals()
+            )
             .Should()
             .BeTrue();
         _sut.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
