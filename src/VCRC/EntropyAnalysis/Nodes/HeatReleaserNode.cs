@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class HeatReleaserNode(
+internal sealed class HeatReleaserNode(
     Ratio specificMassFlow,
     IRefrigerant isentropicInlet,
     IRefrigerant outlet
@@ -15,9 +15,7 @@ internal class HeatReleaserNode(
             - Outlet.Enthalpy
             - (
                 hotSource.Kelvins
-                * (
-                    isentropicInlet.Entropy - Outlet.Entropy
-                ).JoulesPerKilogramKelvin
+                * (isentropicInlet.Entropy - Outlet.Entropy).JoulesPerKilogramKelvin
             ).JoulesPerKilogram()
         );
 }

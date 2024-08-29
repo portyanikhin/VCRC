@@ -15,15 +15,11 @@ public interface IEntropyAnalysable
     ///     Indoor and outdoor temperatures should not be equal!
     /// </exception>
     /// <exception cref="ArgumentException">
-    ///     Wrong temperature difference in the evaporator!
-    ///     Increase 'cold' source temperature.
+    ///     Wrong temperature difference in the evaporator! Increase 'cold' source temperature.
     /// </exception>
     /// <exception cref="ArgumentException">
     ///     Wrong temperature difference in the condenser or gas cooler!
     ///     Decrease 'hot' source temperature.
     /// </exception>
-    IEntropyAnalysisResult EntropyAnalysis(
-        Temperature indoor,
-        Temperature outdoor
-    );
+    IEntropyAnalysisResult EntropyAnalysis(Temperature indoor, Temperature outdoor);
 }

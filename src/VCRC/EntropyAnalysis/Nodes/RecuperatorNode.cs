@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class RecuperatorNode(
+internal sealed class RecuperatorNode(
     Ratio coldSideSpecificMassFlow,
     IRefrigerant coldInlet,
     IRefrigerant coldOutlet,
@@ -13,10 +13,8 @@ internal class RecuperatorNode(
         (
             hotSource.Kelvins
             * (
-                coldSideSpecificMassFlow.DecimalFractions
-                    * (coldOutlet.Entropy - coldInlet.Entropy)
-                - hotSideSpecificMassFlow.DecimalFractions
-                    * (hotInlet.Entropy - hotOutlet.Entropy)
+                coldSideSpecificMassFlow.DecimalFractions * (coldOutlet.Entropy - coldInlet.Entropy)
+                - hotSideSpecificMassFlow.DecimalFractions * (hotInlet.Entropy - hotOutlet.Entropy)
             ).JoulesPerKilogramKelvin
         ).JoulesPerKilogram();
 }

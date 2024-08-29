@@ -2,21 +2,18 @@
 
 namespace VCRC.Tests;
 
-public class RefrigerantTests(ComparisonFixture comparison)
+public sealed class RefrigerantTests(ComparisonFixture comparison)
     : IClassFixture<ComparisonFixture>
 {
     private readonly SpecificEnergy _enthalpyDelta = 50.KilojoulesPerKilogram();
     private readonly Ratio _isentropicEfficiency = 80.Percent();
 
-    private readonly IRefrigerant _sut = new Refrigerant(
-        FluidsList.R718
-    ).WithState(
+    private readonly IRefrigerant _sut = new Refrigerant(FluidsList.R718).WithState(
         Input.Pressure(1.Atmospheres()),
         Input.Temperature(150.DegreesCelsius())
     );
 
-    private readonly TemperatureDelta _temperatureDelta =
-        TemperatureDelta.FromKelvins(10);
+    private readonly TemperatureDelta _temperatureDelta = TemperatureDelta.FromKelvins(10);
 
     private Pressure HighPressure => 2 * _sut.Pressure;
     private Pressure LowPressure => 0.5 * _sut.Pressure;
@@ -29,8 +26,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
-                "*The selected fluid is not a refrigerant "
-                    + "(its name should start with 'R')!*"
+                "*The selected fluid is not a refrigerant (its name should start with 'R')!*"
             );
     }
 
@@ -62,29 +58,19 @@ public class RefrigerantTests(ComparisonFixture comparison)
     [Theory]
     [InlineData(FluidsList.R404A, 0.75017192257570287)]
     [InlineData(FluidsList.R407C, 6.9953896623448202)]
-    public void Glide_ZeotropicBlends_ReturnsNotZero(
-        FluidsList name,
-        double expected
-    )
+    public void Glide_ZeotropicBlends_ReturnsNotZero(FluidsList name, double expected)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
-        refrigerant
-            .Glide.Kelvins.Should()
-            .BeApproximately(expected, comparison.Tolerance);
+        refrigerant.Glide.Kelvins.Should().BeApproximately(expected, comparison.Tolerance);
     }
 
     [Theory]
     [InlineData(FluidsList.R507A, 0.0014729570078202414)]
     [InlineData(FluidsList.R511A, 0.0088663065580476541)]
-    public void Glide_AzeotropicBlends_ReturnsApproximatelyZero(
-        FluidsList name,
-        double expected
-    )
+    public void Glide_AzeotropicBlends_ReturnsApproximatelyZero(FluidsList name, double expected)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
-        refrigerant
-            .Glide.Kelvins.Should()
-            .BeApproximately(expected, comparison.Tolerance);
+        refrigerant.Glide.Kelvins.Should().BeApproximately(expected, comparison.Tolerance);
     }
 
     [Theory]
@@ -92,9 +78,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
     [InlineData(FluidsList.R134a)]
     [InlineData(FluidsList.R507A)]
     [InlineData(FluidsList.R511A)]
-    public static void HasGlide_PureRefrigerantsAndAzeotropicBlends_ReturnsFalse(
-        FluidsList name
-    )
+    public static void HasGlide_PureRefrigerantsAndAzeotropicBlends_ReturnsFalse(FluidsList name)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
         refrigerant.HasGlide.Should().BeFalse();
@@ -112,9 +96,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
     [Theory]
     [InlineData(FluidsList.R32)]
     [InlineData(FluidsList.R134a)]
-    public static void IsSingleComponent_PureRefrigerants_ReturnsTrue(
-        FluidsList name
-    )
+    public static void IsSingleComponent_PureRefrigerants_ReturnsTrue(FluidsList name)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
         refrigerant.IsSingleComponent.Should().BeTrue();
@@ -125,9 +107,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
     [InlineData(FluidsList.R407C)]
     [InlineData(FluidsList.R507A)]
     [InlineData(FluidsList.R511A)]
-    public static void IsSingleComponent_ZeotropicAndAzeotropicBlends_ReturnsFalse(
-        FluidsList name
-    )
+    public static void IsSingleComponent_ZeotropicAndAzeotropicBlends_ReturnsFalse(FluidsList name)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
         refrigerant.IsSingleComponent.Should().BeFalse();
@@ -136,9 +116,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
     [Theory]
     [InlineData(FluidsList.R507A)]
     [InlineData(FluidsList.R511A)]
-    public static void IsAzeotropicBlend_AzeotropicBlends_ReturnsTrue(
-        FluidsList name
-    )
+    public static void IsAzeotropicBlend_AzeotropicBlends_ReturnsTrue(FluidsList name)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
         refrigerant.IsAzeotropicBlend.Should().BeTrue();
@@ -160,9 +138,7 @@ public class RefrigerantTests(ComparisonFixture comparison)
     [Theory]
     [InlineData(FluidsList.R404A)]
     [InlineData(FluidsList.R407C)]
-    public static void IsZeotropicBlend_ZeotropicBlends_ReturnsTrue(
-        FluidsList name
-    )
+    public static void IsZeotropicBlend_ZeotropicBlends_ReturnsTrue(FluidsList name)
     {
         IRefrigerant refrigerant = new Refrigerant(name);
         refrigerant.IsZeotropicBlend.Should().BeTrue();
@@ -185,14 +161,8 @@ public class RefrigerantTests(ComparisonFixture comparison)
     public void Subcooled_TemperatureAndWrongSubcooling_ThrowsArgumentException()
     {
         Action action = () =>
-            _ = _sut.Subcooled(
-                _sut.Temperature,
-                TemperatureDelta.FromKelvins(-5)
-            );
-        action
-            .Should()
-            .Throw<ArgumentException>()
-            .WithMessage("Invalid subcooling!");
+            _ = _sut.Subcooled(_sut.Temperature, TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid subcooling!");
     }
 
     [Fact]
@@ -201,31 +171,21 @@ public class RefrigerantTests(ComparisonFixture comparison)
         var bubblePoint = _sut.BubblePointAt(_sut.Temperature);
         _sut.Subcooled(_sut.Temperature, TemperatureDelta.FromKelvins(3))
             .Should()
-            .Be(
-                bubblePoint.CoolingTo(
-                    bubblePoint.Temperature - TemperatureDelta.FromKelvins(3)
-                )
-            );
+            .Be(bubblePoint.CoolingTo(bubblePoint.Temperature - TemperatureDelta.FromKelvins(3)));
     }
 
     [Fact]
     public void Subcooled_TemperatureAndZeroSubcooling_ReturnsBubblePointAtTemperature()
     {
         var bubblePoint = _sut.BubblePointAt(_sut.Temperature);
-        _sut.Subcooled(_sut.Temperature, TemperatureDelta.Zero)
-            .Should()
-            .Be(bubblePoint);
+        _sut.Subcooled(_sut.Temperature, TemperatureDelta.Zero).Should().Be(bubblePoint);
     }
 
     [Fact]
     public void Subcooled_PressureAndWrongSubcooling_ThrowsArgumentException()
     {
-        Action action = () =>
-            _ = _sut.Subcooled(_sut.Pressure, TemperatureDelta.FromKelvins(-5));
-        action
-            .Should()
-            .Throw<ArgumentException>()
-            .WithMessage("Invalid subcooling!");
+        Action action = () => _ = _sut.Subcooled(_sut.Pressure, TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid subcooling!");
     }
 
     [Fact]
@@ -234,34 +194,22 @@ public class RefrigerantTests(ComparisonFixture comparison)
         var bubblePoint = _sut.BubblePointAt(_sut.Pressure);
         _sut.Subcooled(_sut.Pressure, TemperatureDelta.FromKelvins(3))
             .Should()
-            .Be(
-                bubblePoint.CoolingTo(
-                    bubblePoint.Temperature - TemperatureDelta.FromKelvins(3)
-                )
-            );
+            .Be(bubblePoint.CoolingTo(bubblePoint.Temperature - TemperatureDelta.FromKelvins(3)));
     }
 
     [Fact]
     public void Subcooled_PressureAndZeroSubcooling_ReturnsBubblePointAtPressure()
     {
         var bubblePoint = _sut.BubblePointAt(_sut.Pressure);
-        _sut.Subcooled(_sut.Pressure, TemperatureDelta.Zero)
-            .Should()
-            .Be(bubblePoint);
+        _sut.Subcooled(_sut.Pressure, TemperatureDelta.Zero).Should().Be(bubblePoint);
     }
 
     [Fact]
     public void Superheated_TemperatureAndWrongSuperheat_ThrowsArgumentException()
     {
         Action action = () =>
-            _ = _sut.Superheated(
-                _sut.Temperature,
-                TemperatureDelta.FromKelvins(-5)
-            );
-        action
-            .Should()
-            .Throw<ArgumentException>()
-            .WithMessage("Invalid superheat!");
+            _ = _sut.Superheated(_sut.Temperature, TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid superheat!");
     }
 
     [Fact]
@@ -270,34 +218,21 @@ public class RefrigerantTests(ComparisonFixture comparison)
         var dewPoint = _sut.DewPointAt(_sut.Temperature);
         _sut.Superheated(_sut.Temperature, TemperatureDelta.FromKelvins(8))
             .Should()
-            .Be(
-                dewPoint.HeatingTo(
-                    dewPoint.Temperature + TemperatureDelta.FromKelvins(8)
-                )
-            );
+            .Be(dewPoint.HeatingTo(dewPoint.Temperature + TemperatureDelta.FromKelvins(8)));
     }
 
     [Fact]
     public void Superheated_TemperatureAndZeroSuperheat_ReturnsDewPointAtTemperature()
     {
         var dewPoint = _sut.DewPointAt(_sut.Temperature);
-        _sut.Superheated(_sut.Temperature, TemperatureDelta.Zero)
-            .Should()
-            .Be(dewPoint);
+        _sut.Superheated(_sut.Temperature, TemperatureDelta.Zero).Should().Be(dewPoint);
     }
 
     [Fact]
     public void Superheated_PressureAndWrongSuperheat_ThrowsArgumentException()
     {
-        Action action = () =>
-            _ = _sut.Superheated(
-                _sut.Pressure,
-                TemperatureDelta.FromKelvins(-5)
-            );
-        action
-            .Should()
-            .Throw<ArgumentException>()
-            .WithMessage("Invalid superheat!");
+        Action action = () => _ = _sut.Superheated(_sut.Pressure, TemperatureDelta.FromKelvins(-5));
+        action.Should().Throw<ArgumentException>().WithMessage("Invalid superheat!");
     }
 
     [Fact]
@@ -306,20 +241,14 @@ public class RefrigerantTests(ComparisonFixture comparison)
         var dewPoint = _sut.DewPointAt(_sut.Pressure);
         _sut.Superheated(_sut.Pressure, TemperatureDelta.FromKelvins(8))
             .Should()
-            .Be(
-                dewPoint.HeatingTo(
-                    dewPoint.Temperature + TemperatureDelta.FromKelvins(8)
-                )
-            );
+            .Be(dewPoint.HeatingTo(dewPoint.Temperature + TemperatureDelta.FromKelvins(8)));
     }
 
     [Fact]
     public void Superheated_PressureAndZeroSuperheat_ReturnsDewPointAtAtPressure()
     {
         var dewPoint = _sut.DewPointAt(_sut.Pressure);
-        _sut.Superheated(_sut.Pressure, TemperatureDelta.Zero)
-            .Should()
-            .Be(dewPoint);
+        _sut.Superheated(_sut.Pressure, TemperatureDelta.Zero).Should().Be(dewPoint);
     }
 
     [Fact]
@@ -327,42 +256,20 @@ public class RefrigerantTests(ComparisonFixture comparison)
     {
         _sut.Clone().Should().BeOfType<Refrigerant>();
         _sut.Factory().Should().BeOfType<Refrigerant>();
-        _sut.IsentropicCompressionTo(HighPressure)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.CompressionTo(HighPressure, _isentropicEfficiency)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.IsenthalpicExpansionTo(LowPressure)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.IsentropicExpansionTo(LowPressure)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.ExpansionTo(LowPressure, _isentropicEfficiency)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.CoolingTo(_sut.Temperature - _temperatureDelta)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.CoolingTo(_sut.Enthalpy - _enthalpyDelta)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.HeatingTo(_sut.Temperature + _temperatureDelta)
-            .Should()
-            .BeOfType<Refrigerant>();
-        _sut.HeatingTo(_sut.Enthalpy + _enthalpyDelta)
-            .Should()
-            .BeOfType<Refrigerant>();
+        _sut.IsentropicCompressionTo(HighPressure).Should().BeOfType<Refrigerant>();
+        _sut.CompressionTo(HighPressure, _isentropicEfficiency).Should().BeOfType<Refrigerant>();
+        _sut.IsenthalpicExpansionTo(LowPressure).Should().BeOfType<Refrigerant>();
+        _sut.IsentropicExpansionTo(LowPressure).Should().BeOfType<Refrigerant>();
+        _sut.ExpansionTo(LowPressure, _isentropicEfficiency).Should().BeOfType<Refrigerant>();
+        _sut.CoolingTo(_sut.Temperature - _temperatureDelta).Should().BeOfType<Refrigerant>();
+        _sut.CoolingTo(_sut.Enthalpy - _enthalpyDelta).Should().BeOfType<Refrigerant>();
+        _sut.HeatingTo(_sut.Temperature + _temperatureDelta).Should().BeOfType<Refrigerant>();
+        _sut.HeatingTo(_sut.Enthalpy + _enthalpyDelta).Should().BeOfType<Refrigerant>();
         _sut.BubblePointAt(1.Atmospheres()).Should().BeOfType<Refrigerant>();
-        _sut.BubblePointAt(100.DegreesCelsius())
-            .Should()
-            .BeOfType<Refrigerant>();
+        _sut.BubblePointAt(100.DegreesCelsius()).Should().BeOfType<Refrigerant>();
         _sut.DewPointAt(1.Atmospheres()).Should().BeOfType<Refrigerant>();
         _sut.DewPointAt(100.DegreesCelsius()).Should().BeOfType<Refrigerant>();
-        _sut.TwoPhasePointAt(1.Atmospheres(), 50.Percent())
-            .Should()
-            .BeOfType<Refrigerant>();
+        _sut.TwoPhasePointAt(1.Atmospheres(), 50.Percent()).Should().BeOfType<Refrigerant>();
         _sut.Mixing(
                 100.Percent(),
                 _sut.CoolingTo(_sut.Temperature - _temperatureDelta),

@@ -2,12 +2,10 @@
 
 namespace VCRC.Tests;
 
-public class VCRCMitsubishiZubadanTests(
+public sealed class VCRCMitsubishiZubadanTests(
     ComparisonFixture comparison,
     SubcriticalVCRCFixture<IVCRCMitsubishiZubadan> fixture
-)
-    : IClassFixture<ComparisonFixture>,
-        IClassFixture<SubcriticalVCRCFixture<IVCRCMitsubishiZubadan>>
+) : IClassFixture<ComparisonFixture>, IClassFixture<SubcriticalVCRCFixture<IVCRCMitsubishiZubadan>>
 {
     [Fact]
     public void VCRCMitsubishiZubadan_ExtraHighSubcooling_SolutionNotFound()
@@ -23,10 +21,7 @@ public class VCRCMitsubishiZubadanTests(
                 ),
                 fixture.Economizer
             );
-        action
-            .Should()
-            .Throw<ArgumentException>()
-            .WithMessage("Solution not found!");
+        action.Should().Throw<ArgumentException>().WithMessage("Solution not found!");
     }
 
     [Fact]
@@ -40,8 +35,7 @@ public class VCRCMitsubishiZubadanTests(
         sut.Recuperator.Should()
             .Be(
                 new Recuperator(
-                    fixture.Instance.Point7.Temperature
-                        - fixture.Instance.Point2.Temperature
+                    fixture.Instance.Point7.Temperature - fixture.Instance.Point2.Temperature
                 )
             );
     }
@@ -55,8 +49,7 @@ public class VCRCMitsubishiZubadanTests(
         fixture.Instance.Condenser.Should().Be(fixture.Condenser);
 
     [Fact]
-    public void GasCooler_Always_ReturnsNull() =>
-        fixture.Instance.GasCooler.Should().BeNull();
+    public void GasCooler_Always_ReturnsNull() => fixture.Instance.GasCooler.Should().BeNull();
 
     [Fact]
     public void Economizer_Always_ReturnsEnteredValue()
@@ -121,17 +114,13 @@ public class VCRCMitsubishiZubadanTests(
                     fixture.Instance.Point1.Enthalpy
                         + fixture.Instance.HeatReleaserSpecificMassFlow
                             / fixture.Instance.EvaporatorSpecificMassFlow
-                            * (
-                                fixture.Instance.Point7.Enthalpy
-                                - fixture.Instance.Point8.Enthalpy
-                            )
+                            * (fixture.Instance.Point7.Enthalpy - fixture.Instance.Point8.Enthalpy)
                 )
             );
         fixture.Instance.Point2.Phase.Should().Be(Phases.Gas);
     }
 
     [Fact]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point3s_Always_ReturnsFirstIsentropicCompressionStageDischarge()
     {
         fixture
@@ -163,25 +152,16 @@ public class VCRCMitsubishiZubadanTests(
     {
         fixture
             .Instance.Point4.Should()
-            .Be(
-                fixture.Refrigerant.DewPointAt(
-                    fixture.Instance.IntermediatePressure
-                )
-            );
+            .Be(fixture.Refrigerant.DewPointAt(fixture.Instance.IntermediatePressure));
         fixture.Instance.Point4.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point5s_Always_ReturnsSecondIsentropicCompressionStageDischarge()
     {
         fixture
             .Instance.Point5s.Should()
-            .Be(
-                fixture.Instance.Point4.IsentropicCompressionTo(
-                    fixture.Condenser.Pressure
-                )
-            );
+            .Be(fixture.Instance.Point4.IsentropicCompressionTo(fixture.Condenser.Pressure));
         fixture.Instance.Point5s.Phase.Should().Be(Phases.Gas);
     }
 
@@ -219,9 +199,7 @@ public class VCRCMitsubishiZubadanTests(
         fixture
             .Instance.RecuperatorHighPressure.Should()
             .BeGreaterThan(fixture.Instance.IntermediatePressure);
-        fixture
-            .Instance.RecuperatorHighPressure.Should()
-            .BeLessThan(fixture.Condenser.Pressure);
+        fixture.Instance.RecuperatorHighPressure.Should().BeLessThan(fixture.Condenser.Pressure);
         fixture.Instance.Point7.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -230,11 +208,7 @@ public class VCRCMitsubishiZubadanTests(
     {
         fixture
             .Instance.Point8.Should()
-            .Be(
-                fixture.Refrigerant.BubblePointAt(
-                    fixture.Instance.RecuperatorHighPressure
-                )
-            );
+            .Be(fixture.Refrigerant.BubblePointAt(fixture.Instance.RecuperatorHighPressure));
         fixture.Instance.Point8.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -269,10 +243,7 @@ public class VCRCMitsubishiZubadanTests(
                             fixture.Instance.HeatReleaserSpecificMassFlow
                             - fixture.Instance.EvaporatorSpecificMassFlow
                         )
-                        * (
-                            fixture.Instance.Point3.Enthalpy
-                            - fixture.Instance.Point4.Enthalpy
-                        ),
+                        * (fixture.Instance.Point3.Enthalpy - fixture.Instance.Point4.Enthalpy),
                 100.JoulesPerKilogram()
             )
             .Should()
@@ -287,8 +258,7 @@ public class VCRCMitsubishiZubadanTests(
             .Instance.Point11.Should()
             .Be(
                 fixture.Instance.Point8.CoolingTo(
-                    fixture.Instance.Point9.Temperature
-                        + fixture.Economizer.TemperatureDifference
+                    fixture.Instance.Point9.Temperature + fixture.Economizer.TemperatureDifference
                 )
             );
         fixture.Instance.Point11.Phase.Should().Be(Phases.Liquid);
@@ -299,11 +269,7 @@ public class VCRCMitsubishiZubadanTests(
     {
         fixture
             .Instance.Point12.Should()
-            .Be(
-                fixture.Instance.Point11.IsenthalpicExpansionTo(
-                    fixture.Evaporator.Pressure
-                )
-            );
+            .Be(fixture.Instance.Point11.IsenthalpicExpansionTo(fixture.Evaporator.Pressure));
         fixture.Instance.Point12.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -322,14 +288,8 @@ public class VCRCMitsubishiZubadanTests(
                 fixture.Instance.EvaporatorSpecificMassFlow
                     * (
                         1
-                        + (
-                            fixture.Instance.Point3.Enthalpy
-                            - fixture.Instance.Point4.Enthalpy
-                        )
-                            / (
-                                fixture.Instance.Point4.Enthalpy
-                                - fixture.Instance.Point10.Enthalpy
-                            )
+                        + (fixture.Instance.Point3.Enthalpy - fixture.Instance.Point4.Enthalpy)
+                            / (fixture.Instance.Point4.Enthalpy - fixture.Instance.Point10.Enthalpy)
                     ),
                 comparison.Tolerance.Percent()
             )
@@ -351,14 +311,8 @@ public class VCRCMitsubishiZubadanTests(
             .Instance.IsentropicSpecificWork.Equals(
                 fixture.Instance.Point3s.Enthalpy
                     - fixture.Instance.Point2.Enthalpy
-                    + fixture
-                        .Instance
-                        .HeatReleaserSpecificMassFlow
-                        .DecimalFractions
-                        * (
-                            fixture.Instance.Point5s.Enthalpy
-                            - fixture.Instance.Point4.Enthalpy
-                        ),
+                    + fixture.Instance.HeatReleaserSpecificMassFlow.DecimalFractions
+                        * (fixture.Instance.Point5s.Enthalpy - fixture.Instance.Point4.Enthalpy),
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -379,8 +333,7 @@ public class VCRCMitsubishiZubadanTests(
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
         fixture
             .Instance.SpecificCoolingCapacity.Equals(
-                fixture.Instance.Point1.Enthalpy
-                    - fixture.Instance.Point12.Enthalpy,
+                fixture.Instance.Point1.Enthalpy - fixture.Instance.Point12.Enthalpy,
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -391,10 +344,7 @@ public class VCRCMitsubishiZubadanTests(
         fixture
             .Instance.SpecificHeatingCapacity.Equals(
                 fixture.Instance.HeatReleaserSpecificMassFlow.DecimalFractions
-                    * (
-                        fixture.Instance.Point5.Enthalpy
-                        - fixture.Instance.Point6.Enthalpy
-                    ),
+                    * (fixture.Instance.Point5.Enthalpy - fixture.Instance.Point6.Enthalpy),
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -405,13 +355,8 @@ public class VCRCMitsubishiZubadanTests(
     {
         fixture
             .Instance.EER.Should()
-            .Be(
-                fixture.Instance.SpecificCoolingCapacity
-                    / fixture.Instance.SpecificWork
-            );
-        fixture
-            .Instance.EER.Should()
-            .BeApproximately(4.380342435725647, comparison.Tolerance);
+            .Be(fixture.Instance.SpecificCoolingCapacity / fixture.Instance.SpecificWork);
+        fixture.Instance.EER.Should().BeApproximately(4.380342435725647, comparison.Tolerance);
     }
 
     [Fact]
@@ -419,13 +364,8 @@ public class VCRCMitsubishiZubadanTests(
     {
         fixture
             .Instance.COP.Should()
-            .Be(
-                fixture.Instance.SpecificHeatingCapacity
-                    / fixture.Instance.SpecificWork
-            );
-        fixture
-            .Instance.COP.Should()
-            .BeApproximately(5.380333104312685, comparison.Tolerance);
+            .Be(fixture.Instance.SpecificHeatingCapacity / fixture.Instance.SpecificWork);
+        fixture.Instance.COP.Should().BeApproximately(5.380333104312685, comparison.Tolerance);
     }
 
     [Fact]
@@ -496,9 +436,6 @@ public class VCRCMitsubishiZubadanTests(
         fixture
             .AnalysisResult.AnalysisRelativeError.Percent.Should()
             .BeApproximately(1.208960702370679, comparison.Tolerance);
-        fixture
-            .AnalysisResult.Sum()
-            .Percent.Should()
-            .BeApproximately(100, comparison.Tolerance);
+        fixture.AnalysisResult.Sum().Percent.Should().BeApproximately(100, comparison.Tolerance);
     }
 }

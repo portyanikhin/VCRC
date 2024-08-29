@@ -7,32 +7,19 @@ public class EjectorFlows : IEjectorFlows
     /// <param name="ejector">Ejector.</param>
     /// <param name="nozzleInlet">Nozzle inlet.</param>
     /// <param name="suctionInlet">Suction section inlet.</param>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
+    ///     Ejector nozzle inlet pressure should be greater than suction inlet pressure!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Ejector nozzle inlet pressure
-    ///     should be greater than suction inlet pressure!
-    /// </exception>
-    public EjectorFlows(
-        IEjector ejector,
-        IRefrigerant nozzleInlet,
-        IRefrigerant suctionInlet
-    )
+    public EjectorFlows(IEjector ejector, IRefrigerant nozzleInlet, IRefrigerant suctionInlet)
     {
         Refrigerant = new Refrigerant(nozzleInlet.Name);
         Ejector = ejector;
         NozzleInlet = nozzleInlet;
         SuctionInlet = suctionInlet;
         new EjectorFlowsValidator().ValidateAndThrow(this);
-        NozzleOutlet = NozzleInlet.ExpansionTo(
-            MixingPressure,
-            Ejector.NozzleEfficiency
-        );
-        SuctionOutlet = SuctionInlet.ExpansionTo(
-            MixingPressure,
-            Ejector.SuctionEfficiency
-        );
+        NozzleOutlet = NozzleInlet.ExpansionTo(MixingPressure, Ejector.NozzleEfficiency);
+        SuctionOutlet = SuctionInlet.ExpansionTo(MixingPressure, Ejector.SuctionEfficiency);
         CalculateFlowRatio();
     }
 
@@ -43,15 +30,11 @@ public class EjectorFlows : IEjectorFlows
     private Pressure MixingPressure => 0.9 * SuctionInlet.Pressure;
 
     private Speed MixingInletSpeed =>
-        FlowRatio.DecimalFractions
-            * CalculateOutletSpeed(NozzleInlet, NozzleOutlet)
-        + (1 - FlowRatio.DecimalFractions)
-            * CalculateOutletSpeed(SuctionInlet, SuctionOutlet);
+        FlowRatio.DecimalFractions * CalculateOutletSpeed(NozzleInlet, NozzleOutlet)
+        + (1 - FlowRatio.DecimalFractions) * CalculateOutletSpeed(SuctionInlet, SuctionOutlet);
 
     private SpecificEnergy MixingInletKineticEnergy =>
-        (
-            Math.Pow(MixingInletSpeed.MetersPerSecond, 2) / 2.0
-        ).JoulesPerKilogram();
+        (Math.Pow(MixingInletSpeed.MetersPerSecond, 2) / 2.0).JoulesPerKilogram();
 
     public IRefrigerant NozzleInlet { get; }
 
@@ -86,8 +69,7 @@ public class EjectorFlows : IEjectorFlows
                 Input.Pressure(MixingPressure),
                 Input.Enthalpy(
                     FlowRatio.DecimalFractions * NozzleInlet.Enthalpy
-                        + (1 - FlowRatio.DecimalFractions)
-                            * SuctionInlet.Enthalpy
+                        + (1 - FlowRatio.DecimalFractions) * SuctionInlet.Enthalpy
                         - MixingInletKineticEnergy
                 )
             );
@@ -98,9 +80,7 @@ public class EjectorFlows : IEjectorFlows
                             Input.Entropy(MixingInlet.Entropy),
                             Input.Enthalpy(
                                 MixingInlet.Enthalpy
-                                    + Ejector
-                                        .DiffuserEfficiency
-                                        .DecimalFractions
+                                    + Ejector.DiffuserEfficiency.DecimalFractions
                                         * MixingInletKineticEnergy
                             )
                         )
@@ -112,10 +92,6 @@ public class EjectorFlows : IEjectorFlows
         }
     }
 
-    private static Speed CalculateOutletSpeed(
-        IFluidState inlet,
-        IFluidState outlet
-    ) =>
-        Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram)
-            .MetersPerSecond();
+    private static Speed CalculateOutletSpeed(IFluidState inlet, IFluidState outlet) =>
+        Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram).MetersPerSecond();
 }

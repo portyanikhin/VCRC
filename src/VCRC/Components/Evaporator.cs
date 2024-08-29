@@ -23,17 +23,12 @@ public record Evaporator : IEvaporator
         RefrigerantName = refrigerantName;
         Temperature = temperature.ToUnit(TemperatureUnit.DegreeCelsius);
         Superheat = superheat.ToUnit(TemperatureDeltaUnit.Kelvin);
-        new EvaporatorValidator(
-            new Refrigerant(RefrigerantName)
-        ).ValidateAndThrow(this);
+        new EvaporatorValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
     }
 
     public FluidsList RefrigerantName { get; }
-
     public Temperature Temperature { get; }
-
     public TemperatureDelta Superheat { get; }
-
     public Pressure Pressure => Outlet.Pressure;
 
     public IRefrigerant Outlet =>

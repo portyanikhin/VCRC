@@ -20,15 +20,9 @@ public record Ejector : IEjector
         : this(efficiency, efficiency, efficiency) { }
 
     /// <inheritdoc cref="Ejector"/>
-    /// <param name="nozzleEfficiency">
-    ///     Isentropic efficiency of the nozzle.
-    /// </param>
-    /// <param name="suctionEfficiency">
-    ///     Isentropic efficiency of the suction section.
-    /// </param>
-    /// <param name="diffuserEfficiency">
-    ///     Isentropic efficiency of the diffuser.
-    /// </param>
+    /// <param name="nozzleEfficiency">Isentropic efficiency of the nozzle.</param>
+    /// <param name="suctionEfficiency">Isentropic efficiency of the suction section.</param>
+    /// <param name="diffuserEfficiency">Isentropic efficiency of the diffuser.</param>
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the nozzle should be in (0;100) %!
     /// </exception>
@@ -38,11 +32,7 @@ public record Ejector : IEjector
     /// <exception cref="ValidationException">
     ///     Isentropic efficiency of the diffuser should be in (0;100) %!
     /// </exception>
-    public Ejector(
-        Ratio nozzleEfficiency,
-        Ratio suctionEfficiency,
-        Ratio diffuserEfficiency
-    )
+    public Ejector(Ratio nozzleEfficiency, Ratio suctionEfficiency, Ratio diffuserEfficiency)
     {
         NozzleEfficiency = nozzleEfficiency.ToUnit(RatioUnit.Percent);
         SuctionEfficiency = suctionEfficiency.ToUnit(RatioUnit.Percent);
@@ -51,13 +41,9 @@ public record Ejector : IEjector
     }
 
     public Ratio NozzleEfficiency { get; }
-
     public Ratio SuctionEfficiency { get; }
-
     public Ratio DiffuserEfficiency { get; }
 
-    public IEjectorFlows CalculateFlows(
-        IRefrigerant nozzleInlet,
-        IRefrigerant suctionInlet
-    ) => new EjectorFlows(this, nozzleInlet, suctionInlet);
+    public IEjectorFlows CalculateFlows(IRefrigerant nozzleInlet, IRefrigerant suctionInlet) =>
+        new EjectorFlows(this, nozzleInlet, suctionInlet);
 }

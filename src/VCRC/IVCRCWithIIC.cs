@@ -1,4 +1,6 @@
-﻿namespace VCRC;
+﻿// ReSharper disable InconsistentNaming
+
+namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with incomplete intercooling.
@@ -13,7 +15,6 @@ public interface IVCRCWithIIC : ITwoStageVCRC
     /// <summary>
     ///     Point 2s – first isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point2s { get; }
 
     /// <summary>
@@ -29,12 +30,10 @@ public interface IVCRCWithIIC : ITwoStageVCRC
     /// <summary>
     ///     Point 4s – second isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point4s { get; }
 
     /// <summary>
-    ///     Point 4 – second compression stage discharge /
-    ///     condenser or gas cooler inlet.
+    ///     Point 4 – second compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
     IRefrigerant Point4 { get; }
 
@@ -49,8 +48,7 @@ public interface IVCRCWithIIC : ITwoStageVCRC
     IRefrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – separator vapor outlet /
-    ///     injection of cooled vapor into the compressor.
+    ///     Point 7 – separator vapor outlet / injection of cooled vapor into the compressor.
     /// </summary>
     IRefrigerant Point7 { get; }
 

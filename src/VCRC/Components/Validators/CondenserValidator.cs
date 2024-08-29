@@ -2,15 +2,12 @@
 
 namespace VCRC;
 
-internal class CondenserValidator : AbstractValidator<ICondenser>
+internal sealed class CondenserValidator : AbstractValidator<ICondenser>
 {
     public CondenserValidator(IRefrigerant refrigerant)
     {
         RuleFor(condenser => condenser.Temperature)
-            .ExclusiveBetween(
-                refrigerant.TripleTemperature,
-                refrigerant.CriticalTemperature
-            )
+            .ExclusiveBetween(refrigerant.TripleTemperature, refrigerant.CriticalTemperature)
             .WithMessage(
                 "Condensing temperature should be in "
                     + $"({Math.Round(refrigerant.TripleTemperature.DegreesCelsius, 2)};"

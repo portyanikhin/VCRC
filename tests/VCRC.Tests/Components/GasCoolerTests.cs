@@ -2,7 +2,7 @@
 
 namespace VCRC.Tests;
 
-public class GasCoolerTests : IClassFixture<ComparisonFixture>
+public sealed class GasCoolerTests : IClassFixture<ComparisonFixture>
 {
     private readonly ComparisonFixture _comparison;
     private readonly Pressure _pressure;
@@ -18,11 +18,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
         _temperature = 308.15.Kelvins();
         _pressure = 8.Megapascals();
         _sut = new GasCooler(_refrigerant.Name, _temperature);
-        _sutWithSpecifiedPressure = new GasCooler(
-            _refrigerant.Name,
-            _temperature,
-            _pressure
-        );
+        _sutWithSpecifiedPressure = new GasCooler(_refrigerant.Name, _temperature, _pressure);
     }
 
     [Fact]
@@ -34,8 +30,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
             .Throw<ArgumentException>()
             .WithMessage(
                 "It is impossible to automatically calculate "
-                    + "the absolute pressure in the gas cooler! "
-                    + "It is necessary to define it."
+                    + "the absolute pressure in the gas cooler! It is necessary to define it."
             );
     }
 
@@ -43,30 +38,22 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     public void GasCooler_WrongTemperature_ThrowsValidationException()
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
-        Action action = () =>
-            _ = new GasCooler(_refrigerant.Name, 30.DegreesCelsius());
+        Action action = () => _ = new GasCooler(_refrigerant.Name, 30.DegreesCelsius());
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Gas cooler outlet temperature "
-                    + "should be greater than 30.98 °C!*"
-            );
+            .WithMessage("*Gas cooler outlet temperature should be greater than 30.98 °C!*");
     }
 
     [Fact]
     public void GasCooler_WrongPressure_ThrowsValidationException()
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
-        Action action = () =>
-            _ = new GasCooler(_refrigerant.Name, _temperature, Pressure.Zero);
+        Action action = () => _ = new GasCooler(_refrigerant.Name, _temperature, Pressure.Zero);
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Gas cooler absolute pressure "
-                    + "should be greater than 7.38 MPa!*"
-            );
+            .WithMessage("*Gas cooler absolute pressure should be greater than 7.38 MPa!*");
     }
 
     [Fact]
@@ -76,10 +63,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _sut.Temperature.Equals(
-                _temperature,
-                _comparison.Tolerance.DegreesCelsius()
-            )
+        _sut.Temperature.Equals(_temperature, _comparison.Tolerance.DegreesCelsius())
             .Should()
             .BeTrue();
         _sut.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
@@ -104,9 +88,7 @@ public class GasCoolerTests : IClassFixture<ComparisonFixture>
             .Pressure.Equals(_pressure, _comparison.Tolerance.Pascals())
             .Should()
             .BeTrue();
-        _sutWithSpecifiedPressure
-            .Pressure.Unit.Should()
-            .Be(PressureUnit.Kilopascal);
+        _sutWithSpecifiedPressure.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
     }
 
     [Fact]

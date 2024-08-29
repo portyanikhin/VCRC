@@ -23,17 +23,12 @@ public record Condenser : ICondenser
         RefrigerantName = refrigerantName;
         Temperature = temperature.ToUnit(TemperatureUnit.DegreeCelsius);
         Subcooling = subcooling.ToUnit(TemperatureDeltaUnit.Kelvin);
-        new CondenserValidator(
-            new Refrigerant(RefrigerantName)
-        ).ValidateAndThrow(this);
+        new CondenserValidator(new Refrigerant(RefrigerantName)).ValidateAndThrow(this);
     }
 
     public TemperatureDelta Subcooling { get; }
-
     public FluidsList RefrigerantName { get; }
-
     public Temperature Temperature { get; }
-
     public Pressure Pressure => Outlet.Pressure;
 
     public IRefrigerant Outlet =>

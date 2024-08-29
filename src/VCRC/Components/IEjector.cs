@@ -26,15 +26,9 @@ public interface IEjector
     /// <param name="nozzleInlet">Nozzle inlet.</param>
     /// <param name="suctionInlet">Suction section inlet.</param>
     /// <returns>Ejector flows.</returns>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
+    ///     Ejector nozzle inlet pressure should be greater than suction inlet pressure!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Ejector nozzle inlet pressure
-    ///     should be greater than suction inlet pressure!
-    /// </exception>
-    IEjectorFlows CalculateFlows(
-        IRefrigerant nozzleInlet,
-        IRefrigerant suctionInlet
-    );
+    IEjectorFlows CalculateFlows(IRefrigerant nozzleInlet, IRefrigerant suctionInlet);
 }

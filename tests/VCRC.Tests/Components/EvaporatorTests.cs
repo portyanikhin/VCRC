@@ -2,7 +2,7 @@
 
 namespace VCRC.Tests;
 
-public class EvaporatorTests : IClassFixture<ComparisonFixture>
+public sealed class EvaporatorTests : IClassFixture<ComparisonFixture>
 {
     private readonly ComparisonFixture _comparison;
     private readonly IRefrigerant _refrigerant;
@@ -22,31 +22,21 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     [Theory]
     [InlineData(-74.0)]
     [InlineData(87.0)]
-    public void Evaporator_WrongTemperature_ThrowsValidationException(
-        double temperature
-    )
+    public void Evaporator_WrongTemperature_ThrowsValidationException(double temperature)
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new Evaporator(
-                _refrigerant.Name,
-                temperature.DegreesCelsius(),
-                _superheat
-            );
+            _ = new Evaporator(_refrigerant.Name, temperature.DegreesCelsius(), _superheat);
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Evaporating temperature should be in (-73.15;86.2) °C!*"
-            );
+            .WithMessage("*Evaporating temperature should be in (-73.15;86.2) °C!*");
     }
 
     [Theory]
     [InlineData(-1.0)]
     [InlineData(51.0)]
-    public void Evaporator_WrongSuperheat_ThrowsValidationException(
-        double superheat
-    )
+    public void Evaporator_WrongSuperheat_ThrowsValidationException(double superheat)
     {
         Action action = () =>
             _ = new Evaporator(
@@ -57,9 +47,7 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Superheat in the evaporator should be in [0;50] K!*"
-            );
+            .WithMessage("*Superheat in the evaporator should be in [0;50] K!*");
     }
 
     [Fact]
@@ -69,10 +57,7 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _sut.Temperature.Equals(
-                _temperature,
-                _comparison.Tolerance.DegreesCelsius()
-            )
+        _sut.Temperature.Equals(_temperature, _comparison.Tolerance.DegreesCelsius())
             .Should()
             .BeTrue();
         _sut.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
@@ -81,10 +66,7 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        _sut.Superheat.Equals(
-                _superheat,
-                TemperatureDelta.FromKelvins(_comparison.Tolerance)
-            )
+        _sut.Superheat.Equals(_superheat, TemperatureDelta.FromKelvins(_comparison.Tolerance))
             .Should()
             .BeTrue();
         _sut.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
@@ -99,7 +81,5 @@ public class EvaporatorTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void Outlet_Always_ReturnsSuperheatedRefrigerant() =>
-        _sut
-            .Outlet.Should()
-            .Be(_refrigerant.Superheated(_temperature, _superheat));
+        _sut.Outlet.Should().Be(_refrigerant.Superheated(_temperature, _superheat));
 }

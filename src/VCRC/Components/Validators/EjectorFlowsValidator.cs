@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class EjectorFlowsValidator : AbstractValidator<IEjectorFlows>
+internal sealed class EjectorFlowsValidator : AbstractValidator<IEjectorFlows>
 {
     public EjectorFlowsValidator()
     {
@@ -10,8 +10,7 @@ internal class EjectorFlowsValidator : AbstractValidator<IEjectorFlows>
         RuleFor(flows => flows.NozzleInlet.Pressure)
             .GreaterThan(flows => flows.SuctionInlet.Pressure)
             .WithMessage(
-                "Ejector nozzle inlet pressure "
-                    + "should be greater than suction inlet pressure!"
+                "Ejector nozzle inlet pressure should be greater than suction inlet pressure!"
             );
     }
 }

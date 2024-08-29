@@ -2,7 +2,7 @@
 
 namespace VCRC.Tests;
 
-public class EconomizerWithTPITests : IClassFixture<ComparisonFixture>
+public sealed class EconomizerWithTPITests : IClassFixture<ComparisonFixture>
 {
     private readonly ComparisonFixture _comparison;
     private readonly IAuxiliaryHeatExchanger _sut;
@@ -22,27 +22,21 @@ public class EconomizerWithTPITests : IClassFixture<ComparisonFixture>
         double temperatureDifference
     )
     {
-        Action action = () =>
-            _ = new EconomizerWithTPI(temperatureDifference.Kelvins());
+        Action action = () => _ = new EconomizerWithTPI(temperatureDifference.Kelvins());
         action
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
-                "*Temperature difference at the economizer 'cold' side "
-                    + "should be in (0;50) K!*"
+                "*Temperature difference at the economizer 'cold' side should be in (0;50) K!*"
             );
     }
 
     [Fact]
     public void TemperatureDifference_Always_ReturnsEnteredValueInKelvins()
     {
-        _sut.TemperatureDifference.Equals(
-                _temperatureDifference,
-                _comparison.Tolerance.Kelvins()
-            )
+        _sut.TemperatureDifference.Equals(_temperatureDifference, _comparison.Tolerance.Kelvins())
             .Should()
             .BeTrue();
-        _sut.TemperatureDifference.Unit.Should()
-            .Be(TemperatureDeltaUnit.Kelvin);
+        _sut.TemperatureDifference.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 }

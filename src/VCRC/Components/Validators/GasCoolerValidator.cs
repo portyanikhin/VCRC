@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class GasCoolerValidator : AbstractValidator<GasCooler>
+internal sealed class GasCoolerValidator : AbstractValidator<GasCooler>
 {
     public GasCoolerValidator(IRefrigerant refrigerant)
     {

@@ -2,7 +2,7 @@
 
 namespace VCRC.Tests;
 
-public class CondenserTests : IClassFixture<ComparisonFixture>
+public sealed class CondenserTests : IClassFixture<ComparisonFixture>
 {
     private readonly ComparisonFixture _comparison;
     private readonly IRefrigerant _refrigerant;
@@ -22,31 +22,21 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Theory]
     [InlineData(-74.0)]
     [InlineData(87.0)]
-    public void Condenser_WrongTemperature_ThrowsValidationException(
-        double temperature
-    )
+    public void Condenser_WrongTemperature_ThrowsValidationException(double temperature)
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Action action = () =>
-            _ = new Condenser(
-                _refrigerant.Name,
-                temperature.DegreesCelsius(),
-                _subcooling
-            );
+            _ = new Condenser(_refrigerant.Name, temperature.DegreesCelsius(), _subcooling);
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Condensing temperature should be in (-73.15;86.2) °C!*"
-            );
+            .WithMessage("*Condensing temperature should be in (-73.15;86.2) °C!*");
     }
 
     [Theory]
     [InlineData(-1.0)]
     [InlineData(51.0)]
-    public void Condenser_WrongSubcooling_ThrowsValidationException(
-        double subcooling
-    )
+    public void Condenser_WrongSubcooling_ThrowsValidationException(double subcooling)
     {
         Action action = () =>
             _ = new Condenser(
@@ -57,9 +47,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Subcooling in the condenser should be in [0;50] K!*"
-            );
+            .WithMessage("*Subcooling in the condenser should be in [0;50] K!*");
     }
 
     [Fact]
@@ -69,10 +57,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Temperature_Always_ReturnsEnteredValueInCelsius()
     {
-        _sut.Temperature.Equals(
-                _temperature,
-                _comparison.Tolerance.DegreesCelsius()
-            )
+        _sut.Temperature.Equals(_temperature, _comparison.Tolerance.DegreesCelsius())
             .Should()
             .BeTrue();
         _sut.Temperature.Unit.Should().Be(TemperatureUnit.DegreeCelsius);
@@ -81,10 +66,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Subcooling_Always_ReturnsEnteredValueInKelvins()
     {
-        _sut.Subcooling.Equals(
-                _subcooling,
-                TemperatureDelta.FromKelvins(_comparison.Tolerance)
-            )
+        _sut.Subcooling.Equals(_subcooling, TemperatureDelta.FromKelvins(_comparison.Tolerance))
             .Should()
             .BeTrue();
         _sut.Subcooling.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
@@ -93,10 +75,7 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void Pressure_Always_ReturnsOutletPressureInKilopascals()
     {
-        _sut.Pressure.Equals(
-                _sut.Outlet.Pressure,
-                _comparison.Tolerance.Pascals()
-            )
+        _sut.Pressure.Equals(_sut.Outlet.Pressure, _comparison.Tolerance.Pascals())
             .Should()
             .BeTrue();
         _sut.Pressure.Unit.Should().Be(PressureUnit.Kilopascal);
@@ -104,7 +83,5 @@ public class CondenserTests : IClassFixture<ComparisonFixture>
 
     [Fact]
     public void Outlet_Always_ReturnsSubcooledRefrigerant() =>
-        _sut
-            .Outlet.Should()
-            .Be(_refrigerant.Subcooled(_temperature, _subcooling));
+        _sut.Outlet.Should().Be(_refrigerant.Subcooled(_temperature, _subcooling));
 }

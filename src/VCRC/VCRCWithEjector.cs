@@ -10,12 +10,9 @@ public class VCRCWithEjector : AbstractVCRC, IVCRCWithEjector
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
     /// <param name="ejector">Ejector.</param>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
-    /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Condensing temperature
-    ///     should be greater than evaporating temperature!
+    ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
     /// <exception cref="ValidationException">
     ///     Refrigerant should be a single component or an azeotropic blend!
@@ -33,10 +30,7 @@ public class VCRCWithEjector : AbstractVCRC, IVCRCWithEjector
         _ejectorFlows = Ejector.CalculateFlows(Point3, Point9);
         Point1 = Refrigerant.DewPointAt(Point6.Pressure);
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point2 = Point1.CompressionTo(
-            HeatReleaser.Pressure,
-            Compressor.Efficiency
-        );
+        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point7 = Refrigerant.BubblePointAt(Point6.Pressure);
         Point8 = Point7.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
@@ -59,47 +53,30 @@ public class VCRCWithEjector : AbstractVCRC, IVCRCWithEjector
         );
 
     public IEjector Ejector { get; }
-
     public IRefrigerant Point1 { get; }
-
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public IRefrigerant Point2s { get; }
-
     public IRefrigerant Point2 { get; }
-
     public IRefrigerant Point3 => HeatReleaser.Outlet;
-
     public IRefrigerant Point4 => _ejectorFlows.NozzleOutlet;
-
     public IRefrigerant Point5 => _ejectorFlows.MixingInlet;
-
     public IRefrigerant Point6 => _ejectorFlows.DiffuserOutlet;
-
     public IRefrigerant Point7 { get; }
-
     public IRefrigerant Point8 { get; }
-
     public IRefrigerant Point9 => Evaporator.Outlet;
-
     public IRefrigerant Point10 => _ejectorFlows.SuctionOutlet;
 
     public sealed override Ratio HeatReleaserSpecificMassFlow =>
         EvaporatorSpecificMassFlow
-        * (
-            Point6.Quality!.Value.DecimalFractions
-            / (1 - Point6.Quality!.Value.DecimalFractions)
-        );
+        * (Point6.Quality!.Value.DecimalFractions / (1 - Point6.Quality!.Value.DecimalFractions));
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
-        HeatReleaserSpecificMassFlow.DecimalFractions
-        * (Point2s.Enthalpy - Point1.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point2s.Enthalpy - Point1.Enthalpy);
 
     public sealed override SpecificEnergy SpecificCoolingCapacity =>
         Point9.Enthalpy - Point8.Enthalpy;
 
     public override SpecificEnergy SpecificHeatingCapacity =>
-        HeatReleaserSpecificMassFlow.DecimalFractions
-        * (Point2.Enthalpy - Point3.Enthalpy);
+        HeatReleaserSpecificMassFlow.DecimalFractions * (Point2.Enthalpy - Point3.Enthalpy);
 
     public override IEntropyAnalysisResult EntropyAnalysis(
         Temperature indoor,

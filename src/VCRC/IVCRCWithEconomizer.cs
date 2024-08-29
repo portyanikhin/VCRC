@@ -1,4 +1,6 @@
-﻿namespace VCRC;
+﻿// ReSharper disable InconsistentNaming
+
+namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with economizer.
@@ -13,7 +15,6 @@ public interface IVCRCWithEconomizer : ITwoStageVCRC, IHaveEconomizer
     /// <summary>
     ///     Point 2s – first isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point2s { get; }
 
     /// <summary>
@@ -29,18 +30,15 @@ public interface IVCRCWithEconomizer : ITwoStageVCRC, IHaveEconomizer
     /// <summary>
     ///     Point 4s – second isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point4s { get; }
 
     /// <summary>
-    ///     Point 4 – second compression stage discharge /
-    ///     condenser or gas cooler inlet.
+    ///     Point 4 – second compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
     IRefrigerant Point4 { get; }
 
     /// <summary>
-    ///     Point 5 – condenser or gas cooler outlet /
-    ///     first EV inlet / economizer "hot" inlet.
+    ///     Point 5 – condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
     /// </summary>
     IRefrigerant Point5 { get; }
 
@@ -50,8 +48,7 @@ public interface IVCRCWithEconomizer : ITwoStageVCRC, IHaveEconomizer
     IRefrigerant Point6 { get; }
 
     /// <summary>
-    ///     Point 7 – economizer "cold" outlet /
-    ///     injection of cooled vapor into the compressor.
+    ///     Point 7 – economizer "cold" outlet / injection of cooled vapor into the compressor.
     /// </summary>
     IRefrigerant Point7 { get; }
 

@@ -7,25 +7,15 @@ public class SimpleVCRC : AbstractVCRC, ISimpleVCRC
     /// <param name="evaporator">Evaporator.</param>
     /// <param name="compressor">Compressor.</param>
     /// <param name="heatReleaser">Condenser or gas cooler.</param>
+    /// <exception cref="ValidationException">Only one refrigerant should be selected!</exception>
     /// <exception cref="ValidationException">
-    ///     Only one refrigerant should be selected!
+    ///     Condensing temperature should be greater than evaporating temperature!
     /// </exception>
-    /// <exception cref="ValidationException">
-    ///     Condensing temperature
-    ///     should be greater than evaporating temperature!
-    /// </exception>
-    public SimpleVCRC(
-        IEvaporator evaporator,
-        ICompressor compressor,
-        IHeatReleaser heatReleaser
-    )
+    public SimpleVCRC(IEvaporator evaporator, ICompressor compressor, IHeatReleaser heatReleaser)
         : base(evaporator, compressor, heatReleaser)
     {
         Point2s = Point1.IsentropicCompressionTo(HeatReleaser.Pressure);
-        Point2 = Point1.CompressionTo(
-            HeatReleaser.Pressure,
-            Compressor.Efficiency
-        );
+        Point2 = Point1.CompressionTo(HeatReleaser.Pressure, Compressor.Efficiency);
         Point4 = Point3.IsenthalpicExpansionTo(Evaporator.Pressure);
     }
 
@@ -38,18 +28,11 @@ public class SimpleVCRC : AbstractVCRC, ISimpleVCRC
         );
 
     public IRefrigerant Point1 => Evaporator.Outlet;
-
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public IRefrigerant Point2s { get; }
-
     public IRefrigerant Point2 { get; }
-
     public IRefrigerant Point3 => HeatReleaser.Outlet;
-
     public IRefrigerant Point4 { get; }
-
-    public sealed override Ratio HeatReleaserSpecificMassFlow { get; } =
-        100.Percent();
+    public sealed override Ratio HeatReleaserSpecificMassFlow { get; } = 100.Percent();
 
     public sealed override SpecificEnergy IsentropicSpecificWork =>
         Point2s.Enthalpy - Point1.Enthalpy;

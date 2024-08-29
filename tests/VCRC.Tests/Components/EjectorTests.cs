@@ -1,6 +1,6 @@
 ﻿namespace VCRC.Tests;
 
-public class EjectorTests : IClassFixture<ComparisonFixture>
+public sealed class EjectorTests : IClassFixture<ComparisonFixture>
 {
     private readonly ComparisonFixture _comparison;
     private readonly Ratio _diffuserEfficiency;
@@ -14,11 +14,7 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
         _nozzleEfficiency = 0.9.DecimalFractions();
         _suctionEfficiency = 0.9.DecimalFractions();
         _diffuserEfficiency = 0.8.DecimalFractions();
-        _sut = new Ejector(
-            _nozzleEfficiency,
-            _suctionEfficiency,
-            _diffuserEfficiency
-        );
+        _sut = new Ejector(_nozzleEfficiency, _suctionEfficiency, _diffuserEfficiency);
     }
 
     [Theory]
@@ -32,24 +28,12 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Isentropic efficiency of the nozzle should be in (0;100) %!*"
-            );
+            .WithMessage("*Isentropic efficiency of the nozzle should be in (0;100) %!*");
     }
 
     [Theory]
-    [InlineData(
-        0.0,
-        90.0,
-        80.0,
-        "Isentropic efficiency of the nozzle should be in (0;100) %!"
-    )]
-    [InlineData(
-        100.0,
-        90.0,
-        80.0,
-        "Isentropic efficiency of the nozzle should be in (0;100) %!"
-    )]
+    [InlineData(0.0, 90.0, 80.0, "Isentropic efficiency of the nozzle should be in (0;100) %!")]
+    [InlineData(100.0, 90.0, 80.0, "Isentropic efficiency of the nozzle should be in (0;100) %!")]
     [InlineData(
         90.0,
         0.0,
@@ -62,18 +46,8 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
         80.0,
         "Isentropic efficiency of the suction section should be in (0;100) %!"
     )]
-    [InlineData(
-        90.0,
-        90.0,
-        0.0,
-        "Isentropic efficiency of the diffuser should be in (0;100) %!"
-    )]
-    [InlineData(
-        90.0,
-        90.0,
-        100.0,
-        "Isentropic efficiency of the diffuser should be in (0;100) %!"
-    )]
+    [InlineData(90.0, 90.0, 0.0, "Isentropic efficiency of the diffuser should be in (0;100) %!")]
+    [InlineData(90.0, 90.0, 100.0, "Isentropic efficiency of the diffuser should be in (0;100) %!")]
     public static void Ejector_WrongEfficiencyAny_ThrowsValidationException(
         double nozzleIsentropicEfficiency,
         double suctionIsentropicEfficiency,
@@ -87,19 +61,13 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
                 suctionIsentropicEfficiency.Percent(),
                 diffuserIsentropicEfficiency.Percent()
             );
-        action
-            .Should()
-            .Throw<ValidationException>()
-            .WithMessage($"*{message}*");
+        action.Should().Throw<ValidationException>().WithMessage($"*{message}*");
     }
 
     [Fact]
     public void NozzleEfficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _sut.NozzleEfficiency.Equals(
-                _nozzleEfficiency,
-                _comparison.Tolerance.Percent()
-            )
+        _sut.NozzleEfficiency.Equals(_nozzleEfficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
         _sut.NozzleEfficiency.Unit.Should().Be(RatioUnit.Percent);
@@ -108,10 +76,7 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void SuctionEfficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _sut.SuctionEfficiency.Equals(
-                _suctionEfficiency,
-                _comparison.Tolerance.Percent()
-            )
+        _sut.SuctionEfficiency.Equals(_suctionEfficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
         _sut.SuctionEfficiency.Unit.Should().Be(RatioUnit.Percent);
@@ -120,10 +85,7 @@ public class EjectorTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void DiffuserEfficiency_Always_ReturnsEnteredValueInPercents()
     {
-        _sut.DiffuserEfficiency.Equals(
-                _diffuserEfficiency,
-                _comparison.Tolerance.Percent()
-            )
+        _sut.DiffuserEfficiency.Equals(_diffuserEfficiency, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
         _sut.DiffuserEfficiency.Unit.Should().Be(RatioUnit.Percent);

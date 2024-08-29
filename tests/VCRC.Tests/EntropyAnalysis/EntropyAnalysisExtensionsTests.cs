@@ -2,7 +2,7 @@
 
 namespace VCRC.Tests;
 
-public class EntropyAnalysisExtensionsTests
+public sealed class EntropyAnalysisExtensionsTests
 {
     private readonly IList<IEntropyAnalysable> _cycles;
     private readonly IList<Temperature> _indoor;
@@ -11,18 +11,9 @@ public class EntropyAnalysisExtensionsTests
 
     public EntropyAnalysisExtensionsTests()
     {
-        _indoor = Enumerable
-            .Range(18, 5)
-            .Select(i => i.DegreesCelsius())
-            .ToList();
-        _indoorExtended = Enumerable
-            .Range(18, 6)
-            .Select(i => i.DegreesCelsius())
-            .ToList();
-        _outdoor = Enumerable
-            .Range(36, 5)
-            .Select(i => i.DegreesCelsius())
-            .ToList();
+        _indoor = Enumerable.Range(18, 5).Select(i => i.DegreesCelsius()).ToList();
+        _indoorExtended = Enumerable.Range(18, 6).Select(i => i.DegreesCelsius()).ToList();
+        _outdoor = Enumerable.Range(36, 5).Select(i => i.DegreesCelsius()).ToList();
         _cycles = Enumerable
             .Range(0, _indoor.Count)
             .Select(i => CreateVCRC(_indoor[i], _outdoor[i]))
@@ -32,8 +23,7 @@ public class EntropyAnalysisExtensionsTests
     [Fact]
     public void EntropyAnalysisInRange_ListsOfTemperaturesWithDifferentCount_ThrowsArgumentException()
     {
-        Action action = () =>
-            _cycles.EntropyAnalysis(_indoorExtended, _outdoor);
+        Action action = () => _cycles.EntropyAnalysis(_indoorExtended, _outdoor);
         action
             .Should()
             .Throw<ArgumentException>()
@@ -47,18 +37,12 @@ public class EntropyAnalysisExtensionsTests
             .Should()
             .Be(
                 _cycles
-                    .Select(
-                        (cycle, i) =>
-                            cycle.EntropyAnalysis(_indoor[i], _outdoor[i])
-                    )
+                    .Select((cycle, i) => cycle.EntropyAnalysis(_indoor[i], _outdoor[i]))
                     .ToList()
                     .Average()
             );
 
-    private static IEntropyAnalysable CreateVCRC(
-        Temperature indoor,
-        Temperature outdoor
-    )
+    private static IEntropyAnalysable CreateVCRC(Temperature indoor, Temperature outdoor)
     {
         const FluidsList refrigerantName = FluidsList.R32;
         var evaporator = new Evaporator(

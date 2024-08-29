@@ -2,8 +2,5 @@
 
 internal interface IEntropyAnalyzer
 {
-    IEntropyAnalysisResult PerformAnalysis(
-        Temperature indoor,
-        Temperature outdoor
-    );
+    IEntropyAnalysisResult PerformAnalysis(Temperature indoor, Temperature outdoor);
 }
