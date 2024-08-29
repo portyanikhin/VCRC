@@ -6,7 +6,7 @@
 public interface IEntropyAnalysisResult
 {
     /// <summary>
-    ///     Degree of thermodynamic perfection of the cycle (by default, %).
+    ///     Thermodynamic perfection degree of the cycle (by default, %).
     /// </summary>
     Ratio ThermodynamicPerfection { get; }
 

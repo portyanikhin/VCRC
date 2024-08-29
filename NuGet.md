@@ -7,7 +7,7 @@
 [![License](https://img.shields.io/github/license/portyanikhin/VCRC)](https://github.com/portyanikhin/VCRC/blob/main/LICENSE)
 [![codecov](https://codecov.io/gh/portyanikhin/VCRC/branch/main/graph/badge.svg?token=aJmrRHNQnS)](https://codecov.io/gh/portyanikhin/VCRC)
 
-A cross-platform vapor-compression refrigeration cycles analysis tool
+Cross-platform vapor-compression refrigeration cycles analysis tool
 using [SharpProp](https://github.com/portyanikhin/SharpProp).
 
 _**See [full documentation](https://github.com/portyanikhin/VCRC).**_

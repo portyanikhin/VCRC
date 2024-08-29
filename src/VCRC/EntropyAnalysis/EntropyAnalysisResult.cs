@@ -2,7 +2,7 @@
 
 /// <inheritdoc cref="IEntropyAnalysisResult"/>
 /// <param name="ThermodynamicPerfection">
-///     Degree of thermodynamic perfection of the cycle (by default, %).
+///     Thermodynamic perfection degree of the cycle (by default, %).
 /// </param>
 /// <param name="MinSpecificWorkRatio">
 ///     Minimum specific work (its percentage of the total specific work) (by default, %).
@@ -65,14 +65,10 @@ public record EntropyAnalysisResult(
     public Ratio CompressorEnergyLossRatio { get; } = CompressorEnergyLossRatio;
     public Ratio CondenserEnergyLossRatio { get; } = CondenserEnergyLossRatio;
     public Ratio GasCoolerEnergyLossRatio { get; } = GasCoolerEnergyLossRatio;
-
     public Ratio ExpansionValvesEnergyLossRatio { get; } = ExpansionValvesEnergyLossRatio;
-
     public Ratio EjectorEnergyLossRatio { get; } = EjectorEnergyLossRatio;
     public Ratio EvaporatorEnergyLossRatio { get; } = EvaporatorEnergyLossRatio;
-
     public Ratio RecuperatorEnergyLossRatio { get; } = RecuperatorEnergyLossRatio;
-
     public Ratio EconomizerEnergyLossRatio { get; } = EconomizerEnergyLossRatio;
     public Ratio MixingEnergyLossRatio { get; } = MixingEnergyLossRatio;
     public Ratio AnalysisRelativeError { get; } = AnalysisRelativeError;
