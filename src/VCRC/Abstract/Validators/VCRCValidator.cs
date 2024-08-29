@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class VCRCValidator : AbstractValidator<IVCRC>
+internal sealed class VCRCValidator : AbstractValidator<IVCRC>
 {
     public VCRCValidator()
     {
@@ -10,9 +10,6 @@ internal class VCRCValidator : AbstractValidator<IVCRC>
         RuleFor(vcrc => vcrc.HeatReleaser.Temperature)
             .GreaterThan(vcrc => vcrc.Evaporator.Temperature)
             .When(vcrc => vcrc.HeatReleaser is Condenser)
-            .WithMessage(
-                "Condensing temperature should be "
-                    + "greater than evaporating temperature!"
-            );
+            .WithMessage("Condensing temperature should be greater than evaporating temperature!");
     }
 }

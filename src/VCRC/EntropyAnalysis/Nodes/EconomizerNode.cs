@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class EconomizerNode(
+internal sealed class EconomizerNode(
     Ratio coldSideSpecificMassFlow,
     IRefrigerant coldInlet,
     IRefrigerant coldOutlet,
@@ -13,10 +13,8 @@ internal class EconomizerNode(
         (
             hotSource.Kelvins
             * (
-                coldSideSpecificMassFlow.DecimalFractions
-                    * (coldOutlet.Entropy - coldInlet.Entropy)
-                - hotSideSpecificMassFlow.DecimalFractions
-                    * (hotInlet.Entropy - hotOutlet.Entropy)
+                coldSideSpecificMassFlow.DecimalFractions * (coldOutlet.Entropy - coldInlet.Entropy)
+                - hotSideSpecificMassFlow.DecimalFractions * (hotInlet.Entropy - hotOutlet.Entropy)
             ).JoulesPerKilogramKelvin
         ).JoulesPerKilogram();
 }

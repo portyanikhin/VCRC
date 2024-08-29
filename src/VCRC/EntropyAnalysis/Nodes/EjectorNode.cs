@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class EjectorNode(
+internal sealed class EjectorNode(
     IRefrigerant outlet,
     Ratio nozzleSpecificMassFlow,
     IRefrigerant nozzleInlet,
@@ -12,14 +12,10 @@ internal class EjectorNode(
         (
             hotSource.Kelvins
             * (
-                (
-                    nozzleSpecificMassFlow + suctionSpecificMassFlow
-                ).DecimalFractions * outlet.Entropy
+                (nozzleSpecificMassFlow + suctionSpecificMassFlow).DecimalFractions * outlet.Entropy
                 - (
-                    nozzleSpecificMassFlow.DecimalFractions
-                        * nozzleInlet.Entropy
-                    + suctionSpecificMassFlow.DecimalFractions
-                        * suctionInlet.Entropy
+                    nozzleSpecificMassFlow.DecimalFractions * nozzleInlet.Entropy
+                    + suctionSpecificMassFlow.DecimalFractions * suctionInlet.Entropy
                 )
             ).JoulesPerKilogramKelvin
         ).JoulesPerKilogram();

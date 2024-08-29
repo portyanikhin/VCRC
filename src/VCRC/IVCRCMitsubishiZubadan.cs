@@ -1,4 +1,6 @@
-﻿namespace VCRC;
+﻿// ReSharper disable InconsistentNaming
+
+namespace VCRC;
 
 /// <summary>
 ///     Mitsubishi Zubadan VCRC (subcritical only).
@@ -7,10 +9,7 @@
 ///     Two-stage subcritical VCRC with economizer,
 ///     recuperator and two-phase injection into the compressor.
 /// </remarks>
-public interface IVCRCMitsubishiZubadan
-    : ITwoStageVCRC,
-        IHaveRecuperator,
-        IHaveEconomizerWithTPI
+public interface IVCRCMitsubishiZubadan : ITwoStageVCRC, IHaveRecuperator, IHaveEconomizerWithTPI
 {
     /// <summary>
     ///     Condenser.
@@ -28,15 +27,13 @@ public interface IVCRCMitsubishiZubadan
     IRefrigerant Point1 { get; }
 
     /// <summary>
-    ///     Point 2 – recuperator "cold" outlet /
-    ///     first compression stage suction.
+    ///     Point 2 – recuperator "cold" outlet / first compression stage suction.
     /// </summary>
     IRefrigerant Point2 { get; }
 
     /// <summary>
     ///     Point 3s – first isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point3s { get; }
 
     /// <summary>
@@ -52,7 +49,6 @@ public interface IVCRCMitsubishiZubadan
     /// <summary>
     ///     Point 5s – second isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point5s { get; }
 
     /// <summary>
@@ -71,8 +67,7 @@ public interface IVCRCMitsubishiZubadan
     IRefrigerant Point7 { get; }
 
     /// <summary>
-    ///     Point 8 – recuperator "hot" outlet /
-    ///     second EV inlet / economizer "hot" inlet.
+    ///     Point 8 – recuperator "hot" outlet / second EV inlet / economizer "hot" inlet.
     /// </summary>
     IRefrigerant Point8 { get; }
 

@@ -16,8 +16,7 @@ public interface IVCRC : IEntropyAnalysable
     public ICompressor Compressor { get; }
 
     /// <summary>
-    ///     Heat releaser (condenser for subcritical VCRC or
-    ///     gas cooler for transcritical VCRC).
+    ///     Heat releaser (condenser for subcritical VCRC or gas cooler for transcritical VCRC).
     /// </summary>
     public IHeatReleaser HeatReleaser { get; }
 
@@ -32,8 +31,7 @@ public interface IVCRC : IEntropyAnalysable
     public IHeatReleaser? GasCooler { get; }
 
     /// <summary>
-    ///     <c>true</c> if VCRC is transcritical,
-    ///     <c>false</c> if VCRC is subcritical.
+    ///     <c>true</c> if VCRC is transcritical, <c>false</c> if VCRC is subcritical.
     /// </summary>
     public bool IsTranscritical { get; }
 

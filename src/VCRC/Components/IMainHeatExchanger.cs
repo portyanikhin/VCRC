@@ -11,8 +11,7 @@ public interface IMainHeatExchanger
     FluidsList RefrigerantName { get; }
 
     /// <summary>
-    ///     Characteristic temperature
-    ///     (evaporating temperature (dew point) for the evaporator;
+    ///     Characteristic temperature (evaporating temperature (dew point) for the evaporator;
     ///     condensing temperature (bubble point) for the condenser;
     ///     outlet temperature for the gas cooler).
     /// </summary>

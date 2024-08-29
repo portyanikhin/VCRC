@@ -1,6 +1,6 @@
 ﻿namespace VCRC;
 
-internal class MixingNode(
+internal sealed class MixingNode(
     IRefrigerant outlet,
     Ratio firstSpecificMassFlow,
     IRefrigerant first,
@@ -12,9 +12,7 @@ internal class MixingNode(
         (
             hotSource.Kelvins
             * (
-                (
-                    firstSpecificMassFlow + secondSpecificMassFlow
-                ).DecimalFractions * outlet.Entropy
+                (firstSpecificMassFlow + secondSpecificMassFlow).DecimalFractions * outlet.Entropy
                 - (
                     firstSpecificMassFlow.DecimalFractions * first.Entropy
                     + secondSpecificMassFlow.DecimalFractions * second.Entropy

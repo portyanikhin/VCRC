@@ -2,7 +2,7 @@
 
 namespace VCRC.Tests;
 
-public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
+public sealed class EjectorFlowsTests : IClassFixture<ComparisonFixture>
 {
     private readonly ComparisonFixture _comparison;
     private readonly IEjector _ejector;
@@ -21,8 +21,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
         _suctionInlet = _refrigerant.DewPointAt(5.DegreesCelsius());
         _sut = _ejector.CalculateFlows(_nozzleInlet, _suctionInlet);
         var mixingInletSpeed =
-            _sut.FlowRatio.DecimalFractions
-                * CalculateOutletSpeed(_nozzleInlet, _sut.NozzleOutlet)
+            _sut.FlowRatio.DecimalFractions * CalculateOutletSpeed(_nozzleInlet, _sut.NozzleOutlet)
             + (1 - _sut.FlowRatio.DecimalFractions)
                 * CalculateOutletSpeed(_suctionInlet, _sut.SuctionOutlet);
         _mixingInletKineticEnergy = (
@@ -35,9 +34,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     {
         Action action = () =>
             _ = _ejector.CalculateFlows(
-                new Refrigerant(FluidsList.R22).BubblePointAt(
-                    45.DegreesCelsius()
-                ),
+                new Refrigerant(FluidsList.R22).BubblePointAt(45.DegreesCelsius()),
                 _suctionInlet
             );
         action
@@ -49,14 +46,12 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void EjectorFlows_WrongPressures_ThrowsValidationException()
     {
-        Action action = () =>
-            _ = _ejector.CalculateFlows(_suctionInlet, _nozzleInlet);
+        Action action = () => _ = _ejector.CalculateFlows(_suctionInlet, _nozzleInlet);
         action
             .Should()
             .Throw<ValidationException>()
             .WithMessage(
-                "*Ejector nozzle inlet pressure "
-                    + "should be greater than suction inlet pressure!*"
+                "*Ejector nozzle inlet pressure should be greater than suction inlet pressure!*"
             );
     }
 
@@ -72,12 +67,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     public void NozzleOutlet_Always_ReturnsNozzleInletAfterExpansionToMixingPressure()
     {
         _sut.NozzleOutlet.Should()
-            .Be(
-                _sut.NozzleInlet.ExpansionTo(
-                    _sut.MixingInlet.Pressure,
-                    _ejector.NozzleEfficiency
-                )
-            );
+            .Be(_sut.NozzleInlet.ExpansionTo(_sut.MixingInlet.Pressure, _ejector.NozzleEfficiency));
         _sut.NozzleOutlet.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -86,10 +76,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     {
         _sut.SuctionOutlet.Should()
             .Be(
-                _sut.SuctionInlet.ExpansionTo(
-                    _sut.MixingInlet.Pressure,
-                    _ejector.SuctionEfficiency
-                )
+                _sut.SuctionInlet.ExpansionTo(_sut.MixingInlet.Pressure, _ejector.SuctionEfficiency)
             );
         _sut.SuctionOutlet.Phase.Should().Be(Phases.TwoPhase);
     }
@@ -101,8 +88,7 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
         _sut.MixingInlet.Enthalpy.Should()
             .Be(
                 _sut.FlowRatio.DecimalFractions * _nozzleInlet.Enthalpy
-                    + (1 - _sut.FlowRatio.DecimalFractions)
-                        * _suctionInlet.Enthalpy
+                    + (1 - _sut.FlowRatio.DecimalFractions) * _suctionInlet.Enthalpy
                     - _mixingInletKineticEnergy
             );
         _sut.MixingInlet.Phase.Should().Be(Phases.TwoPhase);
@@ -120,17 +106,13 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
                                 Input.Entropy(_sut.MixingInlet.Entropy),
                                 Input.Enthalpy(
                                     _sut.MixingInlet.Enthalpy
-                                        + _ejector
-                                            .DiffuserEfficiency
-                                            .DecimalFractions
+                                        + _ejector.DiffuserEfficiency.DecimalFractions
                                             * _mixingInletKineticEnergy
                                 )
                             )
                             .Pressure
                     ),
-                    Input.Enthalpy(
-                        _sut.MixingInlet.Enthalpy + _mixingInletKineticEnergy
-                    )
+                    Input.Enthalpy(_sut.MixingInlet.Enthalpy + _mixingInletKineticEnergy)
                 )
             );
         _sut.DiffuserOutlet.Phase.Should().Be(Phases.TwoPhase);
@@ -139,17 +121,10 @@ public class EjectorFlowsTests : IClassFixture<ComparisonFixture>
     [Fact]
     public void FlowRatio_Always_ReturnsApproximatelyDiffuserOutletVaporQuality() =>
         _sut
-            .FlowRatio.Equals(
-                _sut.DiffuserOutlet.Quality!.Value,
-                _comparison.Tolerance.Percent()
-            )
+            .FlowRatio.Equals(_sut.DiffuserOutlet.Quality!.Value, _comparison.Tolerance.Percent())
             .Should()
             .BeTrue();
 
-    private static Speed CalculateOutletSpeed(
-        IFluidState inlet,
-        IFluidState outlet
-    ) =>
-        Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram)
-            .MetersPerSecond();
+    private static Speed CalculateOutletSpeed(IFluidState inlet, IFluidState outlet) =>
+        Math.Sqrt(2 * (inlet.Enthalpy - outlet.Enthalpy).JoulesPerKilogram).MetersPerSecond();
 }

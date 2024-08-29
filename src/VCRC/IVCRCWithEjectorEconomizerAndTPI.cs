@@ -1,4 +1,6 @@
-﻿namespace VCRC;
+﻿// ReSharper disable InconsistentNaming
+
+namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with an ejector as an expansion device,
@@ -17,7 +19,6 @@ public interface IVCRCWithEjectorEconomizerAndTPI
     /// <summary>
     ///     Point 2s – first isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point2s { get; }
 
     /// <summary>
@@ -33,18 +34,15 @@ public interface IVCRCWithEjectorEconomizerAndTPI
     /// <summary>
     ///     Point 4s – second isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point4s { get; }
 
     /// <summary>
-    ///     Point 4 – second compression stage discharge /
-    ///     condenser or gas cooler inlet.
+    ///     Point 4 – second compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
     IRefrigerant Point4 { get; }
 
     /// <summary>
-    ///     Point 5 – condenser or gas cooler outlet /
-    ///     first EV inlet / economizer "hot" inlet.
+    ///     Point 5 – condenser or gas cooler outlet / first EV inlet / economizer "hot" inlet.
     /// </summary>
     IRefrigerant Point5 { get; }
 

@@ -2,7 +2,7 @@
 
 namespace VCRC.Tests;
 
-public class EconomizerTests : IClassFixture<ComparisonFixture>
+public sealed class EconomizerTests : IClassFixture<ComparisonFixture>
 {
     private readonly ComparisonFixture _comparison;
     private readonly TemperatureDelta _superheat;
@@ -20,26 +20,19 @@ public class EconomizerTests : IClassFixture<ComparisonFixture>
     [Theory]
     [InlineData(-1.0)]
     [InlineData(51.0)]
-    public void Economizer_WrongSuperheat_ThrowsValidationException(
-        double superheat
-    )
+    public void Economizer_WrongSuperheat_ThrowsValidationException(double superheat)
     {
-        Action action = () =>
-            _ = new Economizer(_temperatureDifference, superheat.Kelvins());
+        Action action = () => _ = new Economizer(_temperatureDifference, superheat.Kelvins());
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Superheat in the economizer should be in [0;50] K!*"
-            );
+            .WithMessage("*Superheat in the economizer should be in [0;50] K!*");
     }
 
     [Fact]
     public void Superheat_Always_ReturnsEnteredValueInKelvins()
     {
-        _sut.Superheat.Equals(_superheat, _comparison.Tolerance.Kelvins())
-            .Should()
-            .BeTrue();
+        _sut.Superheat.Equals(_superheat, _comparison.Tolerance.Kelvins()).Should().BeTrue();
         _sut.Superheat.Unit.Should().Be(TemperatureDeltaUnit.Kelvin);
     }
 }

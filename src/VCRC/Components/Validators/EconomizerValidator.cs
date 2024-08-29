@@ -2,7 +2,7 @@
 
 namespace VCRC;
 
-internal class EconomizerValidator : AbstractValidator<IEconomizer>
+internal sealed class EconomizerValidator : AbstractValidator<IEconomizer>
 {
     public EconomizerValidator() =>
         RuleFor(economizer => economizer.Superheat)

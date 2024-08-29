@@ -1,6 +1,6 @@
 ﻿namespace VCRC.Tests;
 
-public class VCRCWithEconomizerAndTPITranscriticalTests(
+public sealed class VCRCWithEconomizerAndTPITranscriticalTests(
     ComparisonFixture comparison,
     TranscriticalVCRCFixture<IVCRCWithEconomizerAndTPI> fixture
 )
@@ -16,8 +16,7 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
         fixture.Instance.Compressor.Should().Be(fixture.Compressor);
 
     [Fact]
-    public void Condenser_ForThisCase_ReturnsNull() =>
-        fixture.Instance.Condenser.Should().BeNull();
+    public void Condenser_ForThisCase_ReturnsNull() => fixture.Instance.Condenser.Should().BeNull();
 
     [Fact]
     public void GasCooler_ForThisCase_ReturnsEnteredValue() =>
@@ -42,7 +41,6 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
     }
 
     [Fact]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point2s_Always_ReturnsFirstIsentropicCompressionStageDischarge()
     {
         fixture
@@ -74,25 +72,16 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
     {
         fixture
             .Instance.Point3.Should()
-            .Be(
-                fixture.Refrigerant.DewPointAt(
-                    fixture.Instance.IntermediatePressure
-                )
-            );
+            .Be(fixture.Refrigerant.DewPointAt(fixture.Instance.IntermediatePressure));
         fixture.Instance.Point3.Phase.Should().Be(Phases.TwoPhase);
     }
 
     [Fact]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point4s_Always_ReturnsSecondIsentropicCompressionStageDischarge()
     {
         fixture
             .Instance.Point4s.Should()
-            .Be(
-                fixture.Instance.Point3.IsentropicCompressionTo(
-                    fixture.GasCooler.Pressure
-                )
-            );
+            .Be(fixture.Instance.Point3.IsentropicCompressionTo(fixture.GasCooler.Pressure));
         fixture.Instance.Point4s.Phase.Should().Be(Phases.Supercritical);
     }
 
@@ -141,29 +130,13 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
                         (
                             fixture.Instance.Point6.Enthalpy.JoulesPerKilogram
                                 * (
-                                    fixture
-                                        .Instance
-                                        .Point2
-                                        .Enthalpy
-                                        .JoulesPerKilogram
-                                    - fixture
-                                        .Instance
-                                        .Point3
-                                        .Enthalpy
-                                        .JoulesPerKilogram
+                                    fixture.Instance.Point2.Enthalpy.JoulesPerKilogram
+                                    - fixture.Instance.Point3.Enthalpy.JoulesPerKilogram
                                 )
                             + fixture.Instance.Point3.Enthalpy.JoulesPerKilogram
                                 * (
-                                    fixture
-                                        .Instance
-                                        .Point5
-                                        .Enthalpy
-                                        .JoulesPerKilogram
-                                    - fixture
-                                        .Instance
-                                        .Point8
-                                        .Enthalpy
-                                        .JoulesPerKilogram
+                                    fixture.Instance.Point5.Enthalpy.JoulesPerKilogram
+                                    - fixture.Instance.Point8.Enthalpy.JoulesPerKilogram
                                 )
                         )
                         / (
@@ -185,8 +158,7 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
             .Instance.Point8.Should()
             .Be(
                 fixture.Instance.Point5.CoolingTo(
-                    fixture.Instance.Point6.Temperature
-                        + fixture.Economizer.TemperatureDifference
+                    fixture.Instance.Point6.Temperature + fixture.Economizer.TemperatureDifference
                 )
             );
         fixture.Instance.Point8.Phase.Should().Be(Phases.SupercriticalLiquid);
@@ -197,11 +169,7 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
     {
         fixture
             .Instance.Point9.Should()
-            .Be(
-                fixture.Instance.Point8.IsenthalpicExpansionTo(
-                    fixture.Evaporator.Pressure
-                )
-            );
+            .Be(fixture.Instance.Point8.IsenthalpicExpansionTo(fixture.Evaporator.Pressure));
         fixture.Instance.Point9.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -220,14 +188,8 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
                 fixture.Instance.EvaporatorSpecificMassFlow
                     * (
                         1
-                        + (
-                            fixture.Instance.Point2.Enthalpy
-                            - fixture.Instance.Point3.Enthalpy
-                        )
-                            / (
-                                fixture.Instance.Point3.Enthalpy
-                                - fixture.Instance.Point7.Enthalpy
-                            )
+                        + (fixture.Instance.Point2.Enthalpy - fixture.Instance.Point3.Enthalpy)
+                            / (fixture.Instance.Point3.Enthalpy - fixture.Instance.Point7.Enthalpy)
                     ),
                 comparison.Tolerance.Percent()
             )
@@ -249,14 +211,8 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
             .Instance.IsentropicSpecificWork.Equals(
                 fixture.Instance.Point2s.Enthalpy
                     - fixture.Instance.Point1.Enthalpy
-                    + fixture
-                        .Instance
-                        .HeatReleaserSpecificMassFlow
-                        .DecimalFractions
-                        * (
-                            fixture.Instance.Point4s.Enthalpy
-                            - fixture.Instance.Point3.Enthalpy
-                        ),
+                    + fixture.Instance.HeatReleaserSpecificMassFlow.DecimalFractions
+                        * (fixture.Instance.Point4s.Enthalpy - fixture.Instance.Point3.Enthalpy),
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -277,8 +233,7 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
         fixture
             .Instance.SpecificCoolingCapacity.Equals(
-                fixture.Instance.Point1.Enthalpy
-                    - fixture.Instance.Point9.Enthalpy,
+                fixture.Instance.Point1.Enthalpy - fixture.Instance.Point9.Enthalpy,
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -289,10 +244,7 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
         fixture
             .Instance.SpecificHeatingCapacity.Equals(
                 fixture.Instance.HeatReleaserSpecificMassFlow.DecimalFractions
-                    * (
-                        fixture.Instance.Point4.Enthalpy
-                        - fixture.Instance.Point5.Enthalpy
-                    ),
+                    * (fixture.Instance.Point4.Enthalpy - fixture.Instance.Point5.Enthalpy),
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -303,13 +255,8 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
     {
         fixture
             .Instance.EER.Should()
-            .Be(
-                fixture.Instance.SpecificCoolingCapacity
-                    / fixture.Instance.SpecificWork
-            );
-        fixture
-            .Instance.EER.Should()
-            .BeApproximately(2.7733154591838005, comparison.Tolerance);
+            .Be(fixture.Instance.SpecificCoolingCapacity / fixture.Instance.SpecificWork);
+        fixture.Instance.EER.Should().BeApproximately(2.7733154591838005, comparison.Tolerance);
     }
 
     [Fact]
@@ -317,13 +264,8 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
     {
         fixture
             .Instance.COP.Should()
-            .Be(
-                fixture.Instance.SpecificHeatingCapacity
-                    / fixture.Instance.SpecificWork
-            );
-        fixture
-            .Instance.COP.Should()
-            .BeApproximately(3.773315459183803, comparison.Tolerance);
+            .Be(fixture.Instance.SpecificHeatingCapacity / fixture.Instance.SpecificWork);
+        fixture.Instance.COP.Should().BeApproximately(3.773315459183803, comparison.Tolerance);
     }
 
     [Fact]
@@ -372,9 +314,7 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
 
     [Fact]
     public void RecuperatorEnergyLossRatio_Always_Returns0() =>
-        fixture
-            .AnalysisResult.RecuperatorEnergyLossRatio.Percent.Should()
-            .Be(0);
+        fixture.AnalysisResult.RecuperatorEnergyLossRatio.Percent.Should().Be(0);
 
     [Fact]
     public void EconomizerEnergyLossRatio_ForThisCase_ReturnsAbout2() =>
@@ -394,9 +334,6 @@ public class VCRCWithEconomizerAndTPITranscriticalTests(
         fixture
             .AnalysisResult.AnalysisRelativeError.Percent.Should()
             .BeApproximately(0.4234305005094076, comparison.Tolerance);
-        fixture
-            .AnalysisResult.Sum()
-            .Percent.Should()
-            .BeApproximately(100, comparison.Tolerance);
+        fixture.AnalysisResult.Sum().Percent.Should().BeApproximately(100, comparison.Tolerance);
     }
 }

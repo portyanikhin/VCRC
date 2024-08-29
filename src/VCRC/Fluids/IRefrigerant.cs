@@ -8,33 +8,25 @@ public interface IRefrigerant : IFluid
     /// <summary>
     ///     Absolute pressure at the critical point (by default, kPa).
     /// </summary>
-    /// <exception cref="NullReferenceException">
-    ///     Invalid critical pressure!
-    /// </exception>
+    /// <exception cref="NullReferenceException">Invalid critical pressure!</exception>
     new Pressure CriticalPressure { get; }
 
     /// <summary>
     ///     Temperature at the critical point (by default, °C).
     /// </summary>
-    /// <exception cref="NullReferenceException">
-    ///     Invalid critical temperature!
-    /// </exception>
+    /// <exception cref="NullReferenceException">Invalid critical temperature!</exception>
     new Temperature CriticalTemperature { get; }
 
     /// <summary>
     ///     Absolute pressure at the triple point (by default, kPa).
     /// </summary>
-    /// <exception cref="NullReferenceException">
-    ///     Invalid triple pressure!
-    /// </exception>
+    /// <exception cref="NullReferenceException">Invalid triple pressure!</exception>
     new Pressure TriplePressure { get; }
 
     /// <summary>
     ///     Temperature at the triple point (by default, °C).
     /// </summary>
-    /// <exception cref="NullReferenceException">
-    ///     Invalid triple temperature!
-    /// </exception>
+    /// <exception cref="NullReferenceException">Invalid triple temperature!</exception>
     new Temperature TripleTemperature { get; }
 
     /// <summary>
@@ -69,10 +61,7 @@ public interface IRefrigerant : IFluid
     /// <param name="subcooling">Subcooling.</param>
     /// <returns>Subcooled refrigerant.</returns>
     /// <exception cref="ArgumentException">Invalid subcooling!</exception>
-    IRefrigerant Subcooled(
-        Temperature bubblePointTemperature,
-        TemperatureDelta subcooling
-    );
+    IRefrigerant Subcooled(Temperature bubblePointTemperature, TemperatureDelta subcooling);
 
     /// <summary>
     ///     Subcooled refrigerant.
@@ -90,10 +79,7 @@ public interface IRefrigerant : IFluid
     /// <param name="superheat">Superheat.</param>
     /// <returns>Superheated refrigerant.</returns>
     /// <exception cref="ArgumentException">Invalid superheat!</exception>
-    IRefrigerant Superheated(
-        Temperature dewPointTemperature,
-        TemperatureDelta superheat
-    );
+    IRefrigerant Superheated(Temperature dewPointTemperature, TemperatureDelta superheat);
 
     /// <summary>
     ///     Superheated refrigerant.
@@ -114,10 +100,7 @@ public interface IRefrigerant : IFluid
     new IRefrigerant IsentropicCompressionTo(Pressure pressure);
 
     /// <inheritdoc cref="IFluid.CompressionTo"/>
-    new IRefrigerant CompressionTo(
-        Pressure pressure,
-        Ratio isentropicEfficiency
-    );
+    new IRefrigerant CompressionTo(Pressure pressure, Ratio isentropicEfficiency);
 
     /// <inheritdoc cref="IFluid.IsenthalpicExpansionTo"/>
     new IRefrigerant IsenthalpicExpansionTo(Pressure pressure);
@@ -129,28 +112,16 @@ public interface IRefrigerant : IFluid
     new IRefrigerant ExpansionTo(Pressure pressure, Ratio isentropicEfficiency);
 
     /// <inheritdoc cref="IFluid.CoolingTo(Temperature, Pressure?)"/>
-    new IRefrigerant CoolingTo(
-        Temperature temperature,
-        Pressure? pressureDrop = null
-    );
+    new IRefrigerant CoolingTo(Temperature temperature, Pressure? pressureDrop = null);
 
     /// <inheritdoc cref="IFluid.CoolingTo(SpecificEnergy, Pressure?)"/>
-    new IRefrigerant CoolingTo(
-        SpecificEnergy enthalpy,
-        Pressure? pressureDrop = null
-    );
+    new IRefrigerant CoolingTo(SpecificEnergy enthalpy, Pressure? pressureDrop = null);
 
     /// <inheritdoc cref="IFluid.HeatingTo(Temperature, Pressure?)"/>
-    new IRefrigerant HeatingTo(
-        Temperature temperature,
-        Pressure? pressureDrop = null
-    );
+    new IRefrigerant HeatingTo(Temperature temperature, Pressure? pressureDrop = null);
 
     /// <inheritdoc cref="IFluid.HeatingTo(SpecificEnergy, Pressure?)"/>
-    new IRefrigerant HeatingTo(
-        SpecificEnergy enthalpy,
-        Pressure? pressureDrop = null
-    );
+    new IRefrigerant HeatingTo(SpecificEnergy enthalpy, Pressure? pressureDrop = null);
 
     /// <inheritdoc cref="IFluid.BubblePointAt(Pressure)"/>
     new IRefrigerant BubblePointAt(Pressure pressure);

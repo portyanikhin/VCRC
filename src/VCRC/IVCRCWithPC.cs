@@ -1,4 +1,6 @@
-﻿namespace VCRC;
+﻿// ReSharper disable InconsistentNaming
+
+namespace VCRC;
 
 /// <summary>
 ///     Two-stage VCRC with parallel compression.
@@ -13,7 +15,6 @@ public interface IVCRCWithPC : ITwoStageVCRC
     /// <summary>
     ///     Point 2s – first isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point2s { get; }
 
     /// <summary>
@@ -29,7 +30,6 @@ public interface IVCRCWithPC : ITwoStageVCRC
     /// <summary>
     ///     Point 4s – second isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point4s { get; }
 
     /// <summary>

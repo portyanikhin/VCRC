@@ -1,4 +1,6 @@
-﻿namespace VCRC;
+﻿// ReSharper disable InconsistentNaming
+
+namespace VCRC;
 
 /// <summary>
 ///     Single-stage VCRC with recuperator.
@@ -18,12 +20,10 @@ public interface IVCRCWithRecuperator : IVCRC, IHaveRecuperator
     /// <summary>
     ///     Point 3s – isentropic compression stage discharge.
     /// </summary>
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     IRefrigerant Point3s { get; }
 
     /// <summary>
-    ///     Point 3 – compression stage discharge /
-    ///     condenser or gas cooler inlet.
+    ///     Point 3 – compression stage discharge / condenser or gas cooler inlet.
     /// </summary>
     IRefrigerant Point3 { get; }
 

@@ -1,11 +1,9 @@
 ﻿namespace VCRC.Tests;
 
-public class VCRCWithRecuperatorSubcriticalTests(
+public sealed class VCRCWithRecuperatorSubcriticalTests(
     ComparisonFixture comparison,
     SubcriticalVCRCFixture<IVCRCWithRecuperator> fixture
-)
-    : IClassFixture<ComparisonFixture>,
-        IClassFixture<SubcriticalVCRCFixture<IVCRCWithRecuperator>>
+) : IClassFixture<ComparisonFixture>, IClassFixture<SubcriticalVCRCFixture<IVCRCWithRecuperator>>
 {
     [Fact]
     public void VCRCWithRecuperator_WrongTemperatureDifferenceAtRecuperatorHotSide_ThrowsValidationException()
@@ -20,10 +18,7 @@ public class VCRCWithRecuperatorSubcriticalTests(
         action
             .Should()
             .Throw<ValidationException>()
-            .WithMessage(
-                "*Too high temperature difference "
-                    + "at the recuperator 'hot' side!*"
-            );
+            .WithMessage("*Too high temperature difference at the recuperator 'hot' side!*");
     }
 
     [Fact]
@@ -46,8 +41,7 @@ public class VCRCWithRecuperatorSubcriticalTests(
         fixture.Instance.Condenser.Should().Be(fixture.Condenser);
 
     [Fact]
-    public void GasCooler_ForThisCase_ReturnsNull() =>
-        fixture.Instance.GasCooler.Should().BeNull();
+    public void GasCooler_ForThisCase_ReturnsNull() => fixture.Instance.GasCooler.Should().BeNull();
 
     [Fact]
     public void IsTranscritical_ForThisCase_ReturnsFalse() =>
@@ -67,24 +61,18 @@ public class VCRCWithRecuperatorSubcriticalTests(
             .Instance.Point2.Should()
             .Be(
                 fixture.Instance.Point1.HeatingTo(
-                    fixture.Instance.Point4.Temperature
-                        - fixture.Recuperator.TemperatureDifference
+                    fixture.Instance.Point4.Temperature - fixture.Recuperator.TemperatureDifference
                 )
             );
         fixture.Instance.Point2.Phase.Should().Be(Phases.Gas);
     }
 
     [Fact]
-    [SuppressMessage("ReSharper", "InconsistentNaming")]
     public void Point3s_Always_ReturnsIsentropicCompressionStageDischarge()
     {
         fixture
             .Instance.Point3s.Should()
-            .Be(
-                fixture.Instance.Point2.IsentropicCompressionTo(
-                    fixture.Condenser.Pressure
-                )
-            );
+            .Be(fixture.Instance.Point2.IsentropicCompressionTo(fixture.Condenser.Pressure));
         fixture.Instance.Point3s.Phase.Should().Be(Phases.SupercriticalGas);
     }
 
@@ -117,10 +105,7 @@ public class VCRCWithRecuperatorSubcriticalTests(
             .Be(
                 fixture.Instance.Point4.CoolingTo(
                     fixture.Instance.Point4.Enthalpy
-                        - (
-                            fixture.Instance.Point2.Enthalpy
-                            - fixture.Instance.Point1.Enthalpy
-                        )
+                        - (fixture.Instance.Point2.Enthalpy - fixture.Instance.Point1.Enthalpy)
                 )
             );
         fixture.Instance.Point5.Phase.Should().Be(Phases.Liquid);
@@ -131,11 +116,7 @@ public class VCRCWithRecuperatorSubcriticalTests(
     {
         fixture
             .Instance.Point6.Should()
-            .Be(
-                fixture.Instance.Point5.IsenthalpicExpansionTo(
-                    fixture.Evaporator.Pressure
-                )
-            );
+            .Be(fixture.Instance.Point5.IsenthalpicExpansionTo(fixture.Evaporator.Pressure));
         fixture.Instance.Point6.Phase.Should().Be(Phases.TwoPhase);
     }
 
@@ -143,8 +124,7 @@ public class VCRCWithRecuperatorSubcriticalTests(
     public void IsentropicSpecificWork_Always_ReturnsEnthalpyDifferenceForIsentropicCompression() =>
         fixture
             .Instance.IsentropicSpecificWork.Equals(
-                fixture.Instance.Point3s.Enthalpy
-                    - fixture.Instance.Point2.Enthalpy,
+                fixture.Instance.Point3s.Enthalpy - fixture.Instance.Point2.Enthalpy,
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -165,8 +145,7 @@ public class VCRCWithRecuperatorSubcriticalTests(
     public void SpecificCoolingCapacity_Always_ReturnsEnthalpyDifferenceInEvaporator() =>
         fixture
             .Instance.SpecificCoolingCapacity.Equals(
-                fixture.Instance.Point1.Enthalpy
-                    - fixture.Instance.Point6.Enthalpy,
+                fixture.Instance.Point1.Enthalpy - fixture.Instance.Point6.Enthalpy,
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -176,8 +155,7 @@ public class VCRCWithRecuperatorSubcriticalTests(
     public void SpecificHeatingCapacity_Always_ReturnsEnthalpyDifferenceInCondenser() =>
         fixture
             .Instance.SpecificHeatingCapacity.Equals(
-                fixture.Instance.Point3.Enthalpy
-                    - fixture.Instance.Point4.Enthalpy,
+                fixture.Instance.Point3.Enthalpy - fixture.Instance.Point4.Enthalpy,
                 comparison.Tolerance.JoulesPerKilogram()
             )
             .Should()
@@ -188,13 +166,8 @@ public class VCRCWithRecuperatorSubcriticalTests(
     {
         fixture
             .Instance.EER.Should()
-            .Be(
-                fixture.Instance.SpecificCoolingCapacity
-                    / fixture.Instance.SpecificWork
-            );
-        fixture
-            .Instance.EER.Should()
-            .BeApproximately(4.201006672315493, comparison.Tolerance);
+            .Be(fixture.Instance.SpecificCoolingCapacity / fixture.Instance.SpecificWork);
+        fixture.Instance.EER.Should().BeApproximately(4.201006672315493, comparison.Tolerance);
     }
 
     [Fact]
@@ -202,13 +175,8 @@ public class VCRCWithRecuperatorSubcriticalTests(
     {
         fixture
             .Instance.COP.Should()
-            .Be(
-                fixture.Instance.SpecificHeatingCapacity
-                    / fixture.Instance.SpecificWork
-            );
-        fixture
-            .Instance.COP.Should()
-            .BeApproximately(5.201006672315493, comparison.Tolerance);
+            .Be(fixture.Instance.SpecificHeatingCapacity / fixture.Instance.SpecificWork);
+        fixture.Instance.COP.Should().BeApproximately(5.201006672315493, comparison.Tolerance);
     }
 
     [Fact]
@@ -275,9 +243,6 @@ public class VCRCWithRecuperatorSubcriticalTests(
         fixture
             .AnalysisResult.AnalysisRelativeError.Percent.Should()
             .BeApproximately(4.099022440185992e-14, comparison.Tolerance);
-        fixture
-            .AnalysisResult.Sum()
-            .Percent.Should()
-            .BeApproximately(100, comparison.Tolerance);
+        fixture.AnalysisResult.Sum().Percent.Should().BeApproximately(100, comparison.Tolerance);
     }
 }

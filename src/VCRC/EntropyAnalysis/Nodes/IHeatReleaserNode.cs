@@ -1,5 +1,3 @@
 ﻿namespace VCRC;
 
-internal interface IHeatReleaserNode
-    : IMainHeatExchangerNode,
-        IEntropyAnalysisNode;
+internal interface IHeatReleaserNode : IMainHeatExchangerNode, IEntropyAnalysisNode;
