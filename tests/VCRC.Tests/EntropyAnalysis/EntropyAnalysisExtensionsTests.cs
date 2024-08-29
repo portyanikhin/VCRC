@@ -27,7 +27,7 @@ public sealed class EntropyAnalysisExtensionsTests
         action
             .Should()
             .Throw<ArgumentException>()
-            .WithMessage("The lists should have the same length!");
+            .WithMessage("Inputs should have the same length!");
     }
 
     [Fact]
