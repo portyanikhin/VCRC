@@ -80,7 +80,7 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
 ```
@@ -93,7 +93,7 @@ Compressor with _80 %_ isentropic efficiency:
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC;
 
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 ```
 
 ### Condenser (for subcritical VCRCs)
@@ -112,7 +112,7 @@ using VCRC;
 
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 ```
@@ -138,11 +138,11 @@ using UnitsNet.NumberExtensions.NumberToPressure;
 using UnitsNet.NumberExtensions.NumberToTemperature;
 using VCRC;
 
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var gasCoolerWithSpecifiedPressure = new GasCooler(
     FluidsList.R744,
-    (40).DegreesCelsius(),
-    (105).Bars()
+    40.DegreesCelsius(),
+    105.Bars()
 );
 Console.WriteLine(gasCooler.Pressure.Bars);                      // 100.448
 Console.WriteLine(gasCoolerWithSpecifiedPressure.Pressure.Bars); // 105
@@ -156,7 +156,7 @@ Ejector with _90 %_ isentropic efficiency of the nozzle, suction section and dif
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC;
 
-var ejector = new Ejector((90).Percent());
+var ejector = new Ejector(90.Percent());
 ```
 
 Ejector with _90 %_ isentropic efficiency of the nozzle and suction section and 
@@ -166,7 +166,7 @@ _80 %_ isentropic efficiency of the diffuser:
 using UnitsNet.NumberExtensions.NumberToRatio;
 using VCRC;
 
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 ```
 
 ### Recuperator
@@ -241,13 +241,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var cycle = new SimpleVCRC(evaporator, compressor, condenser);
@@ -267,11 +267,11 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var cycle = new SimpleVCRC(evaporator, compressor, gasCooler);
 Console.WriteLine(cycle.EER);                // 2.607514554616747
 Console.WriteLine(cycle.COP);                // 3.6075145546167464
@@ -316,14 +316,14 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var cycle = new VCRCWithRecuperator(
@@ -348,12 +348,12 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
 var recuperator = new Recuperator(TemperatureDelta.FromKelvins(5));
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var cycle = new VCRCWithRecuperator(
     evaporator,
     recuperator,
@@ -407,13 +407,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var cycle = new VCRCWithIIC(evaporator, compressor, condenser);
@@ -434,11 +434,11 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var cycle = new VCRCWithIIC(evaporator, compressor, gasCooler);
 Console.WriteLine(cycle.EER);                // 2.931496855532257
 Console.WriteLine(cycle.COP);                // 3.9314968555322563
@@ -487,13 +487,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var cycle = new VCRCWithCIC(evaporator, compressor, condenser);
@@ -514,11 +514,11 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var cycle = new VCRCWithCIC(evaporator, compressor, gasCooler);
 Console.WriteLine(cycle.EER);                // 2.759856520794663
 Console.WriteLine(cycle.COP);                // 3.759856520794664
@@ -568,13 +568,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var cycle = new VCRCWithPC(evaporator, compressor, condenser);
@@ -595,11 +595,11 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var cycle = new VCRCWithPC(evaporator, compressor, gasCooler);
 Console.WriteLine(cycle.EER);                // 2.960053557904453
 Console.WriteLine(cycle.COP);                // 3.960053557904454
@@ -649,13 +649,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var economizer = new Economizer(
@@ -685,11 +685,11 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5),
     TemperatureDelta.FromKelvins(5)
@@ -748,13 +748,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var economizer = new Economizer(
@@ -784,11 +784,11 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5),
     TemperatureDelta.FromKelvins(5)
@@ -847,13 +847,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var economizer = new Economizer(
@@ -883,11 +883,11 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5),
     TemperatureDelta.FromKelvins(5)
@@ -946,16 +946,16 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var cycle = new VCRCWithEjector(evaporator, compressor, condenser, ejector);
 Console.WriteLine(cycle.EER);                // 4.832330373984365
 Console.WriteLine(cycle.COP);                // 5.832251779509525
@@ -973,12 +973,12 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var cycle = new VCRCWithEjector(evaporator, compressor, gasCooler, ejector);
 Console.WriteLine(cycle.EER);                // 3.404191144711264
 Console.WriteLine(cycle.COP);                // 4.404140144895948
@@ -1033,16 +1033,16 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5),
     TemperatureDelta.FromKelvins(5)
@@ -1071,12 +1071,12 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5),
     TemperatureDelta.FromKelvins(5)
@@ -1142,16 +1142,16 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5),
     TemperatureDelta.FromKelvins(5)
@@ -1180,12 +1180,12 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var economizer = new Economizer(
     TemperatureDelta.FromKelvins(5),
     TemperatureDelta.FromKelvins(5)
@@ -1251,16 +1251,16 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var economizer = new EconomizerWithTPI(TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithEjectorEconomizerAndTPI(
     evaporator,
@@ -1286,12 +1286,12 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R744,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
-var gasCooler = new GasCooler(FluidsList.R744, (40).DegreesCelsius());
-var ejector = new Ejector((90).Percent(), (90).Percent(), (80).Percent());
+var compressor = new Compressor(80.Percent());
+var gasCooler = new GasCooler(FluidsList.R744, 40.DegreesCelsius());
+var ejector = new Ejector(90.Percent(), 90.Percent(), 80.Percent());
 var economizer = new EconomizerWithTPI(TemperatureDelta.FromKelvins(5));
 var cycle = new VCRCWithEjectorEconomizerAndTPI(
     evaporator,
@@ -1347,13 +1347,13 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var economizer = new EconomizerWithTPI(TemperatureDelta.FromKelvins(5));
@@ -1372,9 +1372,9 @@ Console.WriteLine(cycle.Point5.Temperature); // 62.48 °C
 ## Entropy analysis
 
 You can perform an entropy analysis of each VCRC mentioned earlier.
-This analysis allows us to estimate with high accuracy the distribution of energy loss 
-due to non-equilibrium and irreversibility of working processes in the refrigeration machine. 
-Thanks to this, you can easily estimate the energy loss to compensate for the production of entropy 
+This analysis allows us to estimate with high accuracy the distribution of energy loss
+due to non-equilibrium and irreversibility of working processes in the refrigeration machine.
+Thanks to this, you can easily estimate the energy loss to compensate for the production of entropy
 in each part of the refrigeration cycle and make decisions that will help increase its efficiency.
 
 For example, simple single-stage VCRC, _18 °C_ indoor temperature, _35 °C_ outdoor temperature:
@@ -1388,19 +1388,19 @@ using VCRC;
 
 var evaporator = new Evaporator(
     FluidsList.R32,
-    (5).DegreesCelsius(),
+    5.DegreesCelsius(),
     TemperatureDelta.FromKelvins(5)
 );
-var compressor = new Compressor((80).Percent());
+var compressor = new Compressor(80.Percent());
 var condenser = new Condenser(
     FluidsList.R32,
-    (45).DegreesCelsius(),
+    45.DegreesCelsius(),
     TemperatureDelta.FromKelvins(3)
 );
 var cycle = new SimpleVCRC(evaporator, compressor, condenser);
 var result = cycle.EntropyAnalysis(
-    (18).DegreesCelsius(),
-    (35).DegreesCelsius()
+    18.DegreesCelsius(),
+    35.DegreesCelsius()
 );
 Console.WriteLine(result.ThermodynamicPerfection);        // 25.39 %
 Console.WriteLine(result.MinSpecificWorkRatio);           // 25.39 %
