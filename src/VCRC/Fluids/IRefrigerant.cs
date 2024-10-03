@@ -90,6 +90,12 @@ public interface IRefrigerant : IFluid
     /// <exception cref="ArgumentException">Invalid superheat!</exception>
     IRefrigerant Superheated(Pressure pressure, TemperatureDelta superheat);
 
+    /// <inheritdoc cref="IFluid.SpecifyPhase"/>
+    new IRefrigerant SpecifyPhase(Phases phase);
+
+    /// <inheritdoc cref="IFluid.UnspecifyPhase"/>
+    new IRefrigerant UnspecifyPhase();
+
     /// <inheritdoc cref="IFluid.WithState"/>
     new IRefrigerant WithState(
         IKeyedInput<Parameters> firstInput,

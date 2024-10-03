@@ -256,6 +256,7 @@ public sealed class RefrigerantTests(ComparisonFixture comparison)
     {
         _sut.Clone().Should().BeOfType<Refrigerant>();
         _sut.Factory().Should().BeOfType<Refrigerant>();
+        _sut.SpecifyPhase(Phases.Gas).UnspecifyPhase().Should().BeOfType<Refrigerant>();
         _sut.IsentropicCompressionTo(HighPressure).Should().BeOfType<Refrigerant>();
         _sut.CompressionTo(HighPressure, _isentropicEfficiency).Should().BeOfType<Refrigerant>();
         _sut.IsenthalpicExpansionTo(LowPressure).Should().BeOfType<Refrigerant>();

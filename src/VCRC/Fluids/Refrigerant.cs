@@ -32,11 +32,8 @@ public class Refrigerant : Fluid, IRefrigerant
             .ToUnit(TemperatureDeltaUnit.Kelvin);
 
     public bool HasGlide => Glide > 0.01.Kelvins();
-
     public bool IsSingleComponent => !IsAzeotropicBlend && !IsZeotropicBlend;
-
     public bool IsAzeotropicBlend => BlendRegex(false).IsMatch(Name.ToString());
-
     public bool IsZeotropicBlend => BlendRegex(true).IsMatch(Name.ToString());
 
     public IRefrigerant Subcooled(
@@ -63,6 +60,10 @@ public class Refrigerant : Fluid, IRefrigerant
         superheat < TemperatureDelta.Zero ? throw new ArgumentException("Invalid superheat!")
         : superheat.Equals(TemperatureDelta.Zero, Tolerance.Kelvins()) ? DewPointAt(pressure)
         : DewPointAt(pressure).HeatingTo(DewPointAt(pressure).Temperature + superheat);
+
+    public new IRefrigerant SpecifyPhase(Phases phase) => (Refrigerant)base.SpecifyPhase(phase);
+
+    public new IRefrigerant UnspecifyPhase() => (Refrigerant)base.UnspecifyPhase();
 
     public new IRefrigerant WithState(
         IKeyedInput<Parameters> firstInput,
