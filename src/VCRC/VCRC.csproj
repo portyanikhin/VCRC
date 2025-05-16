@@ -1,55 +1,51 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-    <PropertyGroup>
-        <Description>Cross-platform vapor-compression refrigeration cycles analysis tool</Description>
-        <NoWarn>$(NoWarn);1591;CA1859</NoWarn>
-        <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
-        <Title>VCRC</Title>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="FluentValidation" Version="11.11.0"/>
-        <PackageReference Include="MathNet.Numerics" Version="5.0.0"/>
-        <PackageReference Include="SharpProp" Version="7.5.1"/>
-    </ItemGroup>
-
-    <ItemGroup>
-        <Compile Update="**\*.cs">
-            <DependentUpon>$([System.String]::Copy(I%(Filename).cs))</DependentUpon>
-        </Compile>
-        <Compile Update="Components\ICondenser.cs">
-            <DependentUpon>IHeatReleaser.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Components\GasCooler.cs">
-            <DependentUpon>IHeatReleaser.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Components\IEvaporator.cs">
-            <DependentUpon>IMainHeatExchanger.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Components\IHeatReleaser.cs">
-            <DependentUpon>IMainHeatExchanger.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Components\IEconomizer.cs">
-            <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Components\EconomizerWithTPI.cs">
-            <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Components\Recuperator.cs">
-            <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Abstract\AbstractVCRC.cs">
-            <DependentUpon>IVCRC.cs</DependentUpon>
-        </Compile>
-        <Compile Update="Abstract\AbstractTwoStageVCRC.cs">
-            <DependentUpon>ITwoStageVCRC.cs</DependentUpon>
-        </Compile>
-        <Compile Update="EntropyAnalysis\Nodes\IEvaporatorNode.cs">
-            <DependentUpon>IMainHeatExchangerNode.cs</DependentUpon>
-        </Compile>
-        <Compile Update="EntropyAnalysis\Nodes\IHeatReleaserNode.cs">
-            <DependentUpon>IMainHeatExchangerNode.cs</DependentUpon>
-        </Compile>
-    </ItemGroup>
-
+  <PropertyGroup>
+    <Description>Cross-platform vapor-compression refrigeration cycles analysis tool</Description>
+    <NoWarn>$(NoWarn);1591;CA1859</NoWarn>
+    <Summary>Cross-platform vapor-compression refrigeration cycles analysis tool</Summary>
+    <Title>VCRC</Title>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="FluentValidation" Version="11.11.0" />
+    <PackageReference Include="MathNet.Numerics" Version="5.0.0" />
+    <PackageReference Include="SharpProp" Version="7.5.1" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Update="**\*.cs">
+      <DependentUpon>$([System.String]::Copy(I%(Filename).cs))</DependentUpon>
+    </Compile>
+    <Compile Update="Components\ICondenser.cs">
+      <DependentUpon>IHeatReleaser.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Components\GasCooler.cs">
+      <DependentUpon>IHeatReleaser.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Components\IEvaporator.cs">
+      <DependentUpon>IMainHeatExchanger.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Components\IHeatReleaser.cs">
+      <DependentUpon>IMainHeatExchanger.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Components\IEconomizer.cs">
+      <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Components\EconomizerWithTPI.cs">
+      <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Components\Recuperator.cs">
+      <DependentUpon>IAuxiliaryHeatExchanger.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Abstract\AbstractVCRC.cs">
+      <DependentUpon>IVCRC.cs</DependentUpon>
+    </Compile>
+    <Compile Update="Abstract\AbstractTwoStageVCRC.cs">
+      <DependentUpon>ITwoStageVCRC.cs</DependentUpon>
+    </Compile>
+    <Compile Update="EntropyAnalysis\Nodes\IEvaporatorNode.cs">
+      <DependentUpon>IMainHeatExchangerNode.cs</DependentUpon>
+    </Compile>
+    <Compile Update="EntropyAnalysis\Nodes\IHeatReleaserNode.cs">
+      <DependentUpon>IMainHeatExchangerNode.cs</DependentUpon>
+    </Compile>
+  </ItemGroup>
 </Project>
