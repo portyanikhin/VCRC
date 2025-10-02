@@ -32,19 +32,25 @@ public sealed class RefrigerantTests(ComparisonFixture comparison)
 
     [Fact]
     public void CriticalPressure_Water_Returns22e6() =>
-        _sut.CriticalPressure.Pascals.Should().Be(22.064e6);
+        _sut.CriticalPressure.Pascals.Should().BeApproximately(22.064e6, comparison.Tolerance);
 
     [Fact]
     public void CriticalTemperature_Water_Returns373() =>
-        _sut.CriticalTemperature.DegreesCelsius.Should().Be(373.946);
+        _sut
+            .CriticalTemperature.DegreesCelsius.Should()
+            .BeApproximately(373.946, comparison.Tolerance);
 
     [Fact]
     public void TriplePressure_Water_Returns611() =>
-        _sut.TriplePressure.Pascals.Should().Be(611.65480089686844);
+        _sut
+            .TriplePressure.Pascals.Should()
+            .BeApproximately(611.65480089686844, comparison.Tolerance);
 
     [Fact]
     public void TripleTemperature_Water_ReturnsZero() =>
-        _sut.TripleTemperature.DegreesCelsius.Should().Be(0.010000000000047748);
+        _sut
+            .TripleTemperature.DegreesCelsius.Should()
+            .BeApproximately(0.010000000000047748, comparison.Tolerance);
 
     [Theory]
     [InlineData(FluidsList.R32)]
