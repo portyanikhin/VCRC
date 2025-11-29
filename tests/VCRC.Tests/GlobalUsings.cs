@@ -1,5 +1,5 @@
 ﻿global using System.Globalization;
-global using FluentAssertions;
+global using AwesomeAssertions;
 global using FluentValidation;
 global using SharpProp;
 global using UnitsNet;
